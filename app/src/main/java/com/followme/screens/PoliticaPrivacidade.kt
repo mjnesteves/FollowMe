@@ -3,7 +3,9 @@ package com.followme.screens
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
@@ -15,11 +17,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.followme.R
 import com.followme.components.HeadingTextComponent
-
+import com.followme.components.NormalTextComponent
+import com.followme.data.politica.Texto
 
 
 @Composable
-fun PoliticaPrivacidade(navController: NavController, ){
+fun PoliticaPrivacidade(navController: NavController) {
 
     Surface(
         color = Color.White,
@@ -35,7 +38,10 @@ fun PoliticaPrivacidade(navController: NavController, ){
                 .fillMaxSize()
         ) {
         HeadingTextComponent(value= stringResource(id= R.string.politica_privacidade_cabecalho))
-    }
+            Spacer(modifier = Modifier.height(40.dp))
+            Texto(value = stringResource(id = R.string.ConteudoPolitica))
+        }
+
 
 
         BackHandler {

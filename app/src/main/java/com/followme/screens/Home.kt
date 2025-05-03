@@ -98,6 +98,7 @@ fun Home(homeViewModel: HomeViewModel = viewModel()) {
                 //isEnabled = loginViewModel.allValidationsPassed.value
             )
 
+
             Spacer(modifier = Modifier.height(100.dp))
 
             ButtonComponent(
