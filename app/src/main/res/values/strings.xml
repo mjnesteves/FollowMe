@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">FollowMe</string>
+    <string name="saudacao">Olá</string>
+    <string name="criar_conta">Cria uma Conta</string>
+    <string name="bem_vindo">Bem Vindo de Volta</string>
+    <string name="nome">Nome</string>
+    <string name="apelido">Apelido</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="esconder_password">Esconder Password</string>
+    <string name="mostrar_password">Mostrar Password</string>
+    <string name="termos_condicoes">Termos e condições</string>
+    <string name="politica_privacidade">Politica de Privacidade</string>
+    <string name="termos_condicoes_cabecalho">Termos e condições</string>
+    <string name="politica_privacidade_cabecalho">Política de Privacidade</string>
+    <string name="registo">Registo</string>
+    <string name="login">Login</string>
+    <string name="ou">ou</string>
+    <string name="recuperar_password">Recuperar Password</string>
+
+    <string name="logout">Logout</string>
+    <string name="menu">menu</string>
+    <string name="home">Home</string>
+    <string name="navigation_header">Navegação</string>
+    <string name="error_action">error_login</string>
+    <string name="error_title">Erro no login</string>
+    <string name="SinaisVitais">Sinais Vitais</string>
+    <string name="HistoricoMedico">Histórico Médico</string>
+
+</resources>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "150649484393",
+    "project_id": "followme-e5ef4",
+    "storage_bucket": "followme-e5ef4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:150649484393:android:c1c5ca9462af80df1adef8",
+        "android_client_info": {
+          "package_name": "com.followme"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdzrd-snZdGh7vr4H8w1Fk320-5wpemCA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
