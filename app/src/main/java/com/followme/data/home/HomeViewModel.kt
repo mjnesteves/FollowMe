@@ -7,21 +7,19 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 
 class HomeViewModel: ViewModel () {
 
+    private val tag = HomeViewModel::class.simpleName
 
-    private val TAG= HomeViewModel::class.simpleName
-
-    var HomeUIState = mutableStateOf(HomeUIState())
+    private var homeUIState = mutableStateOf(HomeUIState())
 
     private fun  onEvent(event: HomeUIEvent){
 
         when(event){
             is HomeUIEvent.displayNameChanged ->{
-                HomeUIState.value = HomeUIState.value.copy(
+                homeUIState.value = homeUIState.value.copy(
                     displayName = event.displayName
                 )
             }
@@ -34,17 +32,30 @@ class HomeViewModel: ViewModel () {
 
 
 private fun getUserData() {
-    FirebaseAuth.getInstance().currentUser?.also {
+    val firebaseAuth = FirebaseAuth.getInstance()
+    firebaseAuth.currentUser?.also {
         it.displayName?.also { displayName ->
             onEvent(HomeUIEvent.displayNameChanged(displayName))
+
         }
     }
+
 }
 
 
 fun getDisplayName():String {
-    //getUserData()
-    return  HomeUIState.value.displayName
+    getUserData()
+    return when {
+        homeUIState.value.displayName.isBlank() -> {
+            "nomeUtilizador"
+        }
+
+        else -> {
+            homeUIState.value.displayName
+        }
+    }
+
+
 }
 
 
@@ -75,18 +86,17 @@ fun getDisplayName():String {
         )
 
 
-
-fun terminarSessao(navController:NavController){
+    fun terminarSessao() {
     val firebaseAuth = FirebaseAuth.getInstance()
 
     firebaseAuth.signOut()
 
     val authStateListener = FirebaseAuth.AuthStateListener {
         if (it.currentUser == null) {
-            Log.d(TAG, "Inside signout sucess")
-            navController.navigate("Login")
+            Log.d(tag, "Inside signout sucess")
+            onEvent(HomeUIEvent.displayNameChanged(""))
         } else {
-            Log.d(TAG, "Inside signout is not complete")
+            Log.d(tag, "Inside signout is not complete")
         }
     }
 

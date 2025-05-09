@@ -1,26 +1,15 @@
-package com.followme.components
+package com.followme.componentes
 
-
-
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -32,19 +21,14 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
@@ -63,60 +47,59 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.followme.R
-import com.followme.data.home.NavigationItem
-import com.followme.ui.theme.*
-
+import com.followme.ui.theme.BgColor
+import com.followme.ui.theme.GrayColor
+import com.followme.ui.theme.Primary
+import com.followme.ui.theme.Secondary
+import com.followme.ui.theme.TextColor
 
 @Composable
-fun NormalTextComponent(value:String){
+fun TextoCentrado(value: String) {
     Text(
-        text=value,
+        text = value,
         modifier = Modifier
             .padding(vertical = 25.dp)
             .fillMaxWidth()
             .heightIn(min = 20.dp),
         style = TextStyle(
             fontSize = 24.sp,
-            fontWeight =  FontWeight.Normal,
+            fontWeight = FontWeight.Normal,
             fontStyle = FontStyle.Normal
-        )
-        , color = colorResource(id= R.color.colorText),
+        ), color = colorResource(id = R.color.colorText),
         textAlign = TextAlign.Center
 
     )
 }
 
 @Composable
-fun HeadingTextComponent(value:String){
+fun TextoCentradoBold(value: String) {
     Text(
-        text=value,
+        text = value,
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = 40.dp),
         style = TextStyle(
             fontSize = 30.sp,
-            fontWeight =  FontWeight.Bold,
+            fontWeight = FontWeight.Bold,
             fontStyle = FontStyle.Normal
-        )
-        , color = colorResource(id= R.color.colorText),
+        ), color = colorResource(id = R.color.colorText),
         textAlign = TextAlign.Center
     )
 }
 
-
 @Composable
-fun MyTextFieldComponent(labelValue: String, textValue: String, painterResource: Painter,
-                         onTextSelected: (String) -> Unit,
-                         errorStatus:Boolean=false){
+fun IntroduzirTexto(
+    labelValue: String, textValue: String, painterResource: Painter,
+    onTextSelected: (String) -> Unit,
+    errorStatus: Boolean = false
+) {
 
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
-        label = {Text(text=labelValue)},
+        label = { Text(text = labelValue) },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = Primary,
             focusedLabelColor = Primary,
@@ -140,16 +123,16 @@ fun MyTextFieldComponent(labelValue: String, textValue: String, painterResource:
         isError = !errorStatus
 
 
-
-
     )
 
 }
 
 @Composable
-fun PasswordTextFieldComponent(labelValue: String, fieldValue: String, painterResource: Painter,
-                               onTextSelected: (String) -> Unit,
-                               errorStatus:Boolean = false) {
+fun IntroduzirPassoword(
+    labelValue: String, fieldValue: String, painterResource: Painter,
+    onTextSelected: (String) -> Unit,
+    errorStatus: Boolean = false
+) {
 
     val localFocusManager = LocalFocusManager.current
 
@@ -171,7 +154,7 @@ fun PasswordTextFieldComponent(labelValue: String, fieldValue: String, painterRe
 
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
         singleLine = true,
-        keyboardActions = KeyboardActions{
+        keyboardActions = KeyboardActions {
             localFocusManager.clearFocus()
         },
         maxLines = 1,
@@ -184,10 +167,10 @@ fun PasswordTextFieldComponent(labelValue: String, fieldValue: String, painterRe
         },
         trailingIcon = {
             val iconImage = if (passwordVisible.value) {
-                painterResource(id= R.drawable.passwordvisivel)
+                painterResource(id = R.drawable.passwordvisivel)
 
             } else {
-                painterResource(id= R.drawable.passwordinvisivel)
+                painterResource(id = R.drawable.passwordinvisivel)
             }
 
             val description = if (passwordVisible.value) {
@@ -196,13 +179,13 @@ fun PasswordTextFieldComponent(labelValue: String, fieldValue: String, painterRe
                 stringResource(id = R.string.mostrar_password)
             }
 
-            IconButton(onClick = {passwordVisible.value = !passwordVisible.value}) {
+            IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {
                 Icon(painter = iconImage, contentDescription = description)
             }
 
 
         },
-        visualTransformation = if(passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+        visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
         isError = !errorStatus
 
     )
@@ -210,19 +193,25 @@ fun PasswordTextFieldComponent(labelValue: String, fieldValue: String, painterRe
 
 }
 
+
 @Composable
-fun CheckboxComponent(privacidade:()->Unit, termos:()-> Unit, onCheckedChange: (Boolean) -> Unit){
+fun CheckBoxTermosCondicoes(
+    privacidade: () -> Unit,
+    termos: () -> Unit,
+    onCheckedChange: (Boolean) -> Unit
+) {
 
 
-    Row(modifier= Modifier
-        .fillMaxWidth()
-        .heightIn(56.dp),
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(56.dp),
         verticalAlignment = Alignment.CenterVertically,
 
 
-        ){
+        ) {
 
-        val checkedState = rememberSaveable{
+        val checkedState = rememberSaveable {
             mutableStateOf(false)
         }
 
@@ -230,7 +219,7 @@ fun CheckboxComponent(privacidade:()->Unit, termos:()-> Unit, onCheckedChange: (
             checked = checkedState.value,
             onCheckedChange = {
 
-                checkedState.value= it
+                checkedState.value = it
                 onCheckedChange.invoke(it)
 
 
@@ -239,7 +228,7 @@ fun CheckboxComponent(privacidade:()->Unit, termos:()-> Unit, onCheckedChange: (
 
 
 
-        ClickableTextComponent(privacidade, termos)
+        Hiperligacao_TermosCondicoes(privacidade, termos)
 
     }
 
@@ -247,7 +236,7 @@ fun CheckboxComponent(privacidade:()->Unit, termos:()-> Unit, onCheckedChange: (
 }
 
 @Composable
-fun ClickableTextComponent(privacidade:()-> Unit, termos:()->Unit){
+fun Hiperligacao_TermosCondicoes(privacidade: () -> Unit, termos: () -> Unit) {
     val initialText = "Aceitar "
     val privacyPolicyText = "Política "
     val andText = " e "
@@ -271,7 +260,7 @@ fun ClickableTextComponent(privacidade:()-> Unit, termos:()->Unit){
             link = LinkAnnotation
                 .Clickable(
                     tag = termsAndConditionsText,
-                    linkInteractionListener = { termos()},
+                    linkInteractionListener = { termos() },
                     styles = TextLinkStyles(style = SpanStyle(color = Primary))
                 )
         ) {
@@ -282,9 +271,101 @@ fun ClickableTextComponent(privacidade:()-> Unit, termos:()->Unit){
     Text(text = annotatedString)
 }
 
+
 @Composable
-fun ButtonComponent(value: String,
-                    onButtonClicked: () -> Unit, isEnabled: Boolean = false
+fun Login_criarConta_hiperligacao(
+    login: () -> Unit,
+    criarConta: () -> Unit,
+    tryingToLogin: Boolean = true
+) {
+    val initialText = if (tryingToLogin) "Já tens uma conta? " else "Não tens uma conta? "
+    val loginText = if (tryingToLogin) "Login" else "Regista-te"
+
+    val annotatedString = buildAnnotatedString {
+        append(initialText)
+        withLink(
+            link = LinkAnnotation
+                .Clickable(
+                    tag = loginText,
+                    styles = TextLinkStyles(
+                        style = SpanStyle(color = Primary)
+                    )
+
+                ) {
+                    if (tryingToLogin) {
+                        login()
+                    } else {
+                        criarConta()
+                    }
+                }
+
+        ) {
+            append(loginText)
+        }
+
+    }
+    Text(
+        text = annotatedString,
+        modifier = Modifier
+            .fillMaxWidth(),
+        textAlign = TextAlign.Center
+    )
+
+}
+
+
+@Composable
+fun Hiperligacao_Sublinhado(value: String) {
+    Text(
+        text = value,
+        modifier = Modifier
+            .padding(vertical = 25.dp)
+            .fillMaxWidth()
+            .heightIn(min = 20.dp),
+        style = TextStyle(
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Normal,
+            fontStyle = FontStyle.Normal
+        ), color = colorResource(id = R.color.colorText),
+        textAlign = TextAlign.Center,
+        textDecoration = TextDecoration.Underline
+    )
+}
+
+
+@Composable
+fun Linha_Divisora() {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Divider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            thickness = 1.dp, color = GrayColor
+        )
+
+        Text(
+            modifier = Modifier.padding(8.dp),
+            text = stringResource(R.string.ou),
+            fontSize = 18.sp,
+            color = TextColor
+        )
+        Divider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            thickness = 1.dp, color = GrayColor
+        )
+    }
+}
+
+
+@Composable
+fun BotaoLogin(
+    value: String,
+    onButtonClicked: () -> Unit, isEnabled: Boolean = false
 ) {
     Button(
         modifier = Modifier
@@ -320,94 +401,9 @@ fun ButtonComponent(value: String,
     }
 }
 
-@Composable
-fun DividerTextComponent(){
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ){
-        Divider(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-            thickness = 1.dp, color = GrayColor
-        )
-
-        Text(
-            modifier = Modifier.padding(8.dp),
-            text = stringResource(R.string.ou),
-            fontSize = 18.sp,
-            color = TextColor)
-        Divider(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-            thickness = 1.dp, color = GrayColor
-        )
-    }
-}
 
 @Composable
-fun ClickableLoginComponent(login: ()-> Unit, criarConta: () -> Unit, tryingToLogin:Boolean=true) {
-    val initialText = if(tryingToLogin) "Já tens uma conta? " else "Não tens uma conta? "
-    val loginText = if(tryingToLogin) "Login" else "Regista-te"
-
-    val annotatedString = buildAnnotatedString {
-        append(initialText)
-        withLink(
-            link = LinkAnnotation
-                .Clickable(
-                    tag = loginText,
-                    styles = TextLinkStyles(
-                        style = SpanStyle(color = Primary)
-                    )
-
-                ){
-                    if(tryingToLogin) {
-                        login()
-                    }else{
-                        criarConta()
-                    }
-                }
-
-        ) {
-            append(loginText)
-        }
-
-    }
-    Text(
-        text = annotatedString,
-        modifier = Modifier
-            .fillMaxWidth(),
-        textAlign = TextAlign.Center
-    )
-
-}
-
-@Composable
-fun UnderLinedTextComponent(value:String){
-    Text(
-        text=value,
-        modifier = Modifier
-            .padding(vertical = 25.dp)
-            .fillMaxWidth()
-            .heightIn(min = 20.dp),
-        style = TextStyle(
-            fontSize = 18.sp,
-            fontWeight =  FontWeight.Normal,
-            fontStyle = FontStyle.Normal
-        )
-        , color = colorResource(id= R.color.colorText),
-        textAlign = TextAlign.Center,
-        textDecoration = TextDecoration.Underline
-    )
-}
-
-
-
-
-@Composable
-fun AlertDialogSample(confirmButtonClicked: ()->Unit) {
+fun Alerta_Erro_Login(/*confirmButtonClicked: ()->Unit*/) {
     val openDialog = remember { mutableStateOf(true) }
 
     if (openDialog.value) {
@@ -416,28 +412,29 @@ fun AlertDialogSample(confirmButtonClicked: ()->Unit) {
                 // Dismiss the dialog when the user clicks outside the dialog or on the back
                 // button. If you want to disable that functionality, simply use an empty
                 // onCloseRequest.
-                confirmButtonClicked.invoke()
+                //confirmButtonClicked.invoke()
                 openDialog.value = false
             },
-            title = { Text(text = "Title") },
+            title = { Text(text = "Informação") },
             text = {
                 Text(
-                    "This area typically contains the supportive text " +
-                            "which presents the details regarding the Dialog's purpose."
+                    "Dados de Login Inválidos!"
                 )
             },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        confirmButtonClicked.invoke()
+                        //confirmButtonClicked.invoke()
                         openDialog.value = false
-                })
-                { Text(
-                    "Confirm")}
+                    })
+                {
+                    Text(
+                        "OK"
+                    )
+                }
             },
 
 
-        )
+            )
     }
 }
-

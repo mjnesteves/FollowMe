@@ -22,15 +22,18 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.followme.R
-import com.followme.components.ButtonComponent
-import com.followme.components.CheckboxComponent
-import com.followme.components.ClickableLoginComponent
-import com.followme.components.DividerTextComponent
-import com.followme.components.HeadingTextComponent
-import com.followme.components.MyTextFieldComponent
-import com.followme.components.NormalTextComponent
-import com.followme.components.PasswordTextFieldComponent
-import com.followme.data.criarconta.CriarContaUIEvent
+import com.followme.componentes.BotaoLogin
+
+import com.followme.componentes.CheckBoxTermosCondicoes
+
+import com.followme.componentes.IntroduzirPassoword
+import com.followme.componentes.IntroduzirTexto
+import com.followme.componentes.Linha_Divisora
+import com.followme.componentes.Login_criarConta_hiperligacao
+
+import com.followme.componentes.TextoCentrado
+import com.followme.componentes.TextoCentradoBold
+//import com.followme.data.criarconta.CriarContaUIEvent
 import com.followme.data.criarconta.CriarContaViewModel
 
 
@@ -56,63 +59,80 @@ fun CriarConta(navController: NavController, criarContaViewModel: CriarContaView
         Column (modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())) {
-            NormalTextComponent(value= stringResource(id= R.string.saudacao))
-            HeadingTextComponent(value= stringResource(id= R.string.criar_conta))
+            TextoCentrado(value = stringResource(id = R.string.saudacao))
+            TextoCentradoBold(value = stringResource(id = R.string.criar_conta))
             Spacer(modifier = Modifier.height(20.dp))
-            MyTextFieldComponent(
+            IntroduzirTexto(
                 labelValue= stringResource(id=R.string.nome),
                 painterResource = painterResource(id=R.drawable.perfil),
                 textValue = criarContaViewModel.criarContaUIState.value.nome,
                 onTextSelected = {
-                    criarContaViewModel.onEvent(CriarContaUIEvent.NomeChanged(it))
+                    criarContaViewModel.onEvent(CriarContaViewModel.CriarContaUIEvent.NomeChanged(it))
                 },
 
                 errorStatus = criarContaViewModel.criarContaUIState.value.erroNome
             )
 
-            MyTextFieldComponent(
+            IntroduzirTexto(
                 labelValue = stringResource(id=R.string.apelido),
                 painterResource = painterResource(id= R.drawable.perfil),
                 textValue = criarContaViewModel.criarContaUIState.value.apelido,
                 onTextSelected = {
-                    criarContaViewModel.onEvent(CriarContaUIEvent.ApelidoChanged(it))
+                    criarContaViewModel.onEvent(
+                        CriarContaViewModel.CriarContaUIEvent.ApelidoChanged(
+                            it
+                        )
+                    )
                 },
                 errorStatus = criarContaViewModel.criarContaUIState.value.erroApelido
             )
-            MyTextFieldComponent(
+            IntroduzirTexto(
                 labelValue= stringResource(id=R.string.email),
                 painterResource = painterResource(id= R.drawable.email),
                 textValue = criarContaViewModel.criarContaUIState.value.email,
                 onTextSelected = {
-                    criarContaViewModel.onEvent(CriarContaUIEvent.EmailChanged(it))
+                    criarContaViewModel.onEvent(
+                        CriarContaViewModel.CriarContaUIEvent.EmailChanged(
+                            it
+                        )
+                    )
                 },
                 errorStatus = criarContaViewModel.criarContaUIState.value.erroEmail
             )
 
-            PasswordTextFieldComponent(
+            IntroduzirPassoword(
                 labelValue= stringResource(id=R.string.password),
                 fieldValue = criarContaViewModel.criarContaUIState.value.password,
                 painterResource= painterResource(id= R.drawable.password),
                 onTextSelected = {
-                    criarContaViewModel.onEvent(CriarContaUIEvent.PasswordChanged(it))
+                    criarContaViewModel.onEvent(
+                        CriarContaViewModel.CriarContaUIEvent.PasswordChanged(
+                            it
+                        )
+                    )
                 },
                 errorStatus = criarContaViewModel.criarContaUIState.value.erroPassword
             )
 
-            CheckboxComponent(
+            CheckBoxTermosCondicoes(
                 privacidade = { navController.navigate("PoliticaPrivacidade") },
                 termos = { navController.navigate("TermosCondicoes") },
                 onCheckedChange = {
-                criarContaViewModel.onEvent(CriarContaUIEvent.TermosCondicoesCheckBox(it))
+                    criarContaViewModel.onEvent(
+                        CriarContaViewModel.CriarContaUIEvent.TermosCondicoesCheckBox(
+                            it
+                        )
+                    )
 
             }
             )
 
             Spacer(modifier = Modifier.height(80.dp))
 
-            ButtonComponent(value= stringResource(id= R.string.registo),
+            BotaoLogin(
+                value = stringResource(id = R.string.registo),
                 onButtonClicked = {
-                    criarContaViewModel.onEvent(CriarContaUIEvent.RegisterButtonClicked)
+                    criarContaViewModel.onEvent(CriarContaViewModel.CriarContaUIEvent.RegisterButtonClicked)
                     navController.navigate("Login")
                 },
                 isEnabled = criarContaViewModel.allValidationsPassed.value
@@ -120,9 +140,9 @@ fun CriarConta(navController: NavController, criarContaViewModel: CriarContaView
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            DividerTextComponent()
+            Linha_Divisora()
 
-            ClickableLoginComponent(
+            Login_criarConta_hiperligacao(
                 login = {navController.navigate("Login")},
                 criarConta = {navController.navigate("CriarConta")},
                 tryingToLogin = true)
@@ -139,15 +159,7 @@ fun CriarConta(navController: NavController, criarContaViewModel: CriarContaView
         BackHandler {
             navController.popBackStack()
         }
-
-
-    /*
-    SystemBackButtonHandler {
-        PostOfficeAppRouter.navigateTo(Screen.CriarConta)
     }
-
-     */
-}
 }
 
 

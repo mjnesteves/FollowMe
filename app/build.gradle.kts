@@ -1,10 +1,13 @@
 plugins {
 
-    id("com.google.gms.google-services")
-
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.android) version "2.1.0"
     alias(libs.plugins.kotlin.compose)
+
+
+    id("com.google.devtools.ksp") version "2.1.0-1.0.29"
+
+    id("com.google.gms.google-services")
 
 }
 
@@ -45,26 +48,38 @@ android {
 
 dependencies {
 
-    implementation (libs.androidx.material)
+    //Room
 
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+
+
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx.v251)
+
+
+
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.rxjava3)
+    implementation(libs.rxjava)
+
+
+    implementation (libs.androidx.material)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
 
+    implementation(platform(libs.androidx.compose.bom.v20250401))
     implementation(libs.androidx.navigation.compose)
 
-    // Import the BoM for the Firebase platform
-    implementation(platform(libs.firebase.bom))
+    implementation(platform(libs.firebase.bom.v2841))
+    implementation(libs.google.firebase.analytics)
+    implementation(libs.firebase.database)
 
-    // Add the dependency for the Firebase Authentication library
-    // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation(libs.firebase.auth)
-
+    implementation(libs.androidx.material3.v130alpha04)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     implementation (libs.ui.tooling)
-
     implementation (libs.androidx.material.icons.extended)
-
 
     implementation(libs.androidx.glance)
     implementation(libs.androidx.glance.appwidget)
@@ -79,6 +94,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3.android)
+    implementation(libs.firebase.auth.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

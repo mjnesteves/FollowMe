@@ -8,7 +8,6 @@ data class LoginUIState(
 
     var email : String = "",
     var password : String = "",
-    var loginError: Boolean = false,
 
 
     var erroEmail : Boolean = false,

@@ -3,9 +3,12 @@ package com.followme.data.login
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.followme.data.home.HomeUIEvent
+import com.followme.data.home.HomeUIState
+import com.followme.data.home.HomeViewModel
 import com.followme.data.regras.Validator
-import com.followme.navigation.Navegacao
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginViewModel:ViewModel() {
@@ -18,7 +21,8 @@ class LoginViewModel:ViewModel() {
 
     var loginInProgress = mutableStateOf(false)
 
-
+    private var loginStatus = false
+    private var loginError = false
 
     fun onEvent(event: LoginUIEvent){
         when(event){
@@ -26,7 +30,6 @@ class LoginViewModel:ViewModel() {
                 loginUIState.value = loginUIState.value.copy(
                     email = event.email
                 )
-
 
             }
 
@@ -37,11 +40,11 @@ class LoginViewModel:ViewModel() {
 
             }
 
+
             is LoginUIEvent.LoginButtonClicked ->{
                 login()
 
             }
-
 
         }
         validarUIDataRegras()
@@ -78,14 +81,14 @@ class LoginViewModel:ViewModel() {
 
     }
 
-    fun getErroLogin(): Boolean {
-        return loginUIState.value.loginError
+
+    fun getLoginError(): Boolean {
+        return loginError
     }
 
-    fun setErroLogin(valor:Boolean){
-        loginUIState.value.loginError = valor
+    fun getLoginStatus(): Boolean {
+        return loginStatus
     }
-
 
 
     private fun login(){
@@ -94,6 +97,7 @@ class LoginViewModel:ViewModel() {
 
         val email = loginUIState.value.email
         val password = loginUIState.value.password
+
         FirebaseAuth
             .getInstance()
             .signInWithEmailAndPassword(email, password)
@@ -104,7 +108,7 @@ class LoginViewModel:ViewModel() {
 
                 if(it.isSuccessful){
                     loginInProgress.value = false
-
+                    loginStatus = true
                 }
 
             }
@@ -112,12 +116,11 @@ class LoginViewModel:ViewModel() {
                 Log.d(TAG, "Inside_login_failure")
                 Log.d(TAG, "${it.localizedMessage}")
 
-                setErroLogin(true)
-
                 loginInProgress.value=false
-
-
+                loginError = true
             }
+        loginError = false
+        loginStatus = false
     }
 
 

@@ -4,12 +4,43 @@ package com.followme.data.criarconta
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
 import com.followme.data.regras.Validator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.userProfileChangeRequest
 
 class CriarContaViewModel: ViewModel(){
+
+
+    data class CriarContaUIState(
+        var nome: String = "",
+        var apelido: String = "",
+        var email: String = "",
+        var password: String = "",
+        var politicaTermosAceite: Boolean = false,
+
+
+        var erroNome: Boolean = false,
+        var erroApelido: Boolean = false,
+        var erroEmail: Boolean = false,
+        var erroPassword: Boolean = false,
+        var politicaTermosErro: Boolean = false
+
+    )
+
+    sealed class CriarContaUIEvent {
+
+        data class NomeChanged(val nome: String) : CriarContaUIEvent()
+        data class ApelidoChanged(val apelido: String) : CriarContaUIEvent()
+        data class EmailChanged(val email: String) : CriarContaUIEvent()
+        data class PasswordChanged(val password: String) : CriarContaUIEvent()
+        data class TermosCondicoesCheckBox(val statusValue: Boolean) : CriarContaUIEvent()
+
+        data object RegisterButtonClicked : CriarContaUIEvent()
+
+
+    }
+
+
 
     private val TAG= CriarContaViewModel::class.simpleName
 
@@ -163,7 +194,7 @@ class CriarContaViewModel: ViewModel(){
     }
 
     private fun updateUserFireBase(nome:String, apelido:String){
-        val user =    FirebaseAuth.getInstance().currentUser;
+        val user = FirebaseAuth.getInstance().currentUser;
         val profileUpdates = userProfileChangeRequest {
             displayName = "$nome $apelido"
 

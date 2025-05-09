@@ -13,16 +13,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.followme.navigation.Navegacao
 import com.followme.ui.theme.FollowMeTheme
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             Navegacao()
-
         }
     }
 }
+
+annotation class AndroidEntryPoint
 
 @Preview(showBackground = true)
 @Composable

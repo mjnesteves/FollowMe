@@ -1,55 +1,68 @@
 package com.followme.screens
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 
 import androidx.compose.foundation.layout.Arrangement
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+
 
 
 import androidx.compose.foundation.layout.height
 
 import androidx.compose.foundation.layout.padding
-
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.FabPosition
 
 import androidx.compose.material.Scaffold
-
 import androidx.compose.material.rememberScaffoldState
 
 
 import androidx.compose.runtime.Composable
+
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 
 import androidx.compose.ui.res.stringResource
+
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 
 import androidx.navigation.compose.rememberNavController
 import com.followme.R
-import com.followme.components.ButtonComponent
-import com.followme.data.home.AppToolbar
+import com.followme.componentes.AppToolbar
+import com.followme.componentes.BotaoAplicacoes
+import com.followme.componentes.CenteredBottomAppBar
+import com.followme.componentes.CenteredNavigationFab
 
 import com.followme.data.home.HomeViewModel
-import com.followme.data.home.NavigationDrawerBody
-import com.followme.data.home.NavigationDrawerHeader
+import com.followme.componentes.NavigationDrawerBody
+import com.followme.componentes.NavigationDrawerHeader
+
 
 import kotlinx.coroutines.launch
 
 @Composable
-fun Home(homeViewModel: HomeViewModel = viewModel()) {
+fun Home(navController: NavController, homeViewModel: HomeViewModel = viewModel()) {
 
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
-    
+
+    Spacer(modifier = Modifier.height(100.dp))
 
     Scaffold(
         scaffoldState = scaffoldState,
+
         topBar = {
             AppToolbar(userName =  homeViewModel.getDisplayName(),
                 logoutButtonClicked = {
-                    //homeViewModel.terminarSessao()
+                    homeViewModel.terminarSessao()
+                    navController.navigate("Login")
                 },
                 navigationIconClicked = {
                     coroutineScope.launch {
@@ -66,12 +79,9 @@ fun Home(homeViewModel: HomeViewModel = viewModel()) {
                     Log.d("ComingHere","inside_NavigationItemClicked")
                     Log.d("ComingHere","${it.itemId} ${it.title}")
                 })
-        }
+        },
 
-
-
-
-
+        bottomBar = { CenteredBottomAppBar(navController) },
 
 
 
@@ -80,46 +90,59 @@ fun Home(homeViewModel: HomeViewModel = viewModel()) {
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(start = 20.dp, end = 20.dp),
+                .padding(start = 20.dp, end = 20.dp)
+                .verticalScroll(rememberScrollState()),
 
-                verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-
-
-
-            Spacer(modifier = Modifier.height(200.dp))
-
-            ButtonComponent(
-                value = stringResource(id = R.string.SinaisVitais),
-                onButtonClicked = {
-
-
-                }
-                //isEnabled = loginViewModel.allValidationsPassed.value
-            )
-
 
             Spacer(modifier = Modifier.height(100.dp))
 
-            ButtonComponent(
+            Spacer(modifier = Modifier.height(50.dp))
+
+            BotaoAplicacoes(
                 value = stringResource(id = R.string.HistoricoMedico),
-                onButtonClicked = {
-
-
+                navegar = {
+                    navController.navigate("HistoricoMedico")
                 }
-                //isEnabled = loginViewModel.allValidationsPassed.value
+
+            )
+            Spacer(modifier = Modifier.height(50.dp))
+
+            BotaoAplicacoes(
+                value = stringResource(id = R.string.Medicacao),
+                navegar = {
+                    navController.navigate("Medicacao")
+                }
+
             )
 
+            Spacer(modifier = Modifier.height(50.dp))
 
+            BotaoAplicacoes(
+                value = stringResource(id = R.string.SinaisVitais),
+                navegar = {
+                    navController.navigate("SinaisVitais")
+                }
 
+            )
+
+            Spacer(modifier = Modifier.height(50.dp))
         }
     }
+
+
+    BackHandler {
+        navController.popBackStack()
+    }
+
+
 }
 
 @Preview
 @Composable
 fun HomePreview(){
-    Home()
+    val navController = rememberNavController()
+    Home(navController = navController)
 }
 
 @Preview
@@ -149,4 +172,18 @@ fun PoliticaPrivacidadePreview(){
 fun TermosCondicoesPreview(){
     val navController = rememberNavController()
     TermosCondicoes(navController)
+}
+
+@Preview
+@Composable
+fun SinaisVitaisPreview() {
+    val navController = rememberNavController()
+    SinaisVitais(navController)
+}
+
+@Preview
+@Composable
+fun HistoricoMedicoPreview() {
+    val navController = rememberNavController()
+    HistoricoMedico(navController)
 }
