@@ -1,22 +1,14 @@
 package com.followme.data.historicomedico
 
-enum class Hospital() {
-    HospitalAmatoLusitano,
-    HospitalSousaMartins,
-    HospitaisUniversidadeCoimbra,
-    HospitalSantaMaria,
-    HospitalSaoJoao
+enum class Hospital(val displayName: String) {
+    HospitalAmatoLusitano("Hospital Amato Lusitano"),
+    HospitalSousaMartins("Hospital Sousa Martins"),
+    HospitaisUniversidadeCoimbra("Hospitais da Universidade de Coimbra"),
+    HospitalSantaMaria("Hospital de Santa Maria"),
+    HospitalSaoJoao("Hospital de São João")
 
 }
 
 fun getHospital(): List<Hospital> {
-    val listaHospital = mutableListOf<Hospital>()
-    listaHospital.add(Hospital.HospitalAmatoLusitano)
-    listaHospital.add(Hospital.HospitalSousaMartins)
-    listaHospital.add(Hospital.HospitaisUniversidadeCoimbra)
-    listaHospital.add(Hospital.HospitalSantaMaria)
-    listaHospital.add(Hospital.HospitalSaoJoao)
-
-    return listaHospital
-
+    return Hospital.entries
 }

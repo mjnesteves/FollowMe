@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.followme.screens.CriarConta
@@ -12,12 +13,20 @@ import com.followme.screens.Login
 import com.followme.screens.PoliticaPrivacidade
 import com.followme.screens.TermosCondicoes
 import androidx.navigation.compose.NavHost
+import androidx.navigation.navArgument
+import com.followme.data.dataBase.Utilizador
 import com.followme.data.historicomedico.consulta.ConsultaViewModel
 import com.followme.screens.AdicionarConsulta
 import com.followme.screens.AdicionarMedicamento
+import com.followme.screens.AdicionarUtilizador
+import com.followme.screens.EditarConsulta
+import com.followme.screens.EditarMedicamento
+import com.followme.screens.EditarUtilizador
 import com.followme.screens.HistoricoMedico
 import com.followme.screens.SinaisVitais
 import com.followme.screens.Medicacao
+import com.followme.screens.Utilizadores
+
 
 @Composable
 
@@ -27,7 +36,7 @@ fun Navegacao(){
     val navController = rememberNavController()
 
     //NavHost
-    NavHost(navController = navController, startDestination = "Home") {
+    NavHost(navController = navController, startDestination = "Utilizadores") {
         navigationGraph(navController=navController)
     }
 
@@ -46,8 +55,16 @@ fun NavGraphBuilder.navigationGraph(navController: NavController){
         CriarConta(navController)
     }
 
-    composable("Home"){
-        Home(navController)
+    composable(
+        route = "Home?idUtilizador={idUtilizador}",
+        arguments = listOf(
+            navArgument("idUtilizador") {
+                type = NavType.IntType
+                defaultValue = -1 // This makes it "optional"
+            }
+        )
+    ) {
+        Home(navController = navController)
     }
 
     composable("TermosCondicoes"){
@@ -62,8 +79,16 @@ fun NavGraphBuilder.navigationGraph(navController: NavController){
         SinaisVitais(navController)
     }
 
-    composable("HistoricoMedico") {
-        HistoricoMedico(navController)
+    composable(
+        route = "HistoricoMedico?idUtilizador={idUtilizador}",
+        arguments = listOf(
+            navArgument("idUtilizador") {
+                type = NavType.IntType
+                defaultValue = -1 // This makes it "optional"
+            }
+        )
+    ) {
+        HistoricoMedico(navController = navController)
     }
 
     composable("Medicacao") {
@@ -74,8 +99,62 @@ fun NavGraphBuilder.navigationGraph(navController: NavController){
         AdicionarMedicamento(navController)
     }
 
-    composable("AdicionarConsulta") {
-        AdicionarConsulta(navController)
+    composable(
+        route = "AdicionarConsulta?idUtilizador={idUtilizador}",
+        arguments = listOf(
+            navArgument("idUtilizador") {
+                type = NavType.IntType
+                defaultValue = -1 // This makes it "optional"
+            }
+        )
+    ) {
+        AdicionarConsulta(navController = navController)
+    }
+
+
+    composable(
+        "EditarConsulta/{idUtilizador}?consultaId={consultaId}",
+        arguments = listOf(
+            navArgument("idUtilizador") { type = NavType.IntType },
+            navArgument("consultaId") {
+                type = NavType.IntType
+                defaultValue = -1
+            }
+        )
+    ) {
+        EditarConsulta(navController)
+    }
+
+    composable(
+        route = "EditarMedicamento?medicamentoId={medicamentoId}",
+        arguments = listOf(
+            navArgument("medicamentoId") {
+                type = NavType.IntType
+                defaultValue = -1 // This makes it "optional"
+            }
+        )
+    ) {
+        EditarMedicamento(navController = navController)
+    }
+
+    composable("Utilizadores") {
+        Utilizadores(navController)
+    }
+
+    composable("AdicionarUtilizador") {
+        AdicionarUtilizador(navController)
+    }
+
+    composable(
+        route = "EditarUtilizador?idUtilizador={idUtilizador}",
+        arguments = listOf(
+            navArgument("idUtilizador") {
+                type = NavType.IntType
+                defaultValue = -1 // This makes it "optional"
+            }
+        )
+    ) {
+        EditarUtilizador(navController = navController)
     }
 
 

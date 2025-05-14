@@ -10,7 +10,7 @@ import androidx.room.RoomDatabase
  */
 @Database(
     entities = [Consulta::class, Medicamento::class, Utilizador::class, SinaisVitais::class],
-    version = 2,
+    version = 6,
     exportSchema = false
 )
 abstract class FollowMeDatabase : RoomDatabase() {
@@ -27,8 +27,9 @@ abstract class FollowMeDatabase : RoomDatabase() {
                     context.applicationContext,
                     FollowMeDatabase::class.java,
                     "FollowMe_Database"
+
                 )
-                    .fallbackToDestructiveMigration()
+                    .fallbackToDestructiveMigration(true)
                     .build()
                 Instance = instance
                 instance

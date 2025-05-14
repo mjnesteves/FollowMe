@@ -2,7 +2,7 @@ package com.followme.screens
 
 import android.util.Log
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Arrangement.spacedBy
+import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -18,63 +19,62 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType.Companion.PrimaryNotEditable
+
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.followme.AppViewModelProvider
 import com.followme.R
-import com.followme.data.historicomedico.Especialidade
-import com.followme.data.historicomedico.Hospital
-import com.followme.data.historicomedico.consulta.ConsultaViewModel
-import com.followme.data.historicomedico.getEspecialidade
-import com.followme.data.historicomedico.getHospital
-import com.followme.data.historicomedico.validarConsulta
-import com.followme.data.home.HomeViewModel
-import com.followme.data.medicacao.Data
-import com.followme.data.medicacao.Hora
+import com.followme.data.historicomedico.Data
+import com.followme.data.medicacao.getFrequencia
+import com.followme.data.medicacao.getTempoDia
+import com.followme.data.medicacao.medicamento.MedicamentoViewModel
+import com.followme.data.medicacao.validarMedicacao
 import kotlinx.coroutines.launch
 
+
 @Composable
-fun AdicionarConsulta(navController: NavController) {
+fun EditarMedicamento(navController: NavController) {
 
-    val tag = ConsultaViewModel::class.simpleName
+    val tag = MedicamentoViewModel::class.simpleName
 
-    val consultaViewModel: ConsultaViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    val medicamentoViewModel: MedicamentoViewModel =
+        viewModel(factory = AppViewModelProvider.Factory)
 
-    val homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    val medicamentoUiState by medicamentoViewModel.medicamentoUIStateFlow.collectAsState()
 
-    val utilizadorUIStateFlow by homeViewModel.utilizadorUIStateFlow.collectAsState()
+    var nomeMedicamento = medicamentoUiState.nomeMedicamento
 
-    val consultaUiState by consultaViewModel.consultaUIStateFlow.collectAsState()
+    var quantidade = medicamentoUiState.quantidade
 
-    var hospital by rememberSaveable { mutableStateOf(Hospital.HospitalAmatoLusitano.name) }
+    var frequencia = medicamentoUiState.frequencia
 
-    var especialidade by rememberSaveable { mutableStateOf(Especialidade.Anestesiologia.name) }
+    var dataFim = medicamentoUiState.dataFim
 
-    var horaConsulta by rememberSaveable { mutableStateOf("") }
-
-    var dataConsulta by rememberSaveable { mutableStateOf("") }
+    var quandoToma = medicamentoUiState.quandoToma
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -92,103 +92,116 @@ fun AdicionarConsulta(navController: NavController) {
         Spacer(modifier = Modifier.padding(25.dp))
 
         Text(
-            text = stringResource(id = R.string.adicionarConsulta),
+            text = stringResource(id = R.string.editarMedicamento),
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.displaySmall
-
         )
+
+        Spacer(modifier = Modifier.padding(8.dp))
 
         Text(
-            text = utilizadorUIStateFlow.nomeUtilizador,
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.displaySmall
-
+            text = stringResource(id = R.string.nomeMedicamento),
+            style = MaterialTheme.typography.bodyLarge
         )
 
 
-
-
-        Spacer(modifier = Modifier.padding(8.dp))
-
-        MenuHospital(
-            hospital = { hospital = it },
-            updateViewModel = {
-                consultaViewModel.onEvent(
-                    ConsultaViewModel.ConsultaUIEvent.HospitalChanged(
+        TextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = medicamentoUiState.nomeMedicamento,
+            onValueChange = {
+                nomeMedicamento = it
+                medicamentoViewModel.onEvent(
+                    MedicamentoViewModel.MedicamentoUIEvent.NomeMedicamentoChanged(
                         it
                     )
                 )
-
+            },
+            placeholder = {
+                Text(text = "ex: Benuron")
             },
         )
 
-
-
-        Spacer(modifier = Modifier.padding(8.dp))
-
-
-        MenuEspecialidade(
-            especialidade = { especialidade = it },
-            updateViewModel = {
-                consultaViewModel.onEvent(
-                    ConsultaViewModel.ConsultaUIEvent.EspecialidadeChanged(
-                        it
-                    )
-                )
-
-
-            },
-        )
-
-
-        Spacer(modifier = Modifier.padding(8.dp))
+        Spacer(modifier = Modifier.padding(4.dp))
 
         Row(
             horizontalArrangement = spacedBy(16.dp)
         ) {
 
             Column(
-                modifier = Modifier
-                    .weight(0.45f)
+                verticalArrangement = spacedBy(8.dp)
             ) {
-                Hora(
-                    contexto = stringResource(id = R.string.horaConsulta),
-                    hora = { horaConsulta = it },
-                    updateViewModel = {
-                        consultaViewModel.onEvent(
-                            ConsultaViewModel.ConsultaUIEvent.HoraConsultaChanged(
+                Text(
+                    text = stringResource(id = R.string.quantidade),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                TextField(
+                    modifier = Modifier
+                        .width(128.dp),
+                    value = medicamentoUiState.quantidade.toString(),
+                    onValueChange = {
+                        quantidade = it.toInt()
+                        medicamentoViewModel.onEvent(
+                            MedicamentoViewModel.MedicamentoUIEvent.QuantidadeChanged(
                                 it
                             )
                         )
                     },
-                    uiState = consultaUiState,
-                    viewModel = consultaViewModel
+                    //placeholder = { Text(text = "ex: 1") },
+                    keyboardOptions =
+                        KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
             }
-            Column(
-                modifier = Modifier
-                    .weight(0.60f)
-            ) {
+            MenuFrequenciasEditar(
+                frequencia = { frequencia = it },
+                updateViewModel = {
+                    medicamentoViewModel.onEvent(
+                        MedicamentoViewModel.MedicamentoUIEvent.FrequenciaChanged(
+                            it
+                        )
+                    )
+                },
+                medicamentoUiState = medicamentoUiState,
+                medicamentoViewModel = medicamentoViewModel,
 
-                Data(
-                    contexto = stringResource(id = R.string.dataConsulta),
-                    data = { dataConsulta = it },
-                    updateViewModel = {
-                        consultaViewModel.onEvent(
-                            ConsultaViewModel.ConsultaUIEvent.DataConsultaChanged(
-                                it
-                            )
-                        )
-                    },
-                    uiState = consultaUiState,
-                    viewModel = consultaViewModel
                 )
-            }
         }
 
+        Spacer(modifier = Modifier.padding(4.dp))
 
-        Spacer(modifier = Modifier.padding(100.dp))
 
+        Data(
+            contexto = stringResource(id = R.string.data_fim),
+            data = { dataFim = it },
+            updateViewModel = {
+                medicamentoViewModel.onEvent(
+                    MedicamentoViewModel.MedicamentoUIEvent.DataFimChanged(
+                        it
+                    )
+                )
+            },
+            uiState = medicamentoUiState,
+            viewModel = medicamentoViewModel
+
+        )
+
+
+        Spacer(modifier = Modifier.padding(4.dp))
+
+        MenuTempoDiaEditar(
+            quando = { quandoToma = it },
+            updateViewModel = {
+                medicamentoViewModel.onEvent(
+                    MedicamentoViewModel.MedicamentoUIEvent.QuandoTomaChanged(
+                        it
+                    )
+                )
+
+            },
+            medicamentoUiState = medicamentoUiState,
+            medicamentoViewModel = medicamentoViewModel
+        )
+
+        Spacer(modifier = Modifier.padding(8.dp))
 
         Row(
             modifier = Modifier
@@ -198,10 +211,11 @@ fun AdicionarConsulta(navController: NavController) {
         ) {
             Button(
                 modifier = Modifier
+
                     .height(56.dp)
                     .width(150.dp),
                 onClick = {
-                    navController.navigate("HistoricoMedico?idUtilizador=${consultaUiState.idUtilizador}")
+                    navController.navigate("Medicacao")
                 }
 
 
@@ -221,30 +235,27 @@ fun AdicionarConsulta(navController: NavController) {
                     .width(150.dp),
                 onClick = {
 
-
-                    Log.d(
-                        tag,
-                        " onValidate , $especialidade, $hospital, $horaConsulta, $dataConsulta"
-                    )
-
-                    val result = (validarConsulta(
-                        especialidade = especialidade,
-                        hospital = hospital,
-                        horaConsulta = horaConsulta,
-                        dataConsulta = dataConsulta
+                    val result = (validarMedicacao(
+                        nomeMedicamento = nomeMedicamento,
+                        quantidade = quantidade.toString(),
+                        frequencia = frequencia,
+                        dataFim = dataFim,
+                        quandoToma = quandoToma
                     ))
 
                     if (!result) {
                         showDialog = true
                     } else {
-                        Log.d(tag, " onValidate $especialidade, $hospital, $dataConsulta")
+                        Log.d(
+                            tag,
+                            " onValidate $nomeMedicamento, $quantidade, $frequencia, $dataFim, $quandoToma"
+                        )
                         coroutineScope.launch {
-                            consultaViewModel.insertConsulta()
-                            navController.navigate("HistoricoMedico?idUtilizador=${consultaUiState.idUtilizador}")
+                            medicamentoViewModel.updateMedicamento()
+                            navController.popBackStack()
                         }
 
                     }
-
                 },
                 shape = MaterialTheme.shapes.extraLarge
             ) {
@@ -273,34 +284,37 @@ fun AdicionarConsulta(navController: NavController) {
         navController.popBackStack()
     }
 
+
 }
 
 
 @Preview(showBackground = true)
 @Composable
-fun AdicionarConsultaPreview() {
+fun EditarMedicamentoPreview() {
     val navController = rememberNavController()
-    AdicionarConsulta(navController = navController)
+    EditarMedicamento(navController = navController)
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuHospital(
-    hospital: (String) -> Unit,
-    updateViewModel: (String) -> Unit
-) {
+fun MenuFrequenciasEditar(
+    frequencia: (String) -> Unit,
+    updateViewModel: (String) -> Unit,
+    medicamentoUiState: MedicamentoViewModel.MedicamentoUIState,
+    medicamentoViewModel: MedicamentoViewModel,
+
+    ) {
     Column(
         verticalArrangement = spacedBy(8.dp)
     ) {
         Text(
-            text = stringResource(id = R.string.hospital),
+            text = stringResource(id = R.string.frequencia),
             style = MaterialTheme.typography.bodyLarge
         )
 
-        val options = getHospital().map { it.displayName }
+        val options = getFrequencia().map { it.displayName }
         var expanded by rememberSaveable { mutableStateOf(false) }
-        var selectedOptionText by rememberSaveable { mutableStateOf("") }
+        var selectedOptionText = medicamentoUiState.frequencia
 
         ExposedDropdownMenuBox(
             expanded = expanded,
@@ -308,13 +322,16 @@ fun MenuHospital(
         ) {
             TextField(
                 modifier = Modifier
-                    .fillMaxWidth()
                     .menuAnchor(PrimaryNotEditable, true),
-                placeholder = { Text("Selecione o Hospital") },
                 readOnly = true,
+                //placeholder = { Text("Selecione a Frequência") },
                 value = selectedOptionText,
                 onValueChange = {
-                    selectedOptionText = it
+                    medicamentoViewModel.onEvent(
+                        MedicamentoViewModel.MedicamentoUIEvent.FrequenciaChanged(
+                            it
+                        )
+                    )
                 },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 colors = ExposedDropdownMenuDefaults.textFieldColors(),
@@ -328,7 +345,7 @@ fun MenuHospital(
                         text = { Text(selectionOption) },
                         onClick = {
                             selectedOptionText = selectionOption
-                            hospital(selectionOption)
+                            frequencia(selectionOption)
                             updateViewModel(selectionOption)
                             expanded = false
                         }
@@ -339,24 +356,25 @@ fun MenuHospital(
     }
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuEspecialidade(
-    especialidade: (String) -> Unit,
-    updateViewModel: (String) -> Unit
+fun MenuTempoDiaEditar(
+    quando: (String) -> Unit,
+    updateViewModel: (String) -> Unit,
+    medicamentoUiState: MedicamentoViewModel.MedicamentoUIState,
+    medicamentoViewModel: MedicamentoViewModel
 ) {
     Column(
         verticalArrangement = spacedBy(8.dp)
     ) {
         Text(
-            text = stringResource(id = R.string.especialidade),
+            text = stringResource(id = R.string.TempoDia),
             style = MaterialTheme.typography.bodyLarge
         )
 
-        val options = getEspecialidade().map { it.displayName }
-        var expanded by rememberSaveable { mutableStateOf(false) }
-        var selectedOptionText by rememberSaveable { mutableStateOf("") }
+        val options = getTempoDia().map { it.displayName }
+        var expanded by remember { mutableStateOf(false) }
+        var selectedOptionText = medicamentoUiState.quandoToma
 
         ExposedDropdownMenuBox(
             expanded = expanded,
@@ -366,10 +384,14 @@ fun MenuEspecialidade(
                 modifier = Modifier
                     .fillMaxWidth()
                     .menuAnchor(PrimaryNotEditable, true),
-                placeholder = { Text("Selecione a Especialidade") },
                 readOnly = true,
                 value = selectedOptionText,
                 onValueChange = {
+                    medicamentoViewModel.onEvent(
+                        MedicamentoViewModel.MedicamentoUIEvent.QuandoTomaChanged(
+                            it
+                        )
+                    )
 
                 },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
@@ -384,7 +406,7 @@ fun MenuEspecialidade(
                         text = { Text(selectionOption) },
                         onClick = {
                             selectedOptionText = selectionOption
-                            especialidade(selectionOption)
+                            quando(selectionOption)
                             updateViewModel(selectionOption)
                             expanded = false
                         }
@@ -394,4 +416,3 @@ fun MenuEspecialidade(
         }
     }
 }
-

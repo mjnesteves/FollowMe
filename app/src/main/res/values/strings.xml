@@ -57,6 +57,14 @@
     <string name="no_item_description">Sem Consultas</string>
     <string name="show_less">Mostrar menos</string>
     <string name="show_more">Mostrar mais</string>
+    <string name="horaConsulta">"Hora "</string>
+    <string name="editarConsulta">Editar Consulta</string>
+    <string name="semMedicacao">Sem Medicação</string>
+    <string name="editarMedicamento">Editar Medicamento</string>
+    <string name="semUtilizadores">Sem Utilizadores</string>
+    <string name="adicionarUtilizador">Adicionar Utilizador</string>
+    <string name="nomeUtilizador">Nome de Utilizador</string>
+    <string name="utilizadores">Perfil</string>
 
 
 </resources>

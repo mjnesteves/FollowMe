@@ -1,18 +1,12 @@
 package com.followme.data.medicacao
 
-enum class TempoDia {
-    PequenoAlmoco,
-    Almoco,
-    Lanche,
-    Jantar
+enum class TempoDia(val displayName: String) {
+    PequenoAlmoco("Pequeno Almoço"),
+    Almoco("Almoço"),
+    Lanche("Lanche"),
+    Jantar("Jantar")
 }
 
 fun getTempoDia(): List<TempoDia> {
-    val listaTempoDia = mutableListOf<TempoDia>()
-    listaTempoDia.add(TempoDia.PequenoAlmoco)
-    listaTempoDia.add(TempoDia.Almoco)
-    listaTempoDia.add(TempoDia.Lanche)
-    listaTempoDia.add(TempoDia.Jantar)
-
-    return listaTempoDia
+    return TempoDia.entries
 }

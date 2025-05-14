@@ -1,16 +1,11 @@
 package com.followme.data.medicacao
 
-enum class Frequencia {
-    Diario,
-    Semanal,
-    Mensal
+enum class Frequencia(val displayName: String) {
+    Diario("Frequência Diária"),
+    Semanal("Frequência Semanal"),
+    Mensal("Frequencia Mensal")
 }
 
 fun getFrequencia(): List<Frequencia> {
-    val listaFrequencia = mutableListOf<Frequencia>()
-    listaFrequencia.add(Frequencia.Diario)
-    listaFrequencia.add(Frequencia.Semanal)
-    listaFrequencia.add(Frequencia.Mensal)
-
-    return listaFrequencia
+    return Frequencia.entries
 }

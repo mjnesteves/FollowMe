@@ -1,8 +1,8 @@
 package com.followme
 
 import android.app.Application
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
@@ -10,56 +10,70 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.followme.data.historicomedico.HistoricoMedicoViewModel
 import com.followme.data.historicomedico.consulta.ConsultaViewModel
 import com.followme.data.medicacao.MedicacaoViewModel
+import com.followme.data.medicacao.medicamento.MedicamentoViewModel
+import com.followme.data.utilizadores.UtilizadorViewModel
+import com.followme.data.utilizadores.UtilizadoresViewModel
+import com.followme.data.home.HomeViewModel
 
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
 
-        /*
-        // Initializer for ItemEditViewModel
         initializer {
-            ItemEditViewModel(
-                this.createSavedStateHandle()
-            )
-        }
-        // Initializer for ItemEntryViewModel
-        initializer {
-            ItemEntryViewModel(inventoryApplication().container.itemsRepository)
-        }
-
-        // Initializer for ItemDetailsViewModel
-        initializer {
-            ItemDetailsViewModel(
-                this.createSavedStateHandle()
-            )
+            val application = inventoryApplication()
+            val repository = application.container.dataBaseRepository
+            val savedStateHandle = createSavedStateHandle()
+            HomeViewModel(savedStateHandle, repository)
         }
 
 
-         */
 
-
-        // Initializer for HomeViewModel
         initializer {
-            HistoricoMedicoViewModel(inventoryApplication().container.dataBaseRepository)
+            val application = inventoryApplication()
+            val repository = application.container.dataBaseRepository
+            val savedStateHandle = createSavedStateHandle()
+            HistoricoMedicoViewModel(repository, savedStateHandle)
+        }
+
+        initializer {
+            MedicacaoViewModel(inventoryApplication().container.dataBaseRepository)
+        }
+
+        initializer {
+            val application = inventoryApplication()
+            val repository = application.container.dataBaseRepository
+            val savedStateHandle = createSavedStateHandle()
+            ConsultaViewModel(savedStateHandle, repository)
+
+        }
+
+
+        initializer {
+            val application = inventoryApplication()
+            val repository = application.container.dataBaseRepository
+            val savedStateHandle = createSavedStateHandle()
+            MedicamentoViewModel(savedStateHandle, repository)
+
+        }
+
+
+        initializer {
+            UtilizadoresViewModel(inventoryApplication().container.dataBaseRepository)
 
         }
 
         initializer {
             val application = inventoryApplication()
             val repository = application.container.dataBaseRepository
-            ConsultaViewModel(repository)
-
-        }
-
-
-        initializer {
-            MedicacaoViewModel(inventoryApplication().container.dataBaseRepository)
+            val savedStateHandle = createSavedStateHandle()
+            UtilizadorViewModel(savedStateHandle, repository)
 
         }
 
 
     }
 }
+
 
 /**
  * Extension function to queries for [Application] object and returns an instance of

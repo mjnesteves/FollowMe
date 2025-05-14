@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,7 +19,9 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -29,14 +32,25 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Help
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallFloatingActionButton
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
@@ -62,7 +76,7 @@ import com.followme.ui.theme.AccentColor
 import com.followme.ui.theme.Primary
 import com.followme.ui.theme.Secondary
 import com.followme.ui.theme.WhiteColor
-
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -118,10 +132,10 @@ fun AppToolbar(
 
 
 @Composable
-fun BotaoAdicionar(onClick: () -> Unit) {
+fun BotaoAdicionar(navegar: () -> Unit) {
     FloatingActionButton(
         containerColor = Primary,
-        onClick = { onClick() },
+        onClick = { navegar() },
     ) {
         Icon(Icons.Filled.Add, "Floating action button.")
     }
@@ -129,7 +143,7 @@ fun BotaoAdicionar(onClick: () -> Unit) {
 
 
 @Composable
-fun CenteredBottomAppBar(navController: NavController) {
+fun CenteredBottomAppBar(navegar: () -> Unit) {
     BottomAppBar(
         modifier = Modifier
             .padding(bottom = 60.dp),
@@ -142,18 +156,18 @@ fun CenteredBottomAppBar(navController: NavController) {
             contentAlignment = Center
 
         ) {
-            CenteredNavigationFab(navController)
+            CenteredNavigationFab(navegar)
         }
 
     }
 }
 
 @Composable
-fun CenteredNavigationFab(navController: NavController) {
+fun CenteredNavigationFab(navegar: () -> Unit) {
     FloatingActionButton(
         containerColor = Primary,
         onClick = {
-            navController.navigate("Home")
+            navegar()
         },
     ) {
         Icon(
@@ -211,12 +225,6 @@ fun BotaoAplicacoes(
 
 
 
-
-
-
-
-
-
 @Composable
 fun NavigationDrawerHeader(value: String?) {
     Box(
@@ -231,8 +239,6 @@ fun NavigationDrawerHeader(value: String?) {
             .height(150.dp)
             .wrapContentHeight()
             .wrapContentSize(Center)
-
-
     ) {
 
         NavigationDrawerText(
@@ -245,8 +251,9 @@ fun NavigationDrawerHeader(value: String?) {
 @Composable
 fun NavigationDrawerBody(navigationDrawerItems: List<NavigationItem>,
                          onNavigationItemClicked:(NavigationItem) -> Unit) {
-    LazyColumn(modifier = Modifier.fillMaxWidth()) {
-
+    LazyColumn(
+        modifier = Modifier.fillMaxWidth()
+    ) {
         items(navigationDrawerItems) {
             NavigationItemRow(item = it,onNavigationItemClicked)
         }
@@ -257,8 +264,6 @@ fun NavigationDrawerBody(navigationDrawerItems: List<NavigationItem>,
 @Composable
 fun NavigationItemRow(item: NavigationItem,
                       onNavigationItemClicked:(NavigationItem) -> Unit) {
-
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -302,16 +307,6 @@ fun NavigationDrawerText(title: String, textUnit: TextUnit, color: Color) {
 }
 
 
-@Composable
-fun SmallExample(onClick: () -> Unit) {
-    SmallFloatingActionButton(
-        onClick = { onClick() },
-        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-        contentColor = MaterialTheme.colorScheme.secondary
-    ) {
-        Icon(Icons.Filled.Add, "Small floating action button.")
-    }
-}
 
 
 

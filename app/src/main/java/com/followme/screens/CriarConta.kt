@@ -27,7 +27,8 @@ import com.followme.componentes.BotaoLogin
 import com.followme.componentes.CheckBoxTermosCondicoes
 
 import com.followme.componentes.IntroduzirPassoword
-import com.followme.componentes.IntroduzirTexto
+import com.followme.componentes.IntroduzirTextoEmail
+import com.followme.componentes.IntroduzirTextoNormal
 import com.followme.componentes.Linha_Divisora
 import com.followme.componentes.Login_criarConta_hiperligacao
 
@@ -62,7 +63,7 @@ fun CriarConta(navController: NavController, criarContaViewModel: CriarContaView
             TextoCentrado(value = stringResource(id = R.string.saudacao))
             TextoCentradoBold(value = stringResource(id = R.string.criar_conta))
             Spacer(modifier = Modifier.height(20.dp))
-            IntroduzirTexto(
+            IntroduzirTextoNormal(
                 labelValue= stringResource(id=R.string.nome),
                 painterResource = painterResource(id=R.drawable.perfil),
                 textValue = criarContaViewModel.criarContaUIState.value.nome,
@@ -73,7 +74,7 @@ fun CriarConta(navController: NavController, criarContaViewModel: CriarContaView
                 errorStatus = criarContaViewModel.criarContaUIState.value.erroNome
             )
 
-            IntroduzirTexto(
+            IntroduzirTextoNormal(
                 labelValue = stringResource(id=R.string.apelido),
                 painterResource = painterResource(id= R.drawable.perfil),
                 textValue = criarContaViewModel.criarContaUIState.value.apelido,
@@ -86,7 +87,7 @@ fun CriarConta(navController: NavController, criarContaViewModel: CriarContaView
                 },
                 errorStatus = criarContaViewModel.criarContaUIState.value.erroApelido
             )
-            IntroduzirTexto(
+            IntroduzirTextoEmail(
                 labelValue= stringResource(id=R.string.email),
                 painterResource = painterResource(id= R.drawable.email),
                 textValue = criarContaViewModel.criarContaUIState.value.email,

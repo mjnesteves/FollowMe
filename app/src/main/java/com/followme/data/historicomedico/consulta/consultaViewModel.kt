@@ -2,43 +2,99 @@ package com.followme.data.historicomedico.consulta
 
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.followme.data.criarconta.CriarContaViewModel.CriarContaUIState
+import androidx.lifecycle.viewModelScope
 import com.followme.data.dataBase.Consulta
 
 import com.followme.data.dataBase.DataBaseRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 
-class ConsultaViewModel(private val dataBaseRepository: DataBaseRepository) : ViewModel() {
+class ConsultaViewModel(
+    savedStateHandle: SavedStateHandle,
+    private val dataBaseRepository: DataBaseRepository
+) : ViewModel() {
 
-    private val tag = ConsultaViewModel::class.simpleName
+    private val idUtilizador = savedStateHandle.get<Int>("idUtilizador")
+
+    private val idConsulta = savedStateHandle.get<Int>("consultaId")
+    private val consultaUIState = MutableStateFlow(ConsultaUIState())
+    val consultaUIStateFlow: StateFlow<ConsultaUIState> = consultaUIState
+
+    val tag = ConsultaViewModel::class.simpleName
+
+
+    init {
+        if (idConsulta != null && idConsulta != -1) {
+            // Edit existing consulta
+            viewModelScope.launch {
+                dataBaseRepository.getConsultaStream(idConsulta).collect { consulta ->
+                    consulta?.let {
+                        consultaUIState.value = it.toConsultaUIState()
+                    }
+                }
+            }
+        } else {
+            // New consulta — manually set idUtilizador from SavedStateHandle
+            consultaUIState.value = idUtilizador?.let {
+                consultaUIState.value.copy(
+                    idUtilizador = it
+                )
+            }!!
+
+        }
+    }
+
+
+    private fun Consulta.toConsultaUIState(): ConsultaUIState = ConsultaUIState(
+        idConsulta = idConsulta,
+        idUtilizador = idUtilizador,
+        especialidade = especialidade,
+        hospital = hospital,
+        horaConsulta = horaConsulta,
+        dataConsulta = dataConsulta
+    )
+
 
     data class ConsultaUIState(
-        val idConsulta: Int = 0,
-        val idUtilizador: Int = 0,
+        var idConsulta: Int = 0,
+        var idUtilizador: Int = 0,
         val especialidade: String = "",
         val hospital: String = "",
+        val horaConsulta: String = "",
         val dataConsulta: String = "",
     )
 
     sealed class ConsultaUIEvent {
 
+        data class IdConsultaChanged(val idConsulta: Int) : ConsultaUIEvent()
         data class UtilizadorChanged(val idUtilizador: Int) : ConsultaUIEvent()
         data class EspecialidadeChanged(val especialidade: String) : ConsultaUIEvent()
         data class HospitalChanged(val hospital: String) : ConsultaUIEvent()
+        data class HoraConsultaChanged(val horaConsulta: String) : ConsultaUIEvent()
         data class DataConsultaChanged(val dataConsulta: String) : ConsultaUIEvent()
 
     }
 
 
-    private var consultaUIState = mutableStateOf(ConsultaUIState())
+
 
 
     fun onEvent(event: ConsultaUIEvent) {
 
         when (event) {
+
+            is ConsultaUIEvent.IdConsultaChanged -> {
+                consultaUIState.value = consultaUIState.value.copy(
+                    idConsulta = event.idConsulta
+                )
+            }
             is ConsultaUIEvent.UtilizadorChanged -> {
+                //val parsed = event.idUtilizador.toIntOrNull() ?: 0
                 consultaUIState.value = consultaUIState.value.copy(
                     idUtilizador = event.idUtilizador
                 )
@@ -58,6 +114,12 @@ class ConsultaViewModel(private val dataBaseRepository: DataBaseRepository) : Vi
                 )
                 printState()
             }
+            is ConsultaUIEvent.HoraConsultaChanged -> {
+                consultaUIState.value = consultaUIState.value.copy(
+                    horaConsulta = event.horaConsulta
+                )
+                printState()
+            }
 
             is ConsultaUIEvent.DataConsultaChanged -> {
                 consultaUIState.value = consultaUIState.value.copy(
@@ -66,8 +128,6 @@ class ConsultaViewModel(private val dataBaseRepository: DataBaseRepository) : Vi
                 printState()
             }
         }
-
-
     }
 
 
@@ -82,13 +142,20 @@ class ConsultaViewModel(private val dataBaseRepository: DataBaseRepository) : Vi
         idUtilizador = idUtilizador,
         especialidade = especialidade,
         hospital = hospital,
-        dataConsulta = dataConsulta,
+        horaConsulta = horaConsulta,
+        dataConsulta = dataConsulta
     )
 
 
-    suspend fun saveItem() {
+    suspend fun insertConsulta() {
         dataBaseRepository.insertConsulta(consultaUIState.value.toConsulta())
     }
+
+    suspend fun updateConsulta() {
+        dataBaseRepository.updateConsulta(consultaUIState.value.toConsulta())
+    }
+
+
 }
 
 

@@ -1,5 +1,6 @@
 package com.followme.screens
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -10,7 +11,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,7 +37,7 @@ import com.followme.componentes.Alerta_Erro_Login
 import com.followme.componentes.BotaoLogin
 import com.followme.componentes.Hiperligacao_Sublinhado
 import com.followme.componentes.IntroduzirPassoword
-import com.followme.componentes.IntroduzirTexto
+import com.followme.componentes.IntroduzirTextoEmail
 import com.followme.componentes.Linha_Divisora
 import com.followme.componentes.Login_criarConta_hiperligacao
 import com.followme.componentes.TextoCentrado
@@ -37,10 +47,14 @@ import com.followme.data.login.LoginViewModel
 
 
 
-
 @Composable
 
 fun Login(navController: NavController, loginViewModel: LoginViewModel = viewModel()) {
+
+    var showDialog by remember { mutableStateOf(false) }
+
+    val loginInProgress by loginViewModel.loginInProgress
+
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -66,7 +80,7 @@ fun Login(navController: NavController, loginViewModel: LoginViewModel = viewMod
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                IntroduzirTexto(
+                IntroduzirTextoEmail(
                     labelValue = stringResource(id = R.string.email),
                     textValue = loginViewModel.loginUIState.value.email,
                     painterResource(id = R.drawable.email),
@@ -110,7 +124,7 @@ fun Login(navController: NavController, loginViewModel: LoginViewModel = viewMod
             }
         }
 
-        if (loginViewModel.loginInProgress.value) {
+        if (loginInProgress) {
             CircularProgressIndicator()
         }
 

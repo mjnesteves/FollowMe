@@ -5,6 +5,9 @@ import kotlinx.coroutines.flow.Flow
 class OfflineRepository(private val dataBaseDao: DataBaseDao) : DataBaseRepository {
     override fun getAllConsultasStream(): Flow<List<Consulta>> = dataBaseDao.getAllConsultas()
 
+    override fun getAllConsultasUser(id: Int): Flow<List<Consulta?>> =
+        dataBaseDao.getAllConsultasUser(id)
+
     override fun getConsultaStream(id: Int): Flow<Consulta?> = dataBaseDao.getConsulta(id)
 
     override suspend fun insertConsulta(consulta: Consulta) = dataBaseDao.insert(consulta)
@@ -41,7 +44,8 @@ class OfflineRepository(private val dataBaseDao: DataBaseDao) : DataBaseReposito
     override suspend fun updateSinaisVitais(sinaisVitais: SinaisVitais) =
         dataBaseDao.update(sinaisVitais)
 
-    override fun getAllUtilizadorStream(): Flow<List<Utilizador>> = dataBaseDao.getAllUtilizadores()
+    override fun getAllUtilizadoresStream(): Flow<List<Utilizador?>> =
+        dataBaseDao.getAllUtilizadores()
 
     override fun getUtilizadorStream(id: Int): Flow<Utilizador?> = dataBaseDao.getUtilizador(id)
 

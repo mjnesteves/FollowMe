@@ -1,7 +1,9 @@
 package com.followme.data.medicacao
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+
 
 import com.followme.data.dataBase.DataBaseRepository
 import com.followme.data.dataBase.Medicamento
@@ -11,7 +13,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 
-class MedicacaoViewModel(dataBaseRepository: DataBaseRepository) : ViewModel() {
+class MedicacaoViewModel(
+    private val dataBaseRepository: DataBaseRepository
+) : ViewModel() {
 
     val medicacaoUiState: StateFlow<MedicacaoUiState> =
         dataBaseRepository.getAllMedicamentosStream().map { MedicacaoUiState(it) }
@@ -23,6 +27,10 @@ class MedicacaoViewModel(dataBaseRepository: DataBaseRepository) : ViewModel() {
 
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
+    }
+
+    suspend fun apagarMedicamento(item: Medicamento) {
+        dataBaseRepository.deleteMedicamento(item)
     }
 
 }

@@ -1,6 +1,7 @@
 package com.followme.screens
 
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.layout.padding
@@ -17,16 +18,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType.Companion.PrimaryNotEditable
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -38,26 +45,41 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.followme.AppViewModelProvider
 import com.followme.R
-import com.followme.data.dataBase.Medicamento
-import com.followme.data.historicomedico.HistoricoMedicoViewModel
-import com.followme.data.historicomedico.consulta.ConsultaViewModel
-import com.followme.data.medicacao.Data
+import com.followme.data.historicomedico.Data
 import com.followme.data.medicacao.Frequencia
-import com.followme.data.medicacao.MedicacaoViewModel
-import com.followme.data.medicacao.MenuFrequencias
-import com.followme.data.medicacao.MenuTempoDia
 import com.followme.data.medicacao.TempoDia
+import com.followme.data.medicacao.getFrequencia
+import com.followme.data.medicacao.getTempoDia
+import com.followme.data.medicacao.medicamento.MedicamentoViewModel
 import com.followme.data.medicacao.validarMedicacao
+import kotlinx.coroutines.launch
 
-import java.util.Date
+
 
 @Composable
 fun AdicionarMedicamento(navController: NavController) {
-    val medicamentoViewModel: ConsultaViewModel = viewModel(factory = AppViewModelProvider.Factory)
 
-    var quantidade by rememberSaveable { mutableStateOf("1") }
+    val tag = MedicamentoViewModel::class.simpleName
+
+    val medicamentoViewModel: MedicamentoViewModel =
+        viewModel(factory = AppViewModelProvider.Factory)
+
+    val medicamentoUiState by medicamentoViewModel.medicamentoUIStateFlow.collectAsState()
+
     var nomeMedicamento by rememberSaveable { mutableStateOf("") }
+
+    var quantidade by rememberSaveable { mutableStateOf("") }
+
     var frequencia by rememberSaveable { mutableStateOf(Frequencia.Diario.name) }
+
+    var dataFim by rememberSaveable { mutableStateOf("") }
+
+    var quandoToma by rememberSaveable { mutableStateOf(TempoDia.PequenoAlmoco.name) }
+
+    val coroutineScope = rememberCoroutineScope()
+
+    var showDialog by remember { mutableStateOf(false) }
+
 
     Column(
         modifier = Modifier
@@ -70,6 +92,7 @@ fun AdicionarMedicamento(navController: NavController) {
         Spacer(modifier = Modifier.padding(25.dp))
 
         Text(
+
             text = stringResource(id = R.string.adicionarMedicamento),
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.displaySmall
@@ -82,25 +105,30 @@ fun AdicionarMedicamento(navController: NavController) {
             style = MaterialTheme.typography.bodyLarge
         )
 
-
         TextField(
             modifier = Modifier.fillMaxWidth(),
-            value = nomeMedicamento,
+            value = medicamentoUiState.nomeMedicamento,
             onValueChange = {
                 nomeMedicamento = it
+                medicamentoViewModel.onEvent(
+                    MedicamentoViewModel.MedicamentoUIEvent.NomeMedicamentoChanged(
+                        it
+                    )
+                )
             },
             placeholder = {
                 Text(text = "ex: Benuron")
             },
+            singleLine = true,
+            maxLines = 1,
+
         )
 
         Spacer(modifier = Modifier.padding(4.dp))
 
-        var quantidadeMaxima by rememberSaveable { mutableStateOf(false) }
         Row(
             horizontalArrangement = spacedBy(16.dp)
         ) {
-            val maxDose = 5
 
             Column(
                 verticalArrangement = spacedBy(8.dp)
@@ -112,61 +140,65 @@ fun AdicionarMedicamento(navController: NavController) {
                 TextField(
                     modifier = Modifier
                         .width(128.dp),
+                    placeholder = { Text(text = "ex: 1") },
                     value = quantidade,
                     onValueChange = {
-                        if (it.length < maxDose) {
-                            quantidadeMaxima = false
-                            quantidade = it
-                        } else {
-                            quantidadeMaxima = true
-                        }
+                        quantidade = it
+                        medicamentoViewModel.onEvent(
+                            MedicamentoViewModel.MedicamentoUIEvent.QuantidadeChanged(it)
+                        )
                     },
-                    trailingIcon = {
-                        if (quantidadeMaxima) {
-                            Icon(
-                                imageVector = Icons.Filled.Info,
-                                contentDescription = "Error",
-                                tint = MaterialTheme.colorScheme.error
-                            )
-                        }
-                    },
-                    placeholder = { Text(text = "e.g. 1") },
-                    isError = quantidadeMaxima,
-                    keyboardOptions =
-                        KeyboardOptions(keyboardType = KeyboardType.Number)
+
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    singleLine = true,
+                    maxLines = 1,
                 )
             }
-            MenuFrequencias { frequencia = it }
-        }
+            MenuFrequencias(
+                frequencia = { frequencia = it },
+                updateViewModel = {
+                    medicamentoViewModel.onEvent(
+                        MedicamentoViewModel.MedicamentoUIEvent.FrequenciaChanged(
+                            it
+                        )
+                    )
+                },
 
-        if (quantidadeMaxima) {
-            Text(
-                text = "You cannot have more than 99 dosage per day.",
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall,
             )
         }
-
-
-        var dataFim by rememberSaveable { mutableLongStateOf(Date().time) }
 
         Spacer(modifier = Modifier.padding(4.dp))
 
 
-
         Data(
             contexto = stringResource(id = R.string.data_fim),
-            endDate = { dataFim = it },
-            updateViewModel = {}
+            data = { dataFim = it },
+            updateViewModel = {
+                medicamentoViewModel.onEvent(
+                    MedicamentoViewModel.MedicamentoUIEvent.DataFimChanged(
+                        it
+                    )
+                )
+            },
+            uiState = medicamentoUiState,
+            viewModel = medicamentoViewModel
 
         )
 
 
         Spacer(modifier = Modifier.padding(4.dp))
 
-        var quandoToma by rememberSaveable { mutableStateOf(TempoDia.PequenoAlmoco.name) }
+        MenuTempoDia(
+            quando = { quandoToma = it },
+            updateViewModel = {
+                medicamentoViewModel.onEvent(
+                    MedicamentoViewModel.MedicamentoUIEvent.QuandoTomaChanged(
+                        it
+                    )
+                )
 
-        MenuTempoDia { quandoToma = it }
+            },
+        )
 
         Spacer(modifier = Modifier.padding(8.dp))
 
@@ -201,34 +233,35 @@ fun AdicionarMedicamento(navController: NavController) {
                     .height(56.dp)
                     .width(150.dp),
                 onClick = {
-                    validarMedicacao(
-                        nomeMedicamento = nomeMedicamento,
-                        quantidade = quantidade.toIntOrNull() ?: 0,
-                        //quando = quando,
-                        dataFim = dataFim,
-                        onInvalidate = {
-                            /*
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.value_is_empty, context.getString(it)),
-                            Toast.LENGTH_LONG
-                        ).show()
 
-                         */
-                        },
-                        onValidate = {
-                            /*
+                    val result = (validarMedicacao(
+                        nomeMedicamento = medicamentoUiState.nomeMedicamento,
+                        quantidade = medicamentoUiState.quantidade.toString(),
+                        frequencia = medicamentoUiState.frequencia,
+                        dataFim = medicamentoUiState.dataFim,
+                        quandoToma = medicamentoUiState.quandoToma
+                    ))
 
-                        // TODO: Navigate to next screen / Store medication info
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.success),
-                            Toast.LENGTH_LONG
-                        ).show()
-
-                         */
-                        }
+                    Log.d(
+                        tag,
+                        "VALORES{$nomeMedicamento, $quantidade, $frequencia, $dataFim, $quandoToma }"
                     )
+
+                    if (!result) {
+                        showDialog = true
+                    } else {
+                        Log.d(
+                            tag,
+                            " onValidate $nomeMedicamento, $quantidade, $frequencia, $dataFim, $quandoToma"
+                        )
+                        coroutineScope.launch {
+                            medicamentoViewModel.insertMedicamento()
+                            navController.popBackStack()
+                        }
+
+                    }
+
+
                 },
                 shape = MaterialTheme.shapes.extraLarge
             ) {
@@ -238,6 +271,18 @@ fun AdicionarMedicamento(navController: NavController) {
                 )
             }
 
+        }
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = { showDialog = false },
+                confirmButton = {
+                    TextButton(onClick = { showDialog = false }) {
+                        Text("OK")
+                    }
+                },
+                title = { Text("Validar Informação") },
+                text = { Text("Existem campos sem valor") }
+            )
         }
     }
 
@@ -254,4 +299,114 @@ fun AdicionarMedicamento(navController: NavController) {
 fun AdicionarMedicamentoPreview() {
     val navController = rememberNavController()
     AdicionarMedicamento(navController = navController)
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MenuFrequencias(
+    frequencia: (String) -> Unit,
+    updateViewModel: (String) -> Unit,
+
+    ) {
+    Column(
+        verticalArrangement = spacedBy(8.dp)
+    ) {
+        Text(
+            text = stringResource(id = R.string.frequencia),
+            style = MaterialTheme.typography.bodyLarge
+        )
+
+        val options = getFrequencia().map { it.displayName }
+        var expanded by rememberSaveable { mutableStateOf(false) }
+        var selectedOptionText by rememberSaveable { mutableStateOf("") }
+
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded },
+        ) {
+            TextField(
+                modifier = Modifier
+                    .menuAnchor(PrimaryNotEditable, true),
+                readOnly = true,
+                placeholder = { Text("Frequência") },
+                value = selectedOptionText,
+                onValueChange = {},
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                colors = ExposedDropdownMenuDefaults.textFieldColors(),
+            )
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+            ) {
+                options.forEach { selectionOption ->
+                    DropdownMenuItem(
+                        text = { Text(selectionOption) },
+                        onClick = {
+                            selectedOptionText = selectionOption
+                            frequencia(selectionOption)
+                            updateViewModel(selectionOption)
+                            expanded = false
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MenuTempoDia(
+    quando: (String) -> Unit,
+    updateViewModel: (String) -> Unit,
+
+    ) {
+    Column(
+        verticalArrangement = spacedBy(8.dp)
+    ) {
+        Text(
+            text = stringResource(id = R.string.TempoDia),
+            style = MaterialTheme.typography.bodyLarge
+        )
+
+        val options = getTempoDia().map { it.displayName }
+        var expanded by rememberSaveable { mutableStateOf(false) }
+        var selectedOptionText by rememberSaveable { mutableStateOf("") }
+
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded },
+        ) {
+            TextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .menuAnchor(PrimaryNotEditable, true),
+                readOnly = true,
+                placeholder = { Text("Quando toma") },
+                value = selectedOptionText,
+                onValueChange = {
+                    selectedOptionText = it
+                },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                colors = ExposedDropdownMenuDefaults.textFieldColors(),
+            )
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+            ) {
+                options.forEach { selectionOption ->
+                    DropdownMenuItem(
+                        text = { Text(selectionOption) },
+                        onClick = {
+                            selectedOptionText = selectionOption
+                            quando(selectionOption)
+                            updateViewModel(selectionOption)
+                            expanded = false
+                        }
+                    )
+                }
+            }
+        }
+    }
 }

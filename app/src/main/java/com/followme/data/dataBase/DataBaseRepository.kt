@@ -16,6 +16,8 @@ interface DataBaseRepository {
      */
     fun getConsultaStream(id: Int): Flow<Consulta?>
 
+    fun getAllConsultasUser(id: Int): Flow<List<Consulta?>>
+
     /**
      * Insert consulta in the data source
      */
@@ -24,6 +26,8 @@ interface DataBaseRepository {
     /**
      * Delete consulta from the data source
      */
+
+
     suspend fun deleteConsulta(consulta: Consulta)
 
     /**
@@ -85,7 +89,7 @@ interface DataBaseRepository {
     /**
      * Retrieve all the Utilizador from the the given data source.
      */
-    fun getAllUtilizadorStream(): Flow<List<Utilizador>>
+    fun getAllUtilizadoresStream(): Flow<List<Utilizador?>>
 
     /**
      * Retrieve an Utilizador from the given data source that matches with the [id].

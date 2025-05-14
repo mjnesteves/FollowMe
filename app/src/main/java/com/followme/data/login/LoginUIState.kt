@@ -9,7 +9,6 @@ data class LoginUIState(
     var email : String = "",
     var password : String = "",
 
-
     var erroEmail : Boolean = false,
     var erroPassword : Boolean = false
 

@@ -11,6 +11,7 @@ data class Consulta(
     val idUtilizador: Int,
     val especialidade: String,
     val hospital: String,
+    val horaConsulta: String,
     val dataConsulta: String,
 
     )

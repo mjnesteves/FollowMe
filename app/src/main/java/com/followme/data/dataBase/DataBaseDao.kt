@@ -25,9 +25,12 @@ interface DataBaseDao {
     @Query("SELECT * from Consulta WHERE idConsulta = :id")
     fun getConsulta(id: Int): Flow<Consulta>
 
+
     @Query("SELECT * from Consulta ORDER BY idConsulta ASC")
     fun getAllConsultas(): Flow<List<Consulta>>
 
+    @Query("SELECT * from Consulta WHERE idUtilizador = :id")
+    fun getAllConsultasUser(id: Int): Flow<List<Consulta?>>
 
     // Medicamento
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -43,8 +46,13 @@ interface DataBaseDao {
     @Query("SELECT * from Medicamento WHERE idMedicamento = :idMedicamento")
     fun getMedicamento(idMedicamento: Int): Flow<Medicamento>
 
+
     @Query("SELECT * from Medicamento ORDER BY idMedicamento ASC")
     fun getAllMedicamentos(): Flow<List<Medicamento>>
+
+
+    @Query("SELECT * from Medicamento WHERE idUtilizador = :id")
+    fun getAllMedicamentosUser(id: Int): Flow<List<Medicamento>>
 
 
     //Sinais Vitais
@@ -77,10 +85,11 @@ interface DataBaseDao {
 
 
     @Query("SELECT * from Utilizador WHERE idUtilizador = :id")
-    fun getUtilizador(id: Int): Flow<Utilizador>
+    fun getUtilizador(id: Int): Flow<Utilizador?>
 
     @Query("SELECT * from Utilizador ORDER BY idUtilizador ASC")
-    fun getAllUtilizadores(): Flow<List<Utilizador>>
+    fun getAllUtilizadores(): Flow<List<Utilizador?>>
+
 
 
 }

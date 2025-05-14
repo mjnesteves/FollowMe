@@ -1,17 +1,17 @@
 package com.followme.data.login
 
 import android.util.Log
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.followme.data.home.HomeUIEvent
-import com.followme.data.home.HomeUIState
-import com.followme.data.home.HomeViewModel
 import com.followme.data.regras.Validator
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginViewModel:ViewModel() {
+
 
     private val TAG= LoginViewModel::class.simpleName
 
@@ -21,8 +21,8 @@ class LoginViewModel:ViewModel() {
 
     var loginInProgress = mutableStateOf(false)
 
-    private var loginStatus = false
-    private var loginError = false
+    private var loginStatus = mutableStateOf(false)
+    private var loginError = mutableStateOf(false)
 
     fun onEvent(event: LoginUIEvent){
         when(event){
@@ -40,11 +40,11 @@ class LoginViewModel:ViewModel() {
 
             }
 
-
             is LoginUIEvent.LoginButtonClicked ->{
                 login()
 
             }
+
 
         }
         validarUIDataRegras()
@@ -83,11 +83,11 @@ class LoginViewModel:ViewModel() {
 
 
     fun getLoginError(): Boolean {
-        return loginError
+        return loginError.value
     }
 
     fun getLoginStatus(): Boolean {
-        return loginStatus
+        return loginStatus.value
     }
 
 
@@ -108,7 +108,7 @@ class LoginViewModel:ViewModel() {
 
                 if(it.isSuccessful){
                     loginInProgress.value = false
-                    loginStatus = true
+                    loginStatus.value = true
                 }
 
             }
@@ -117,11 +117,9 @@ class LoginViewModel:ViewModel() {
                 Log.d(TAG, "${it.localizedMessage}")
 
                 loginInProgress.value=false
-                loginError = true
+                loginError.value = true
             }
-        loginError = false
-        loginStatus = false
+        loginError.value = false
+        loginStatus.value = false
     }
-
-
 }

@@ -17,7 +17,7 @@ import androidx.compose.material.Checkbox
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.OutlinedTextField
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextFieldDefaults
@@ -42,6 +42,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -91,7 +92,7 @@ fun TextoCentradoBold(value: String) {
 }
 
 @Composable
-fun IntroduzirTexto(
+fun IntroduzirTextoNormal(
     labelValue: String, textValue: String, painterResource: Painter,
     onTextSelected: (String) -> Unit,
     errorStatus: Boolean = false
@@ -99,15 +100,43 @@ fun IntroduzirTexto(
 
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
-        label = { Text(text = labelValue) },
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Primary,
-            focusedLabelColor = Primary,
-            cursorColor = Primary,
-            backgroundColor = BgColor
+        label = { Text(labelValue) },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Email
         ),
+        singleLine = true,
+        maxLines = 1,
+        value = textValue,
+        onValueChange = {
+            onTextSelected(it)
+        },
 
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+
+        leadingIcon = {
+            Icon(painter = painterResource, contentDescription = "")
+        },
+
+        isError = !errorStatus
+
+
+    )
+
+}
+
+
+@Composable
+fun IntroduzirTextoEmail(
+    labelValue: String, textValue: String, painterResource: Painter,
+    onTextSelected: (String) -> Unit,
+    errorStatus: Boolean = false
+) {
+
+    OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        label = { Text(labelValue) },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Email
+        ),
         singleLine = true,
         maxLines = 1,
         value = textValue,
@@ -145,12 +174,6 @@ fun IntroduzirPassoword(
         modifier = Modifier.fillMaxWidth(),
         label = { Text(text = labelValue) },
 
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Primary,
-            focusedLabelColor = Primary,
-            cursorColor = Primary,
-            backgroundColor = BgColor
-        ),
 
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
         singleLine = true,
@@ -404,37 +427,18 @@ fun BotaoLogin(
 
 @Composable
 fun Alerta_Erro_Login(/*confirmButtonClicked: ()->Unit*/) {
-    val openDialog = remember { mutableStateOf(true) }
+    val showDialog = remember { mutableStateOf(true) }
 
-    if (openDialog.value) {
+    if (showDialog.value) {
         AlertDialog(
-            onDismissRequest = {
-                // Dismiss the dialog when the user clicks outside the dialog or on the back
-                // button. If you want to disable that functionality, simply use an empty
-                // onCloseRequest.
-                //confirmButtonClicked.invoke()
-                openDialog.value = false
-            },
-            title = { Text(text = "Informação") },
-            text = {
-                Text(
-                    "Dados de Login Inválidos!"
-                )
-            },
+            onDismissRequest = { showDialog.value = false },
             confirmButton = {
-                TextButton(
-                    onClick = {
-                        //confirmButtonClicked.invoke()
-                        openDialog.value = false
-                    })
-                {
-                    Text(
-                        "OK"
-                    )
+                TextButton(onClick = { showDialog.value = false }) {
+                    Text("OK")
                 }
             },
-
-
-            )
+            title = { Text("Validar Informação") },
+            text = { Text("Login Incorreto") }
+        )
     }
 }

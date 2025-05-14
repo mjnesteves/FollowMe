@@ -5,26 +5,29 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.FabPosition
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.followme.AppViewModelProvider
 import com.followme.componentes.AppToolbar
 import com.followme.componentes.CenteredBottomAppBar
-import com.followme.componentes.CenteredNavigationFab
-import com.followme.data.home.HomeViewModel
 import com.followme.componentes.NavigationDrawerBody
 import com.followme.componentes.NavigationDrawerHeader
+import com.followme.data.home.HomeViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun SinaisVitais(navController: NavController, homeViewModel: HomeViewModel = viewModel()) {
+fun SinaisVitais(navController: NavController) {
 
+    val homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    val utilizadorUIStateFlow by homeViewModel.utilizadorUIStateFlow.collectAsState()
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -52,11 +55,15 @@ fun SinaisVitais(navController: NavController, homeViewModel: HomeViewModel = vi
                 navigationDrawerItems = homeViewModel.navigationItemsList,
                 onNavigationItemClicked = {
                     Log.d("ComingHere", "inside_NavigationItemClicked")
-                    Log.d("ComingHere", "${it.itemId} ${it.title}")
+                    Log.d("ComingHere", "${it.navigateTo} ${it.title}")
                 })
         },
 
-        bottomBar = { CenteredBottomAppBar(navController) },
+        bottomBar = {
+            CenteredBottomAppBar(navegar = {
+                navController.navigate("Home?idUtilizador=${utilizadorUIStateFlow.idUtilizador}")
+            })
+        },
 
 
         ) { innerPadding ->

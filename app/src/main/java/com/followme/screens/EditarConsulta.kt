@@ -24,10 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -44,37 +41,37 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.followme.AppViewModelProvider
 import com.followme.R
-import com.followme.data.historicomedico.Especialidade
-import com.followme.data.historicomedico.Hospital
 import com.followme.data.historicomedico.consulta.ConsultaViewModel
 import com.followme.data.historicomedico.getEspecialidade
 import com.followme.data.historicomedico.getHospital
 import com.followme.data.historicomedico.validarConsulta
-import com.followme.data.home.HomeViewModel
 import com.followme.data.medicacao.Data
 import com.followme.data.medicacao.Hora
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableIntStateOf
+import com.followme.data.home.HomeViewModel
+
 
 @Composable
-fun AdicionarConsulta(navController: NavController) {
+fun EditarConsulta(
+    navController: NavController,
+) {
 
     val tag = ConsultaViewModel::class.simpleName
 
     val consultaViewModel: ConsultaViewModel = viewModel(factory = AppViewModelProvider.Factory)
-
-    val homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
-
-    val utilizadorUIStateFlow by homeViewModel.utilizadorUIStateFlow.collectAsState()
-
     val consultaUiState by consultaViewModel.consultaUIStateFlow.collectAsState()
 
-    var hospital by rememberSaveable { mutableStateOf(Hospital.HospitalAmatoLusitano.name) }
+    val homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    val utilizadorUIStateFlow by homeViewModel.utilizadorUIStateFlow.collectAsState()
 
-    var especialidade by rememberSaveable { mutableStateOf(Especialidade.Anestesiologia.name) }
 
-    var horaConsulta by rememberSaveable { mutableStateOf("") }
-
-    var dataConsulta by rememberSaveable { mutableStateOf("") }
+    val idConsulta = consultaUiState.idConsulta
+    var hospital = consultaUiState.hospital
+    var especialidade = consultaUiState.especialidade
+    var horaConsulta = consultaUiState.horaConsulta
+    var dataConsulta = consultaUiState.dataConsulta
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -92,18 +89,17 @@ fun AdicionarConsulta(navController: NavController) {
         Spacer(modifier = Modifier.padding(25.dp))
 
         Text(
-            text = stringResource(id = R.string.adicionarConsulta),
+            text = stringResource(id = R.string.editarConsulta) + " $idConsulta",
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.displaySmall
-
         )
 
         Text(
             text = utilizadorUIStateFlow.nomeUtilizador,
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.displaySmall
-
         )
+
 
 
 
@@ -119,7 +115,10 @@ fun AdicionarConsulta(navController: NavController) {
                     )
                 )
 
+
             },
+            consultaViewModel = consultaViewModel,
+            consultaUiState = consultaUiState
         )
 
 
@@ -135,9 +134,9 @@ fun AdicionarConsulta(navController: NavController) {
                         it
                     )
                 )
-
-
             },
+            consultaViewModel = consultaViewModel,
+            consultaUiState = consultaUiState
         )
 
 
@@ -163,6 +162,7 @@ fun AdicionarConsulta(navController: NavController) {
                     },
                     uiState = consultaUiState,
                     viewModel = consultaViewModel
+
                 )
             }
             Column(
@@ -222,11 +222,6 @@ fun AdicionarConsulta(navController: NavController) {
                 onClick = {
 
 
-                    Log.d(
-                        tag,
-                        " onValidate , $especialidade, $hospital, $horaConsulta, $dataConsulta"
-                    )
-
                     val result = (validarConsulta(
                         especialidade = especialidade,
                         hospital = hospital,
@@ -239,7 +234,7 @@ fun AdicionarConsulta(navController: NavController) {
                     } else {
                         Log.d(tag, " onValidate $especialidade, $hospital, $dataConsulta")
                         coroutineScope.launch {
-                            consultaViewModel.insertConsulta()
+                            consultaViewModel.updateConsulta()
                             navController.navigate("HistoricoMedico?idUtilizador=${consultaUiState.idUtilizador}")
                         }
 
@@ -278,7 +273,7 @@ fun AdicionarConsulta(navController: NavController) {
 
 @Preview(showBackground = true)
 @Composable
-fun AdicionarConsultaPreview() {
+fun EditarConsultaPreview() {
     val navController = rememberNavController()
     AdicionarConsulta(navController = navController)
 }
@@ -286,10 +281,86 @@ fun AdicionarConsultaPreview() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+fun MenuEspecialidade(
+    especialidade: (String) -> Unit,
+    updateViewModel: (String) -> Unit,
+    consultaUiState: ConsultaViewModel.ConsultaUIState,
+    consultaViewModel: ConsultaViewModel
+
+) {
+
+    val tag = ConsultaViewModel::class.simpleName
+
+
+    Column(
+        verticalArrangement = spacedBy(8.dp)
+    ) {
+        Text(
+            text = stringResource(id = R.string.especialidade),
+            style = MaterialTheme.typography.bodyLarge
+        )
+
+        val options = getEspecialidade().map { it.displayName }
+        var expanded by rememberSaveable { mutableStateOf(false) }
+        var selectedOptionText = consultaUiState.especialidade
+
+
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded },
+        ) {
+            TextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .menuAnchor(PrimaryNotEditable, true),
+                //placeholder = {Text("Selecione a Especialidade")},
+                readOnly = true,
+                value = selectedOptionText,
+                onValueChange = {
+                    consultaViewModel.onEvent(
+                        ConsultaViewModel.ConsultaUIEvent.EspecialidadeChanged(
+                            it
+                        )
+                    )
+                },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                colors = ExposedDropdownMenuDefaults.textFieldColors(),
+            )
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+            ) {
+                options.forEach { selectionOption ->
+                    DropdownMenuItem(
+                        text = { Text(selectionOption) },
+                        onClick = {
+                            updateViewModel.invoke(selectedOptionText)
+                            selectedOptionText = selectionOption
+                            especialidade(selectionOption)
+                            updateViewModel(selectionOption)
+                            expanded = false
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun MenuHospital(
     hospital: (String) -> Unit,
-    updateViewModel: (String) -> Unit
+    updateViewModel: (String) -> Unit,
+    consultaUiState: ConsultaViewModel.ConsultaUIState,
+    consultaViewModel: ConsultaViewModel
 ) {
+
+
+    val tag = ConsultaViewModel::class.simpleName
+
+
     Column(
         verticalArrangement = spacedBy(8.dp)
     ) {
@@ -300,7 +371,7 @@ fun MenuHospital(
 
         val options = getHospital().map { it.displayName }
         var expanded by rememberSaveable { mutableStateOf(false) }
-        var selectedOptionText by rememberSaveable { mutableStateOf("") }
+        var selectedOptionText = consultaUiState.hospital
 
         ExposedDropdownMenuBox(
             expanded = expanded,
@@ -310,11 +381,11 @@ fun MenuHospital(
                 modifier = Modifier
                     .fillMaxWidth()
                     .menuAnchor(PrimaryNotEditable, true),
-                placeholder = { Text("Selecione o Hospital") },
+                //placeholder = {Text("Selecione o Hospital")},
                 readOnly = true,
                 value = selectedOptionText,
                 onValueChange = {
-                    selectedOptionText = it
+                    consultaViewModel.onEvent(ConsultaViewModel.ConsultaUIEvent.HospitalChanged(it))
                 },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 colors = ExposedDropdownMenuDefaults.textFieldColors(),
@@ -329,62 +400,6 @@ fun MenuHospital(
                         onClick = {
                             selectedOptionText = selectionOption
                             hospital(selectionOption)
-                            updateViewModel(selectionOption)
-                            expanded = false
-                        }
-                    )
-                }
-            }
-        }
-    }
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MenuEspecialidade(
-    especialidade: (String) -> Unit,
-    updateViewModel: (String) -> Unit
-) {
-    Column(
-        verticalArrangement = spacedBy(8.dp)
-    ) {
-        Text(
-            text = stringResource(id = R.string.especialidade),
-            style = MaterialTheme.typography.bodyLarge
-        )
-
-        val options = getEspecialidade().map { it.displayName }
-        var expanded by rememberSaveable { mutableStateOf(false) }
-        var selectedOptionText by rememberSaveable { mutableStateOf("") }
-
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = { expanded = !expanded },
-        ) {
-            TextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .menuAnchor(PrimaryNotEditable, true),
-                placeholder = { Text("Selecione a Especialidade") },
-                readOnly = true,
-                value = selectedOptionText,
-                onValueChange = {
-
-                },
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                colors = ExposedDropdownMenuDefaults.textFieldColors(),
-            )
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
-            ) {
-                options.forEach { selectionOption ->
-                    DropdownMenuItem(
-                        text = { Text(selectionOption) },
-                        onClick = {
-                            selectedOptionText = selectionOption
-                            especialidade(selectionOption)
                             updateViewModel(selectionOption)
                             expanded = false
                         }
