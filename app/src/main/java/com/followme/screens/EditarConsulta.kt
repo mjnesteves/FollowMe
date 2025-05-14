@@ -101,9 +101,6 @@ fun EditarConsulta(
         )
 
 
-
-
-
         Spacer(modifier = Modifier.padding(8.dp))
 
         MenuHospital(
@@ -122,7 +119,6 @@ fun EditarConsulta(
         )
 
 
-
         Spacer(modifier = Modifier.padding(8.dp))
 
 
@@ -138,7 +134,6 @@ fun EditarConsulta(
             consultaViewModel = consultaViewModel,
             consultaUiState = consultaUiState
         )
-
 
         Spacer(modifier = Modifier.padding(8.dp))
 
