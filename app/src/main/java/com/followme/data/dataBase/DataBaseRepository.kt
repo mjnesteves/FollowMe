@@ -46,6 +46,10 @@ interface DataBaseRepository {
      */
     fun getMedicamentoStream(id: Int): Flow<Medicamento?>
 
+
+    fun getAllMedicamentosUser(id: Int): Flow<List<Medicamento?>>
+
+
     /**
      * Insert Medicamento in the data source
      */

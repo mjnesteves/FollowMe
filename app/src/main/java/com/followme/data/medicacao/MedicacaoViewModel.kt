@@ -14,11 +14,15 @@ import kotlinx.coroutines.flow.stateIn
 
 
 class MedicacaoViewModel(
-    private val dataBaseRepository: DataBaseRepository
+    private val dataBaseRepository: DataBaseRepository,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    private val idUtilizador = savedStateHandle.get<Int>("idUtilizador")
+    private val result: Int = idUtilizador ?: 0
+
     val medicacaoUiState: StateFlow<MedicacaoUiState> =
-        dataBaseRepository.getAllMedicamentosStream().map { MedicacaoUiState(it) }
+        dataBaseRepository.getAllMedicamentosUser(result).map { MedicacaoUiState(it) }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
@@ -35,4 +39,4 @@ class MedicacaoViewModel(
 
 }
 
-data class MedicacaoUiState(val medicamentoList: List<Medicamento> = listOf())
+data class MedicacaoUiState(val medicamentoList: List<Medicamento?> = listOf())

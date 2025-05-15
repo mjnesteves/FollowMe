@@ -46,6 +46,7 @@ import androidx.navigation.compose.rememberNavController
 import com.followme.AppViewModelProvider
 import com.followme.R
 import com.followme.data.historicomedico.Data
+import com.followme.data.home.HomeViewModel
 import com.followme.data.medicacao.Frequencia
 import com.followme.data.medicacao.TempoDia
 import com.followme.data.medicacao.getFrequencia
@@ -63,8 +64,12 @@ fun AdicionarMedicamento(navController: NavController) {
 
     val medicamentoViewModel: MedicamentoViewModel =
         viewModel(factory = AppViewModelProvider.Factory)
-
     val medicamentoUiState by medicamentoViewModel.medicamentoUIStateFlow.collectAsState()
+
+
+    val homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    val utilizadorUIStateFlow by homeViewModel.utilizadorUIStateFlow.collectAsState()
+
 
     var nomeMedicamento by rememberSaveable { mutableStateOf("") }
 
@@ -98,7 +103,14 @@ fun AdicionarMedicamento(navController: NavController) {
             style = MaterialTheme.typography.displaySmall
         )
 
-        Spacer(modifier = Modifier.padding(8.dp))
+        Text(
+            text = utilizadorUIStateFlow.nomeUtilizador,
+            fontWeight = FontWeight.Normal,
+            style = MaterialTheme.typography.displaySmall
+
+        )
+
+        Spacer(modifier = Modifier.padding(5.dp))
 
         Text(
             text = stringResource(id = R.string.nomeMedicamento),
@@ -214,7 +226,7 @@ fun AdicionarMedicamento(navController: NavController) {
                     .height(56.dp)
                     .width(150.dp),
                 onClick = {
-                    navController.navigate("Medicacao")
+                    navController.navigate("Medicacao?idUtilizador=${medicamentoUiState.idUtilizador}")
                 }
 
 
@@ -256,7 +268,7 @@ fun AdicionarMedicamento(navController: NavController) {
                         )
                         coroutineScope.launch {
                             medicamentoViewModel.insertMedicamento()
-                            navController.popBackStack()
+                            navController.navigate("Medicacao?idUtilizador=${medicamentoUiState.idUtilizador}")
                         }
 
                     }
@@ -287,7 +299,7 @@ fun AdicionarMedicamento(navController: NavController) {
     }
 
     BackHandler {
-        navController.popBackStack()
+        navController.navigate("Medicacao?idUtilizador=${medicamentoUiState.idUtilizador}")
     }
 
 

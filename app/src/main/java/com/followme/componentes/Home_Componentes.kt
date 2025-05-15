@@ -235,10 +235,11 @@ fun NavigationDrawerHeader(value: String?) {
                 )
             )
             .fillMaxWidth()
-            .border(1.dp, Color.Black, RoundedCornerShape(20))
+            //.border(1.dp, Color.Black, RoundedCornerShape(20))
             .height(150.dp)
             .wrapContentHeight()
             .wrapContentSize(Center)
+
     ) {
 
         NavigationDrawerText(
@@ -252,7 +253,9 @@ fun NavigationDrawerHeader(value: String?) {
 fun NavigationDrawerBody(navigationDrawerItems: List<NavigationItem>,
                          onNavigationItemClicked:(NavigationItem) -> Unit) {
     LazyColumn(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+
     ) {
         items(navigationDrawerItems) {
             NavigationItemRow(item = it,onNavigationItemClicked)

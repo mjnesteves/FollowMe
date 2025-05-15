@@ -1,6 +1,7 @@
 package com.followme.screens
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
@@ -44,9 +46,11 @@ import com.followme.data.criarconta.CriarContaViewModel
 @Composable
 fun CriarConta(navController: NavController, criarContaViewModel: CriarContaViewModel = viewModel()){
 
-    Box(modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center){
 
+    Box(
+        modifier = Modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center){
 
     Surface(
         color= Color.White,
@@ -59,10 +63,26 @@ fun CriarConta(navController: NavController, criarContaViewModel: CriarContaView
     ){
         Column (modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())) {
-            TextoCentrado(value = stringResource(id = R.string.saudacao))
+            .verticalScroll(rememberScrollState())
+        )
+
+        {
+            Spacer(modifier = Modifier.height(40.dp))
+
+            Image(
+                painter = painterResource(id = R.drawable.logotipo),
+                contentDescription = "logotipo",
+                modifier = Modifier
+                    .size(400.dp, 150.dp)
+                    .align(alignment = Alignment.CenterHorizontally)
+
+            )
+
+
             TextoCentradoBold(value = stringResource(id = R.string.criar_conta))
-            Spacer(modifier = Modifier.height(20.dp))
+
+            Spacer(modifier = Modifier.height(5.dp))
+
             IntroduzirTextoNormal(
                 labelValue= stringResource(id=R.string.nome),
                 painterResource = painterResource(id=R.drawable.perfil),
@@ -128,7 +148,7 @@ fun CriarConta(navController: NavController, criarContaViewModel: CriarContaView
             }
             )
 
-            Spacer(modifier = Modifier.height(80.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             BotaoLogin(
                 value = stringResource(id = R.string.registo),

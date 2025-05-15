@@ -52,7 +52,7 @@ interface DataBaseDao {
 
 
     @Query("SELECT * from Medicamento WHERE idUtilizador = :id")
-    fun getAllMedicamentosUser(id: Int): Flow<List<Medicamento>>
+    fun getAllMedicamentosUser(id: Int): Flow<List<Medicamento?>>
 
 
     //Sinais Vitais

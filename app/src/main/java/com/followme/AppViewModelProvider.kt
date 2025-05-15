@@ -36,7 +36,10 @@ object AppViewModelProvider {
         }
 
         initializer {
-            MedicacaoViewModel(inventoryApplication().container.dataBaseRepository)
+            val application = inventoryApplication()
+            val repository = application.container.dataBaseRepository
+            val savedStateHandle = createSavedStateHandle()
+            MedicacaoViewModel(repository, savedStateHandle)
         }
 
         initializer {

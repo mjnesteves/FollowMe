@@ -1,6 +1,7 @@
 package com.followme.data.medicacao
 
 
+import android.annotation.SuppressLint
 import android.widget.DatePicker
 import android.widget.TimePicker
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -106,11 +107,12 @@ fun Date.toFormattedStringDate(): String {
 }
 
 fun Date.toFormattedStringHour(): String {
-    val simpleHour = SimpleDateFormat("HH : mm", Locale.getDefault())
+    val simpleHour = SimpleDateFormat("HH:mm", Locale.getDefault())
     return simpleHour.format(this)
 }
 
 
+@SuppressLint("DefaultLocale")
 @Composable
 fun Hora(
     contexto: String,
@@ -143,7 +145,7 @@ fun Hora(
             context,
             { _: TimePicker, hour: Int, minute: Int ->
                 val newHour = Calendar.getInstance()
-                selectedHour = "$hour : $minute"
+                selectedHour = String.format("%02d:%02d", hour, minute)
                 //hora(newHour.timeInMillis)
                 hora(selectedHour)
                 updateViewModel(selectedHour)

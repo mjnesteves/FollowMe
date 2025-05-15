@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class Medicamento(
     @PrimaryKey(autoGenerate = true)
     val idMedicamento: Int = 0,
-    val idUtilizador: Int,
+    val idUtilizador: Int = 0,
     val nomeMedicamento: String,
     val quantidade: Int,
     val frequencia: String,

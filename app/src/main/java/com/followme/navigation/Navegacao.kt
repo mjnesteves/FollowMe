@@ -19,10 +19,12 @@ import com.followme.data.historicomedico.consulta.ConsultaViewModel
 import com.followme.screens.AdicionarConsulta
 import com.followme.screens.AdicionarMedicamento
 import com.followme.screens.AdicionarUtilizador
+import com.followme.screens.Definicoes
 import com.followme.screens.EditarConsulta
 import com.followme.screens.EditarMedicamento
 import com.followme.screens.EditarUtilizador
 import com.followme.screens.HistoricoMedico
+import com.followme.screens.Info
 import com.followme.screens.SinaisVitais
 import com.followme.screens.Medicacao
 import com.followme.screens.Utilizadores
@@ -75,6 +77,16 @@ fun NavGraphBuilder.navigationGraph(navController: NavController){
         PoliticaPrivacidade(navController)
     }
 
+
+    composable("Definicoes") {
+        Definicoes(navController)
+    }
+
+
+    composable("Info") {
+        Info(navController)
+    }
+
     composable("SinaisVitais") {
         SinaisVitais(navController)
     }
@@ -91,13 +103,39 @@ fun NavGraphBuilder.navigationGraph(navController: NavController){
         HistoricoMedico(navController = navController)
     }
 
-    composable("Medicacao") {
-        Medicacao(navController)
+
+
+    composable(
+        route = "Medicacao?idUtilizador={idUtilizador}",
+        arguments = listOf(
+            navArgument("idUtilizador") {
+                type = NavType.IntType
+                defaultValue = -1 // This makes it "optional"
+            }
+        )
+    ) {
+        Medicacao(navController = navController)
     }
 
-    composable("AdicionarMedicamento") {
-        AdicionarMedicamento(navController)
+
+
+
+
+
+
+    composable(
+        route = "AdicionarMedicamento?idUtilizador={idUtilizador}",
+        arguments = listOf(
+            navArgument("idUtilizador") {
+                type = NavType.IntType
+                defaultValue = -1 // This makes it "optional"
+            }
+        )
+    ) {
+        AdicionarMedicamento(navController = navController)
     }
+
+
 
     composable(
         route = "AdicionarConsulta?idUtilizador={idUtilizador}",
@@ -113,10 +151,10 @@ fun NavGraphBuilder.navigationGraph(navController: NavController){
 
 
     composable(
-        "EditarConsulta/{idUtilizador}?consultaId={consultaId}",
+        "EditarConsulta/{idUtilizador}?idConsulta={idConsulta}",
         arguments = listOf(
             navArgument("idUtilizador") { type = NavType.IntType },
-            navArgument("consultaId") {
+            navArgument("idConsulta") {
                 type = NavType.IntType
                 defaultValue = -1
             }
@@ -126,15 +164,16 @@ fun NavGraphBuilder.navigationGraph(navController: NavController){
     }
 
     composable(
-        route = "EditarMedicamento?medicamentoId={medicamentoId}",
+        "EditarMedicamento/{idUtilizador}?idMedicamento={idMedicamento}",
         arguments = listOf(
-            navArgument("medicamentoId") {
+            navArgument("idUtilizador") { type = NavType.IntType },
+            navArgument("idMedicamento") {
                 type = NavType.IntType
-                defaultValue = -1 // This makes it "optional"
+                defaultValue = -1
             }
         )
     ) {
-        EditarMedicamento(navController = navController)
+        EditarMedicamento(navController)
     }
 
     composable("Utilizadores") {

@@ -124,17 +124,17 @@ class HomeViewModel(
             navigateTo = "Utilizadores"
         ),
         NavigationItem(
-            title = "Settings",
+            title = "Definições",
             icon = Icons.Default.Settings,
-            description = "Settings Screen",
-            navigateTo = "SettingsScreen"
+            description = "Definições",
+            navigateTo = "Definicoes"
         ),
 
         NavigationItem(
-            title = "Info",
+            title = "Informações",
             icon = Icons.Default.Info,
-            description = "Information Screen",
-            navigateTo = "AdicionarConsulta"
+            description = "Informação da Aplicação",
+            navigateTo = "Info"
         ),
 
 

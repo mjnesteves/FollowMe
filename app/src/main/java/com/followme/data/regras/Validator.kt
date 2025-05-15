@@ -22,7 +22,7 @@ object Validator {
     }
     fun validaPassword(password:String)  : ValidationResult{
         return ValidationResult(
-            (password.isNotEmpty() && password.length>=4 )
+            (password.isNotEmpty() && password.length >= 6)
         )
     }
 

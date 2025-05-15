@@ -49,6 +49,7 @@ import androidx.navigation.compose.rememberNavController
 import com.followme.AppViewModelProvider
 import com.followme.R
 import com.followme.data.historicomedico.Data
+import com.followme.data.home.HomeViewModel
 import com.followme.data.medicacao.getFrequencia
 import com.followme.data.medicacao.getTempoDia
 import com.followme.data.medicacao.medicamento.MedicamentoViewModel
@@ -63,12 +64,14 @@ fun EditarMedicamento(navController: NavController) {
 
     val medicamentoViewModel: MedicamentoViewModel =
         viewModel(factory = AppViewModelProvider.Factory)
-
     val medicamentoUiState by medicamentoViewModel.medicamentoUIStateFlow.collectAsState()
+
+    val homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    val utilizadorUIStateFlow by homeViewModel.utilizadorUIStateFlow.collectAsState()
 
     var nomeMedicamento = medicamentoUiState.nomeMedicamento
 
-    var quantidade = medicamentoUiState.quantidade
+    var quantidade = medicamentoUiState.quantidade.toString()
 
     var frequencia = medicamentoUiState.frequencia
 
@@ -96,8 +99,13 @@ fun EditarMedicamento(navController: NavController) {
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.displaySmall
         )
+        Text(
+            text = utilizadorUIStateFlow.nomeUtilizador,
+            fontWeight = FontWeight.Normal,
+            style = MaterialTheme.typography.displaySmall
+        )
 
-        Spacer(modifier = Modifier.padding(8.dp))
+        Spacer(modifier = Modifier.padding(5.dp))
 
         Text(
             text = stringResource(id = R.string.nomeMedicamento),
@@ -139,7 +147,7 @@ fun EditarMedicamento(navController: NavController) {
                         .width(128.dp),
                     value = medicamentoUiState.quantidade.toString(),
                     onValueChange = {
-                        quantidade = it.toInt()
+                        quantidade = it
                         medicamentoViewModel.onEvent(
                             MedicamentoViewModel.MedicamentoUIEvent.QuantidadeChanged(
                                 it
@@ -147,8 +155,9 @@ fun EditarMedicamento(navController: NavController) {
                         )
                     },
                     //placeholder = { Text(text = "ex: 1") },
-                    keyboardOptions =
-                        KeyboardOptions(keyboardType = KeyboardType.Number)
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    singleLine = true,
+                    maxLines = 1,
                 )
             }
             MenuFrequenciasEditar(
@@ -215,7 +224,7 @@ fun EditarMedicamento(navController: NavController) {
                     .height(56.dp)
                     .width(150.dp),
                 onClick = {
-                    navController.navigate("Medicacao")
+                    navController.navigate("Medicacao?idUtilizador=${medicamentoUiState.idUtilizador}")
                 }
 
 
@@ -252,7 +261,7 @@ fun EditarMedicamento(navController: NavController) {
                         )
                         coroutineScope.launch {
                             medicamentoViewModel.updateMedicamento()
-                            navController.popBackStack()
+                            navController.navigate("Medicacao?idUtilizador=${medicamentoUiState.idUtilizador}")
                         }
 
                     }

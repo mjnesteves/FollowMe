@@ -21,7 +21,7 @@ class ConsultaViewModel(
 
     private val idUtilizador = savedStateHandle.get<Int>("idUtilizador")
 
-    private val idConsulta = savedStateHandle.get<Int>("consultaId")
+    private val idConsulta = savedStateHandle.get<Int>("idConsulta")
     private val consultaUIState = MutableStateFlow(ConsultaUIState())
     val consultaUIStateFlow: StateFlow<ConsultaUIState> = consultaUIState
 

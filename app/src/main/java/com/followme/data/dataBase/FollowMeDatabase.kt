@@ -10,7 +10,7 @@ import androidx.room.RoomDatabase
  */
 @Database(
     entities = [Consulta::class, Medicamento::class, Utilizador::class, SinaisVitais::class],
-    version = 6,
+    version = 7,
     exportSchema = false
 )
 abstract class FollowMeDatabase : RoomDatabase() {

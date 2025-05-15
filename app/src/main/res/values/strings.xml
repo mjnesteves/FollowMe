@@ -65,6 +65,24 @@
     <string name="adicionarUtilizador">Adicionar Utilizador</string>
     <string name="nomeUtilizador">Nome de Utilizador</string>
     <string name="utilizadores">Perfil</string>
+    <string name="info">
+        Escola Superior de Tecnologia\n
+        Instituto Politécnico de Castelo Branco\n
+        \n
+        Licenciatura em Engenharia Informática\n
+        Ano Letivo 2024/2025\n
+        \n
+        Mini-Projeto\n
+        Informática Móvel\n
+        \n
+        FollowMe\n
+        Aplicação de resgisto de dados de saúde\n
+        \n
+        Marcelo Esteves, aluno 62006091\n
+        João Cruz, aluno\n
+        Guilherme, aluno\n
+        </string>
+    <string name="implementar">Para Implementação Futura</string>
 
 
 </resources>

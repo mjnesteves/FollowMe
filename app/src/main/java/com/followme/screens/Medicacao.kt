@@ -39,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -71,6 +72,8 @@ fun Medicacao(
     val medicamentoViewModel: MedicamentoViewModel =
         viewModel(factory = AppViewModelProvider.Factory)
     val utilizadorUIStateFlow by homeViewModel.utilizadorUIStateFlow.collectAsState()
+    val nomeUtilizador = utilizadorUIStateFlow.nomeUtilizador
+
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -116,7 +119,7 @@ fun Medicacao(
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
+                .padding(start = 20.dp, end = 20.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
 
             ) {
@@ -129,6 +132,7 @@ fun Medicacao(
                 itemList = medicacaoUiState.medicamentoList,
                 //onItemValueChange = viewModel::updateUiState,
                 contentPadding = innerPadding,
+                nomeUtilizador = nomeUtilizador
             )
 
 
@@ -147,8 +151,9 @@ private fun MedicacaoBody(
     medicamentoViewModel: MedicamentoViewModel,
     medicacaoViewModel: MedicacaoViewModel,
     navController: NavController,
-    itemList: List<Medicamento>,
-    contentPadding: PaddingValues = PaddingValues(0.dp),
+    itemList: List<Medicamento?>,
+    contentPadding: PaddingValues,
+    nomeUtilizador: String
 ) {
     Column(
         modifier = Modifier
@@ -158,6 +163,12 @@ private fun MedicacaoBody(
 
         ) {
         if (itemList.isEmpty()) {
+
+            Text(
+                text = nomeUtilizador,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.displaySmall
+            )
 
             Text(
                 modifier = Modifier
@@ -177,6 +188,13 @@ private fun MedicacaoBody(
 
                 )
         } else {
+
+            Text(
+                text = nomeUtilizador,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.displaySmall
+            )
+
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -205,7 +223,7 @@ private fun InventoryList(
     medicamentoViewModel: MedicamentoViewModel,
     navController: NavController,
     medicacaoViewModel: MedicacaoViewModel,
-    itemList: List<Medicamento>,
+    itemList: List<Medicamento?>,
     contentPadding: PaddingValues,
 
     ) {
@@ -216,15 +234,17 @@ private fun InventoryList(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
-        items(items = itemList, key = { it.idMedicamento }) { item ->
-            InventoryItem(
-                medicamentoViewModel = medicamentoViewModel,
-                navController = navController,
-                medicacaoViewModel = medicacaoViewModel,
-                item = item,
-                modifier = Modifier
-                    .padding(dimensionResource(id = R.dimen.padding_small))
-            )
+        items(items = itemList, key = { it?.idMedicamento ?: 0 }) { item ->
+            if (item != null) {
+                InventoryItem(
+                    medicamentoViewModel = medicamentoViewModel,
+                    navController = navController,
+                    medicacaoViewModel = medicacaoViewModel,
+                    item = item,
+                    modifier = Modifier
+                        .padding(dimensionResource(id = R.dimen.padding_small))
+                )
+            }
         }
 
 
@@ -300,7 +320,7 @@ private fun InventoryItem(
             ) {
                 IconButton(
                     onClick = {
-                        navController.navigate("EditarMedicamento?medicamentoId=${item.idMedicamento}")
+                        navController.navigate("EditarMedicamento/${item.idUtilizador}?idMedicamento=${item.idMedicamento}")
                     }
                 ) {
                     Icon(

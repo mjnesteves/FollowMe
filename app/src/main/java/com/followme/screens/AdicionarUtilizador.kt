@@ -11,14 +11,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -32,6 +35,7 @@ import androidx.navigation.NavController
 import com.followme.AppViewModelProvider
 import com.followme.R
 import com.followme.data.utilizadores.UtilizadorViewModel
+import com.followme.data.utilizadores.validarNomeUtilizador
 import kotlinx.coroutines.launch
 
 @Composable
@@ -44,6 +48,8 @@ fun AdicionarUtilizador(navController: NavController) {
     var nomeUtilizador by rememberSaveable { mutableStateOf("") }
 
     val coroutineScope = rememberCoroutineScope()
+
+    var showDialog by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -123,9 +129,21 @@ fun AdicionarUtilizador(navController: NavController) {
                 onClick = {
 
                     coroutineScope.launch {
-                        utilizadorViewModel.insertUtilizador()
-                        navController.popBackStack()
+
+                        val validaUtilizador = validarNomeUtilizador(
+                            nomeUtilizador
+                        )
+
+                        if (!validaUtilizador) {
+                            showDialog = true
+                        } else {
+                            utilizadorViewModel.insertUtilizador()
+                            navController.popBackStack()
+                        }
                     }
+
+
+
 
                 },
                 shape = MaterialTheme.shapes.extraLarge
@@ -138,6 +156,18 @@ fun AdicionarUtilizador(navController: NavController) {
         }
 
 
+    }
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            confirmButton = {
+                TextButton(onClick = { showDialog = false }) {
+                    Text("OK")
+                }
+            },
+            title = { Text("Validar Informação") },
+            text = { Text("Existem campos sem valor") }
+        )
     }
 
 }

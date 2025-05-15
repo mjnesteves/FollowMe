@@ -15,7 +15,9 @@ class MedicamentoViewModel(
     private val dataBaseRepository: DataBaseRepository
 ) : ViewModel() {
 
-    private val idMedicamento = savedStateHandle.get<Int>("medicamentoId")
+    private val idUtilizador = savedStateHandle.get<Int>("idUtilizador")
+
+    private val idMedicamento = savedStateHandle.get<Int>("idMedicamento")
     private val medicamentoUIState = MutableStateFlow(MedicamentoUIState())
     val medicamentoUIStateFlow: StateFlow<MedicamentoUIState> = medicamentoUIState
 
@@ -29,8 +31,18 @@ class MedicamentoViewModel(
                     }
                 }
             }
+        } else {
+            // New consulta — manually set idUtilizador from SavedStateHandle
+            medicamentoUIState.value = idUtilizador?.let {
+                medicamentoUIState.value.copy(
+                    idUtilizador = it
+                )
+            }!!
+
         }
+
     }
+
 
     private fun Medicamento.toMedicamentoUIState(): MedicamentoUIState = MedicamentoUIState(
         idMedicamento = idMedicamento,
@@ -58,7 +70,7 @@ class MedicamentoViewModel(
     sealed class MedicamentoUIEvent {
 
         data class IdMedicamentoChanged(val idMedicamento: Int) : MedicamentoUIEvent()
-        data class UtilizadorChanged(val idUtilizador: String) : MedicamentoUIEvent()
+        data class UtilizadorChanged(val idUtilizador: Int) : MedicamentoUIEvent()
         data class NomeMedicamentoChanged(val nomeMedicamento: String) : MedicamentoUIEvent()
         data class QuantidadeChanged(val quantidade: String) : MedicamentoUIEvent()
         data class FrequenciaChanged(val frequencia: String) : MedicamentoUIEvent()
@@ -79,9 +91,9 @@ class MedicamentoViewModel(
             }
 
             is MedicamentoUIEvent.UtilizadorChanged -> {
-                val parsed = event.idUtilizador.toIntOrNull() ?: 0
+                //val parsed = event.idUtilizador.toIntOrNull() ?: 0
                 medicamentoUIState.value = medicamentoUIState.value.copy(
-                    idUtilizador = parsed
+                    idUtilizador = event.idUtilizador
                 )
                 printState()
             }

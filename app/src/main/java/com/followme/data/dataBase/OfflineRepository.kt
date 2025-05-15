@@ -21,6 +21,10 @@ class OfflineRepository(private val dataBaseDao: DataBaseDao) : DataBaseReposito
 
     override fun getMedicamentoStream(id: Int): Flow<Medicamento?> = dataBaseDao.getMedicamento(id)
 
+
+    override fun getAllMedicamentosUser(id: Int): Flow<List<Medicamento?>> =
+        dataBaseDao.getAllMedicamentosUser(id)
+
     override suspend fun insertMedicamento(medicamento: Medicamento) =
         dataBaseDao.insert(medicamento)
 

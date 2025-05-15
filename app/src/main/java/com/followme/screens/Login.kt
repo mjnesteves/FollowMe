@@ -2,6 +2,7 @@ package com.followme.screens
 
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
 import androidx.compose.material3.AlertDialog
@@ -51,8 +53,6 @@ import com.followme.data.login.LoginViewModel
 
 fun Login(navController: NavController, loginViewModel: LoginViewModel = viewModel()) {
 
-    var showDialog by remember { mutableStateOf(false) }
-
     val loginInProgress by loginViewModel.loginInProgress
 
 
@@ -73,6 +73,18 @@ fun Login(navController: NavController, loginViewModel: LoginViewModel = viewMod
                 modifier = Modifier
                     .fillMaxSize()
             ) {
+
+                Spacer(modifier = Modifier.height(40.dp))
+
+                Image(
+                    painter = painterResource(id = R.drawable.logotipo),
+                    contentDescription = "logotipo",
+                    modifier = Modifier
+                        .size(400.dp, 150.dp)
+                        .align(alignment = Alignment.CenterHorizontally)
+
+                )
+                Spacer(modifier = Modifier.height(25.dp))
 
                 TextoCentrado(value = stringResource(id = R.string.login))
 
@@ -103,7 +115,7 @@ fun Login(navController: NavController, loginViewModel: LoginViewModel = viewMod
 
                 Spacer(modifier = Modifier.height(40.dp))
 
-                Hiperligacao_Sublinhado(value = stringResource(id = R.string.recuperar_password))
+                //Hiperligacao_Sublinhado(value = stringResource(id = R.string.recuperar_password))
 
                 BotaoLogin(
                     value = stringResource(id = R.string.login),
@@ -131,7 +143,7 @@ fun Login(navController: NavController, loginViewModel: LoginViewModel = viewMod
         if (loginViewModel.getLoginError()) {
             Alerta_Erro_Login()
         } else if (loginViewModel.getLoginStatus()) {
-            navController.navigate("Home")
+            navController.navigate("Utilizadores")
         }
 
 

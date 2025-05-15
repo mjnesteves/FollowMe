@@ -182,7 +182,7 @@ fun EditarConsulta(
         }
 
 
-        Spacer(modifier = Modifier.padding(100.dp))
+        Spacer(modifier = Modifier.padding(60.dp))
 
 
         Row(

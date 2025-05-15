@@ -61,12 +61,12 @@ fun AdicionarConsulta(navController: NavController) {
     val tag = ConsultaViewModel::class.simpleName
 
     val consultaViewModel: ConsultaViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    val consultaUiState by consultaViewModel.consultaUIStateFlow.collectAsState()
 
     val homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
-
     val utilizadorUIStateFlow by homeViewModel.utilizadorUIStateFlow.collectAsState()
 
-    val consultaUiState by consultaViewModel.consultaUIStateFlow.collectAsState()
+
 
     var hospital by rememberSaveable { mutableStateOf(Hospital.HospitalAmatoLusitano.name) }
 
@@ -187,7 +187,7 @@ fun AdicionarConsulta(navController: NavController) {
         }
 
 
-        Spacer(modifier = Modifier.padding(100.dp))
+        Spacer(modifier = Modifier.padding(60.dp))
 
 
         Row(
@@ -270,7 +270,7 @@ fun AdicionarConsulta(navController: NavController) {
     }
 
     BackHandler {
-        navController.popBackStack()
+        navController.navigate("HistoricoMedico?idUtilizador=${consultaUiState.idUtilizador}")
     }
 
 }

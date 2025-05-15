@@ -196,6 +196,13 @@ private fun HistoricoMedicoBody(
 
                 )
         } else {
+
+            Text(
+                text = nomeUtilizador,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.displaySmall
+            )
+
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -205,11 +212,7 @@ private fun HistoricoMedicoBody(
                 style = MaterialTheme.typography.titleLarge,
 
                 )
-            Text(
-                text = nomeUtilizador,
-                fontWeight = FontWeight.Normal,
-                style = MaterialTheme.typography.displaySmall
-            )
+
             InventoryList(
                 consultaViewModel = consultaViewModel,
                 historicoMedicoViewModel = historicoMedicoViewModel,
@@ -328,7 +331,7 @@ private fun InventoryItem(
             ) {
                 IconButton(
                     onClick = {
-                        navController.navigate("EditarConsulta/${item.idUtilizador}?consultaId=${item.idConsulta}")
+                        navController.navigate("EditarConsulta/${item.idUtilizador}?idConsulta=${item.idConsulta}")
                     }
                 ) {
                     Icon(
