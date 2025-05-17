@@ -9,5 +9,4 @@ data class Utilizador(
     val idUtilizador: Int = 0,
     val nomeUtilizador: String,
 
-
     )

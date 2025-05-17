@@ -48,44 +48,30 @@ android {
 
 dependencies {
 
-    //Room
-
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-
-
+   
+implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx.v251)
-
-
-
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.rxjava3)
     implementation(libs.rxjava)
-
-
     implementation (libs.androidx.material)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
-
     implementation(platform(libs.androidx.compose.bom.v20250401))
     implementation(libs.androidx.navigation.compose)
-
     implementation(platform(libs.firebase.bom.v2841))
     implementation(libs.google.firebase.analytics)
     implementation(libs.firebase.database)
-
     implementation(libs.androidx.material3.v130alpha04)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-
     implementation (libs.ui.tooling)
     implementation (libs.androidx.material.icons.extended)
-
     implementation(libs.androidx.glance)
     implementation(libs.androidx.glance.appwidget)
     implementation(libs.androidx.glance.appwidget.preview)
     implementation(libs.androidx.glance.preview)
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
