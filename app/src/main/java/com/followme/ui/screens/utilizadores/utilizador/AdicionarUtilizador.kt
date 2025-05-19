@@ -102,7 +102,6 @@ fun AdicionarUtilizador(navController: NavController) {
 
             Button(
                 modifier = Modifier
-
                     .height(56.dp)
                     .width(150.dp),
                 onClick = {

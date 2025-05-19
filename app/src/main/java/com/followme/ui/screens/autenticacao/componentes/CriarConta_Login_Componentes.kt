@@ -45,7 +45,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -108,8 +107,6 @@ fun IntroduzirTextoNormal(
         onValueChange = {
             onTextSelected(it)
         },
-
-
         leadingIcon = {
             Icon(painter = painterResource, contentDescription = "")
         },
@@ -141,12 +138,9 @@ fun IntroduzirTextoEmail(
         onValueChange = {
             onTextSelected(it)
         },
-
-
         leadingIcon = {
             Icon(painter = painterResource, contentDescription = "")
         },
-
         isError = !errorStatus
 
 
@@ -156,14 +150,14 @@ fun IntroduzirTextoEmail(
 
 @Composable
 fun IntroduzirPassoword(
-    labelValue: String, fieldValue: String, painterResource: Painter,
+    labelValue: String,
+    fieldValue: String,
+    icon: Painter,
     onTextSelected: (String) -> Unit,
     errorStatus: Boolean = false
 ) {
 
     val localFocusManager = LocalFocusManager.current
-
-
     val passwordVisible = rememberSaveable {
         mutableStateOf(false)
     }
@@ -171,7 +165,6 @@ fun IntroduzirPassoword(
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         label = { Text(text = labelValue) },
-
 
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
         singleLine = true,
@@ -184,7 +177,7 @@ fun IntroduzirPassoword(
             onTextSelected(it)
         },
         leadingIcon = {
-            Icon(painter = painterResource, contentDescription = "")
+            Icon(painter = icon, contentDescription = "")
         },
         trailingIcon = {
             val iconImage = if (passwordVisible.value) {
@@ -208,10 +201,7 @@ fun IntroduzirPassoword(
         },
         visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
         isError = !errorStatus
-
     )
-
-
 }
 
 
@@ -221,39 +211,25 @@ fun CheckBoxTermosCondicoes(
     termos: () -> Unit,
     onCheckedChange: (Boolean) -> Unit
 ) {
-
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(56.dp),
         verticalAlignment = Alignment.CenterVertically,
-
-
         ) {
 
         val checkedState = rememberSaveable {
             mutableStateOf(false)
         }
-
         Checkbox(
             checked = checkedState.value,
             onCheckedChange = {
-
                 checkedState.value = it
                 onCheckedChange.invoke(it)
-
-
-                //Log.d(TAG,"CheckBox Value : ${checkedState.value}")
             })
 
-
-
         Hiperligacao_TermosCondicoes(privacidade, termos)
-
     }
-
-
 }
 
 @Composable
@@ -262,7 +238,6 @@ fun Hiperligacao_TermosCondicoes(privacidade: () -> Unit, termos: () -> Unit) {
     val privacyPolicyText = "Política "
     val andText = " e "
     val termsAndConditionsText = "Termos e Condições"
-
     val annotatedString = buildAnnotatedString {
         append(initialText)
         withLink(
@@ -287,7 +262,6 @@ fun Hiperligacao_TermosCondicoes(privacidade: () -> Unit, termos: () -> Unit) {
         ) {
             append(termsAndConditionsText)
         }
-
     }
     Text(text = annotatedString)
 }
@@ -311,7 +285,6 @@ fun Login_criarConta_hiperligacao(
                     styles = TextLinkStyles(
                         style = SpanStyle(color = Primary)
                     )
-
                 ) {
                     if (tryingToLogin) {
                         login()
@@ -319,7 +292,6 @@ fun Login_criarConta_hiperligacao(
                         criarConta()
                     }
                 }
-
         ) {
             append(loginText)
         }
@@ -332,25 +304,6 @@ fun Login_criarConta_hiperligacao(
         textAlign = TextAlign.Center
     )
 
-}
-
-
-@Composable
-fun Hiperligacao_Sublinhado(value: String) {
-    Text(
-        text = value,
-        modifier = Modifier
-            .padding(vertical = 25.dp)
-            .fillMaxWidth()
-            .heightIn(min = 20.dp),
-        style = TextStyle(
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Normal,
-            fontStyle = FontStyle.Normal
-        ), color = colorResource(id = R.color.colorText),
-        textAlign = TextAlign.Center,
-        textDecoration = TextDecoration.Underline
-    )
 }
 
 
@@ -424,7 +377,7 @@ fun BotaoLogin(
 
 
 @Composable
-fun Alerta_Erro_Login(/*confirmButtonClicked: ()->Unit*/) {
+fun Alerta_Erro_Login() {
     val showDialog = remember { mutableStateOf(true) }
 
     if (showDialog.value) {

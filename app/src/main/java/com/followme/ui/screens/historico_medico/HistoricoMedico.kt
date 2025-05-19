@@ -56,29 +56,35 @@ import com.followme.ui.screens.home.componentes.BotaoAdicionar
 import com.followme.ui.screens.home.componentes.CenteredBottomAppBar
 import com.followme.ui.screens.home.componentes.NavigationDrawerBody
 import com.followme.ui.screens.home.componentes.NavigationDrawerHeader
+
 import com.followme.data.entidades.Consulta
 import kotlinx.coroutines.launch
 import com.followme.di.AppViewModelProvider
 import com.followme.ui.screens.historico_medico.consulta.ConsultaViewModel
+import com.followme.ui.screens.historico_medico.consulta.validar.validarConsulta
 import com.followme.ui.screens.home.HomeViewModel
+import com.followme.ui.screens.home.HomeViewModel.*
+import com.followme.ui.screens.home.HomeViewModel.NavigationItem
+import kotlinx.coroutines.CoroutineScope
+
 
 @Composable
 fun HistoricoMedico(
     navController: NavController,
 ) {
 
+    val consultaViewModel: ConsultaViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val historicoMedicoViewModel: HistoricoMedicoViewModel =
         viewModel(factory = AppViewModelProvider.Factory)
     val historicoMedicoUiState by historicoMedicoViewModel.historicoMedicoUiState.collectAsState()
     val homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
-    val consultaViewModel: ConsultaViewModel = viewModel(factory = AppViewModelProvider.Factory)
 
-    val utilizadorUIStateFlow by homeViewModel.utilizadorUIStateFlow.collectAsState()
+    val utilizadorUIStateFlow by homeViewModel.utilizadorUIState.collectAsState()
     val nomeUtilizador = utilizadorUIStateFlow.nomeUtilizador
 
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
-
+    var confirmarLogout by remember { mutableStateOf(false) }
 
 
     Scaffold(
@@ -87,8 +93,7 @@ fun HistoricoMedico(
             AppToolbar(
                 userName = homeViewModel.getDisplayName(),
                 logoutButtonClicked = {
-                    homeViewModel.terminarSessao()
-                    navController.navigate("Login")
+                    confirmarLogout = true
                 },
                 navigationIconClicked = {
                     coroutineScope.launch {
@@ -136,17 +141,39 @@ fun HistoricoMedico(
 
 
             HistoricoMedicoBody(
-                consultaViewModel = consultaViewModel,
                 navController = navController,
-                historicoMedicoViewModel = historicoMedicoViewModel,
+                consultaViewModel = consultaViewModel,
                 itemList = historicoMedicoUiState.consultaList,
-                //onItemValueChange = viewModel::updateUiState,
                 contentPadding = innerPadding,
                 nomeUtilizador = nomeUtilizador,
             )
 
 
+        }
+        if (confirmarLogout) {
+            AlertDialog(
+                onDismissRequest = { confirmarLogout = false },
+                confirmButton = {
+                    TextButton(onClick = {
+                        confirmarLogout = false
 
+                        coroutineScope.launch {
+                            homeViewModel.terminarSessao()
+                        }
+                        navController.navigate("Login")
+
+                    }) {
+                        Text("Confirmar")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { confirmarLogout = false }) {
+                        Text("Cancelar")
+                    }
+                },
+                title = { Text("Logout") },
+                text = { Text("Deseja Terminar Sessão?") }
+            )
         }
     }
 
@@ -161,7 +188,6 @@ fun HistoricoMedico(
 @Composable
 private fun HistoricoMedicoBody(
     consultaViewModel: ConsultaViewModel,
-    historicoMedicoViewModel: HistoricoMedicoViewModel,
     navController: NavController,
     itemList: List<Consulta?>,
     contentPadding: PaddingValues,
@@ -220,9 +246,8 @@ private fun HistoricoMedicoBody(
                 )
 
             InventoryList(
-                historicoMedicoViewModel = historicoMedicoViewModel,
+                consultaViewModel = consultaViewModel,
                 itemList = itemList,
-                //onItemClick = {}, //onItemClick(it.id) },
                 contentPadding = contentPadding,
                 navController = navController,
 
@@ -235,7 +260,7 @@ private fun HistoricoMedicoBody(
 @Composable
 private fun InventoryList(
     navController: NavController,
-    historicoMedicoViewModel: HistoricoMedicoViewModel,
+    consultaViewModel: ConsultaViewModel,
     itemList: List<Consulta?>,
     contentPadding: PaddingValues,
 
@@ -251,7 +276,7 @@ private fun InventoryList(
             if (item != null) {
                 InventoryItem(
                     navController = navController,
-                    historicoMedicoViewModel = historicoMedicoViewModel,
+                    consultaViewModel = consultaViewModel,
                     item = item,
                     modifier = Modifier
                         .padding(dimensionResource(id = R.dimen.padding_small)),
@@ -267,14 +292,13 @@ private fun InventoryList(
 
 @Composable
 private fun InventoryItem(
-    historicoMedicoViewModel: HistoricoMedicoViewModel,
+    consultaViewModel: ConsultaViewModel,
     item: Consulta, modifier: Modifier = Modifier,
     navController: NavController
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val coroutineScope = rememberCoroutineScope()
     var showConfirmDelete by remember { mutableStateOf(false) }
-
+    val coroutineScope = rememberCoroutineScope()
 
     OutlinedCard(
         modifier = modifier,
@@ -334,7 +358,7 @@ private fun InventoryItem(
             ) {
                 IconButton(
                     onClick = {
-                        navController.navigate("EditarConsulta?idConsulta=${item.idConsulta}")
+                        navController.navigate("EditarConsulta/${item.idUtilizador}?idConsulta=${item.idConsulta}")
                     }
                 ) {
                     Icon(
@@ -364,7 +388,7 @@ private fun InventoryItem(
                             TextButton(onClick = {
                                 showConfirmDelete = false
                                 coroutineScope.launch {
-                                    historicoMedicoViewModel.apagarConsulta(item)
+                                    consultaViewModel.apagarConsulta(item)
                                 }
                             }) {
                                 Text("Confirmar")

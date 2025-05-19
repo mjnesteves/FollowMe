@@ -62,8 +62,7 @@ fun EditarConsulta(
     val consultaUiState by consultaViewModel.consultaUIStateFlow.collectAsState()
 
     val homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
-    val utilizadorUIStateFlow by homeViewModel.utilizadorUIStateFlow.collectAsState()
-
+    val utilizadorUIStateFlow by homeViewModel.utilizadorUIState.collectAsState()
 
     val idConsulta = consultaUiState.idConsulta
     var hospital = consultaUiState.hospital
@@ -96,6 +95,7 @@ fun EditarConsulta(
             text = utilizadorUIStateFlow.nomeUtilizador,
             fontWeight = FontWeight.Normal,
             style = MaterialTheme.typography.displaySmall
+
         )
 
 
@@ -282,8 +282,6 @@ fun MenuEspecialidadeEditar(
 
 ) {
 
-    val tag = ConsultaViewModel::class.simpleName
-
 
     Column(
         verticalArrangement = spacedBy(8.dp)
@@ -349,9 +347,6 @@ fun MenuHospitalEditar(
     consultaUiState: ConsultaViewModel.ConsultaUIState,
     consultaViewModel: ConsultaViewModel
 ) {
-
-
-    val tag = ConsultaViewModel::class.simpleName
 
 
     Column(

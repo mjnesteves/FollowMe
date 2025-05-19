@@ -23,7 +23,7 @@ class UtilizadorViewModel(
     init {
         if (idUtilizador != null && idUtilizador != -1) {
             viewModelScope.launch {
-                appRepository.getUtilizadorStream(idUtilizador).collect { utilizador ->
+                appRepository.getUtilizador(idUtilizador).collect { utilizador ->
                     utilizador?.let {
                         utilizadorUIState.value = it.toUtilizadorUIState()
                     }

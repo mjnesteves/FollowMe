@@ -17,8 +17,8 @@ class MedicamentoViewModel(
 
 
     private val idUtilizador = savedStateHandle.get<Int>("idUtilizador")
-
     private val idMedicamento = savedStateHandle.get<Int>("idMedicamento")
+
     private val medicamentoUIState = MutableStateFlow(MedicamentoUIState())
     val medicamentoUIStateFlow: StateFlow<MedicamentoUIState> = medicamentoUIState
 
@@ -26,22 +26,19 @@ class MedicamentoViewModel(
     init {
         if (idMedicamento != null && idMedicamento != -1) {
             viewModelScope.launch {
-                appRepository.getMedicamentoStream(idMedicamento).collect { medicamento ->
+                appRepository.getMedicamento(idMedicamento).collect { medicamento ->
                     medicamento?.let {
                         medicamentoUIState.value = it.toMedicamentoUIState()
                     }
                 }
             }
         } else {
-            // New consulta — manually set idUtilizador from SavedStateHandle
             medicamentoUIState.value = idUtilizador?.let {
                 medicamentoUIState.value.copy(
                     idUtilizador = it
                 )
             }!!
-
         }
-
     }
 
 
@@ -92,7 +89,6 @@ class MedicamentoViewModel(
             }
 
             is MedicamentoUIEvent.UtilizadorChanged -> {
-                //val parsed = event.idUtilizador.toIntOrNull() ?: 0
                 medicamentoUIState.value = medicamentoUIState.value.copy(
                     idUtilizador = event.idUtilizador
                 )
@@ -163,6 +159,11 @@ class MedicamentoViewModel(
 
     suspend fun updateMedicamento() {
         appRepository.updateMedicamento(medicamentoUIState.value.toMedicamento())
+    }
+
+    suspend fun apagarMedicamento(item: Medicamento) {
+        medicamentoUIState.value = item.toMedicamentoUIState()
+        appRepository.deleteMedicamento(item)
     }
 
 

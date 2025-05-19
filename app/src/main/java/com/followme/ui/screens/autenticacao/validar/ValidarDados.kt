@@ -1,41 +1,41 @@
 package com.followme.ui.screens.autenticacao.validar
 
-object Validator {
+object Validar {
 
-    fun validaNome(nome: String): ValidationResult {
-        return ValidationResult(
+    fun validaNome(nome: String): ResultadoValidar {
+        return ResultadoValidar(
             (nome.isNotEmpty() && nome.length>=2 )
         )
     }
 
-    fun validaApelido(apelido: String): ValidationResult {
-        return ValidationResult(
+    fun validaApelido(apelido: String): ResultadoValidar {
+        return ResultadoValidar(
             (apelido.isNotEmpty() && apelido.length>=2 )
         )
 
     }
 
-    fun validaEmail(email: String): ValidationResult {
-        return ValidationResult(
+    fun validaEmail(email: String): ResultadoValidar {
+        return ResultadoValidar(
             (email.isNotEmpty())
         )
 
     }
 
-    fun validaPassword(password: String): ValidationResult {
-        return ValidationResult(
+    fun validaPassword(password: String): ResultadoValidar {
+        return ResultadoValidar(
             (password.isNotEmpty() && password.length >= 6)
         )
     }
 
-    fun validaTermosCondicoes(statusValue: Boolean): ValidationResult {
-        return ValidationResult(
+    fun validaTermosCondicoes(statusValue: Boolean): ResultadoValidar {
+        return ResultadoValidar(
             statusValue
         )
     }
 
 }
 
-data class ValidationResult(
+data class ResultadoValidar(
     val status : Boolean = false
 )

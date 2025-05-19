@@ -72,8 +72,9 @@ fun Medicacao(
     val homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val medicamentoViewModel: MedicamentoViewModel =
         viewModel(factory = AppViewModelProvider.Factory)
-    val utilizadorUIStateFlow by homeViewModel.utilizadorUIStateFlow.collectAsState()
+    val utilizadorUIStateFlow by homeViewModel.utilizadorUIState.collectAsState()
     val nomeUtilizador = utilizadorUIStateFlow.nomeUtilizador
+    var confirmarLogout by remember { mutableStateOf(false) }
 
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
@@ -84,8 +85,7 @@ fun Medicacao(
             AppToolbar(
                 userName = homeViewModel.getDisplayName(),
                 logoutButtonClicked = {
-                    homeViewModel.terminarSessao()
-                    navController.navigate("Login")
+                    confirmarLogout = true
                 },
                 navigationIconClicked = {
                     coroutineScope.launch {
@@ -136,6 +136,32 @@ fun Medicacao(
             )
 
 
+        }
+
+        if (confirmarLogout) {
+            AlertDialog(
+                onDismissRequest = { confirmarLogout = false },
+                confirmButton = {
+                    TextButton(onClick = {
+                        confirmarLogout = false
+
+                        coroutineScope.launch {
+                            homeViewModel.terminarSessao()
+                        }
+                        navController.navigate("Login")
+
+                    }) {
+                        Text("Confirmar")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { confirmarLogout = false }) {
+                        Text("Cancelar")
+                    }
+                },
+                title = { Text("Logout") },
+                text = { Text("Deseja Terminar Sessão?") }
+            )
         }
     }
 
@@ -237,6 +263,7 @@ private fun InventoryList(
         items(items = itemList, key = { it?.idMedicamento ?: 0 }) { item ->
             if (item != null) {
                 InventoryItem(
+                    medicamentoViewModel = medicamentoViewModel,
                     navController = navController,
                     medicacaoViewModel = medicacaoViewModel,
                     item = item,
@@ -253,6 +280,7 @@ private fun InventoryList(
 
 @Composable
 private fun InventoryItem(
+    medicamentoViewModel: MedicamentoViewModel,
     medicacaoViewModel: MedicacaoViewModel,
     item: Medicamento, modifier: Modifier = Modifier,
     navController: NavController
@@ -319,7 +347,7 @@ private fun InventoryItem(
             ) {
                 IconButton(
                     onClick = {
-                        navController.navigate("EditarMedicamento?idMedicamento=${item.idMedicamento}")
+                        navController.navigate("EditarMedicamento/${item.idUtilizador}?idMedicamento=${item.idMedicamento}")
                     }
                 ) {
                     Icon(
@@ -348,8 +376,9 @@ private fun InventoryItem(
                             TextButton(onClick = {
                                 showConfirmDelete = false
                                 coroutineScope.launch {
-                                    medicacaoViewModel.apagarMedicamento(item)
+                                    medicamentoViewModel.apagarMedicamento(item)
                                 }
+
                             }) {
                                 Text("Confirmar")
                             }

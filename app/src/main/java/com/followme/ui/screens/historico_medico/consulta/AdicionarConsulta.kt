@@ -61,7 +61,7 @@ fun AdicionarConsulta(navController: NavController) {
     val consultaUiState by consultaViewModel.consultaUIStateFlow.collectAsState()
 
     val homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
-    val utilizadorUIStateFlow by homeViewModel.utilizadorUIStateFlow.collectAsState()
+    val utilizadorUIStateFlow by homeViewModel.utilizadorUIState.collectAsState()
 
 
 

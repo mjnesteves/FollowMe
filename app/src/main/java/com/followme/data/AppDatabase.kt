@@ -14,7 +14,7 @@ import com.followme.data.entidades.Utilizador
  */
 @Database(
     entities = [Consulta::class, Medicamento::class, Utilizador::class, SinaisVitais::class],
-    version = 8,
+    version = 10,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

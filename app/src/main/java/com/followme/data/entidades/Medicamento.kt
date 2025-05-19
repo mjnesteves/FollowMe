@@ -5,6 +5,12 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
+/*
+Representa a Entidade Medicamento
+Define a chave primária, idMedicamento e a chave forasteira IdUtilizador
+A chave primária é inacessível ao utilizador. É gerada automaticamente pelo sistema.
+*/
+
 @Entity(
     tableName = "Medicamento",
     foreignKeys = [
@@ -21,8 +27,7 @@ data class Medicamento(
     val idMedicamento: Int = 0,
 
     @ColumnInfo(index = true)
-    val idUtilizador: Int,  // Foreign key
-
+    val idUtilizador: Int,
     val nomeMedicamento: String,
     val quantidade: Int,
     val frequencia: String,

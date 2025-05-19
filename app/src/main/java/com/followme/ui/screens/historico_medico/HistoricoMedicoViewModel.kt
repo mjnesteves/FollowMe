@@ -35,9 +35,7 @@ class HistoricoMedicoViewModel(
     val tag = MedicamentoViewModel::class.simpleName
 
     suspend fun apagarConsulta(item: Consulta) {
-
-        Log.d(tag, "APAGAR CONSULTA {${item.idConsulta}}")
-
+        Log.d(tag, "APAGAR CONSULTA ${item.idConsulta}")
         appRepository.deleteConsulta(item)
     }
 

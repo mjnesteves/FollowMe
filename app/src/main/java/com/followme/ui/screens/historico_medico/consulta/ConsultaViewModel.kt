@@ -6,10 +6,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.followme.data.entidades.Consulta
-
 import com.followme.data.AppRepository
+import com.followme.data.entidades.Medicamento
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
 
@@ -19,32 +20,29 @@ class ConsultaViewModel(
 ) : ViewModel() {
 
     private val idUtilizador = savedStateHandle.get<Int>("idUtilizador")
-
     private val idConsulta = savedStateHandle.get<Int>("idConsulta")
     private val consultaUIState = MutableStateFlow(ConsultaUIState())
     val consultaUIStateFlow: StateFlow<ConsultaUIState> = consultaUIState
 
     val tag = ConsultaViewModel::class.simpleName
 
-
     init {
         if (idConsulta != null && idConsulta != -1) {
-            // Edit existing consulta
             viewModelScope.launch {
-                appRepository.getConsultaStream(idConsulta).collect { consulta ->
-                    consulta?.let {
+                appRepository.getConsulta(idConsulta)
+                    .filterNotNull()
+                    .collect { consulta ->
+                        consulta.let {
                         consultaUIState.value = it.toConsultaUIState()
                     }
                 }
             }
         } else {
-            // New consulta — manually set idUtilizador from SavedStateHandle
             consultaUIState.value = idUtilizador?.let {
                 consultaUIState.value.copy(
                     idUtilizador = it
                 )
             }!!
-
         }
     }
 
@@ -81,8 +79,6 @@ class ConsultaViewModel(
 
 
 
-
-
     fun onEvent(event: ConsultaUIEvent) {
 
         when (event) {
@@ -93,7 +89,6 @@ class ConsultaViewModel(
                 )
             }
             is ConsultaUIEvent.UtilizadorChanged -> {
-                //val parsed = event.idUtilizador.toIntOrNull() ?: 0
                 consultaUIState.value = consultaUIState.value.copy(
                     idUtilizador = event.idUtilizador
                 )
@@ -154,53 +149,11 @@ class ConsultaViewModel(
         appRepository.updateConsulta(consultaUIState.value.toConsulta())
     }
 
-
-}
-
-
-/*
-    val consulta = Consulta(
-        idUtilizador = consultasUIState.value.idUtilizador,
-        especialidade =  consultasUIState.value.especialidade,
-        hospital =  consultasUIState.value.hospital,
-        dataConsulta = consultasUIState.value.dataConsulta
-    )
-
-
-}
-
-
-
-fun ConsultaDetails.toConsulta(): Consulta = Consulta(
-    idConsulta=  idConsulta,
-    idUtilizador = idUtilizador,
-    especialidade = especialidade,
-    hospital = hospital,
-    dataConsulta = dataConsulta,
-)
-
-fun Consulta.toConsultaUiState(isEntryValid: Boolean = false): ConsultaUiState = ConsultaUiState(
-    consultaDetails = this.toConsultaDetails(),
-)
-
-private fun Consulta.toConsultaDetails(): ConsultaDetails = ConsultaDetails(
-    idConsulta=  idConsulta,
-    idUtilizador = idUtilizador,
-    especialidade = especialidade,
-    hospital = hospital,
-    dataConsulta = dataConsulta,
-)
-
-private val tag = ConsultaViewModel::class.simpleName
-
-private fun validateInput(uiState: ConsultaDetails = consultaUiState.consultaDetails): Boolean {
-
-    return with(uiState) {
-        Log.d(tag, "$especialidade, $hospital, $dataConsulta")
-        return especialidade.isNotBlank() && hospital.isNotBlank()
-
+    suspend fun apagarConsulta(item: Consulta) {
+        consultaUIState.value = item.toConsultaUIState()
+        appRepository.deleteConsulta(item)
     }
 
 
 }
-*/
+

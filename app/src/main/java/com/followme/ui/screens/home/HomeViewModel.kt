@@ -6,12 +6,12 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.followme.data.AppRepository
 import com.followme.data.entidades.Utilizador
-import com.followme.ui.screens.home.entidades.NavigationItem
 import com.followme.ui.screens.utilizadores.utilizador.UtilizadorViewModel.UtilizadorUIState
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,18 +20,16 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 class HomeViewModel(
-    savedStateHandle: SavedStateHandle,
-    private val appRepository: AppRepository
+    private val appRepository: AppRepository,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val idUtilizador = savedStateHandle.get<Int>("idUtilizador")
-
     private val result: Int = idUtilizador ?: 0
 
-    val utilizadorUIStateFlow: StateFlow<UtilizadorUIState> =
-        appRepository.getUtilizadorStream(result)
-            .map { utilizador ->
-                utilizador?.toUIState() ?: UtilizadorUIState() // fallback if null
+    val utilizadorUIState: StateFlow<UtilizadorUIState> =
+        appRepository.getUtilizador(result).map { utilizador ->
+            utilizador?.toUIState() ?: UtilizadorUIState()
             }
             .stateIn(
                 scope = viewModelScope,
@@ -53,24 +51,16 @@ class HomeViewModel(
 
     data class HomeUIState(
         var displayName: String = "",
-
-
         )
-
-    fun getNomeUtilizador(): String {
-        return utilizadorUIStateFlow.value.nomeUtilizador
-    }
 
 
     sealed class HomeUIEvent {
         data class DisplayNameChanged(val displayName: String) : HomeUIEvent()
-
     }
 
 
 
     private fun  onEvent(event: HomeUIEvent){
-
         when(event){
             is HomeUIEvent.DisplayNameChanged -> {
                 homeUIState.value = homeUIState.value.copy(
@@ -111,9 +101,15 @@ class HomeViewModel(
     }
 
 
+    data class NavigationItem(
+        val title: String,
+        val description: String,
+        val navigateTo: String,
+        val icon: ImageVector
+    )
 
 
-    val navigationItemsList = listOf<NavigationItem>(
+    val navigationItemsList = listOf(
         NavigationItem(
             title = "Perfis",
             icon = Icons.Filled.AccountCircle,
@@ -140,15 +136,14 @@ class HomeViewModel(
 
     fun terminarSessao() {
         val firebaseAuth = FirebaseAuth.getInstance()
-
         firebaseAuth.signOut()
 
         val authStateListener = FirebaseAuth.AuthStateListener {
             if (it.currentUser == null) {
-                Log.d(tag, "Inside signout sucess")
-                onEvent(HomeUIEvent.DisplayNameChanged(""))
+                Log.d(tag, "Logout com sucesso!")
+                //onEvent(HomeUIEvent.DisplayNameChanged(""))
             } else {
-                Log.d(tag, "Inside signout is not complete")
+                Log.d(tag, "Logout sem sucesso!. Verifique o que aconteceu!")
             }
         }
 

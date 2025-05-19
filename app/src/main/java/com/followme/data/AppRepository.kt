@@ -13,14 +13,14 @@ interface AppRepository {
     /**
      * Retrieve all the consultas from the the given data source.
      */
-    fun getAllConsultasStream(): Flow<List<Consulta>>
+    fun getAllConsultas(): Flow<List<Consulta>>
 
     /**
      * Retrieve a Consulta from the given data source that matches with the [id].
      */
-    fun getConsultaStream(id: Int): Flow<Consulta?>
+    fun getConsulta(id: Int): Flow<Consulta?>
 
-    fun getAllConsultasUser(id: Int): Flow<List<Consulta?>>
+    fun getAllConsultasUser(id: Int): Flow<List<Consulta>>
 
     /**
      * Insert consulta in the data source
@@ -43,12 +43,12 @@ interface AppRepository {
     /**
      * Retrieve all the medicamentos from the the given data source.
      */
-    fun getAllMedicamentosStream(): Flow<List<Medicamento>>
+    fun getAllMedicamentos(): Flow<List<Medicamento>>
 
     /**
      * Retrieve a Medicamento from the given data source that matches with the [id].
      */
-    fun getMedicamentoStream(id: Int): Flow<Medicamento?>
+    fun getMedicamento(id: Int): Flow<Medicamento?>
 
 
     fun getAllMedicamentosUser(id: Int): Flow<List<Medicamento?>>
@@ -72,12 +72,12 @@ interface AppRepository {
     /**
      * Retrieve all the SinaisVitais from the the given data source.
      */
-    fun getAllSinaisVitaisStream(): Flow<List<SinaisVitais>>
+    fun getAllSinaisVitais(): Flow<List<SinaisVitais>>
 
     /**
      * Retrieve an SinaisVitais from the given data source that matches with the [id].
      */
-    fun getSinaisVitaisStream(id: Int): Flow<SinaisVitais?>
+    fun getSinaisVitais(id: Int): Flow<SinaisVitais?>
 
     /**
      * Insert SinaisVitais in the data source
@@ -102,7 +102,7 @@ interface AppRepository {
     /**
      * Retrieve an Utilizador from the given data source that matches with the [id].
      */
-    fun getUtilizadorStream(id: Int): Flow<Utilizador?>
+    fun getUtilizador(id: Int): Flow<Utilizador?>
 
     /**
      * Insert Utilizador in the data source

@@ -52,7 +52,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.followme.R
-import com.followme.ui.screens.home.entidades.NavigationItem
+import com.followme.ui.screens.home.HomeViewModel
 import com.followme.ui.theme.AccentColor
 import com.followme.ui.theme.Primary
 import com.followme.ui.theme.Secondary
@@ -229,8 +229,10 @@ fun NavigationDrawerHeader(value: String?) {
 }
 
 @Composable
-fun NavigationDrawerBody(navigationDrawerItems: List<NavigationItem>,
-                         onNavigationItemClicked:(NavigationItem) -> Unit) {
+fun NavigationDrawerBody(
+    navigationDrawerItems: List<HomeViewModel.NavigationItem>,
+    onNavigationItemClicked: (HomeViewModel.NavigationItem) -> Unit
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
@@ -244,8 +246,10 @@ fun NavigationDrawerBody(navigationDrawerItems: List<NavigationItem>,
 }
 
 @Composable
-fun NavigationItemRow(item: NavigationItem,
-                      onNavigationItemClicked:(NavigationItem) -> Unit) {
+fun NavigationItemRow(
+    item: HomeViewModel.NavigationItem,
+    onNavigationItemClicked: (HomeViewModel.NavigationItem) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

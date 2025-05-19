@@ -65,7 +65,9 @@ fun EditarMedicamento(navController: NavController) {
     val medicamentoUiState by medicamentoViewModel.medicamentoUIStateFlow.collectAsState()
 
     val homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
-    val utilizadorUIStateFlow by homeViewModel.utilizadorUIStateFlow.collectAsState()
+    val utilizadorUIStateFlow by homeViewModel.utilizadorUIState.collectAsState()
+
+    val nomeUtilizador = utilizadorUIStateFlow.nomeUtilizador
 
     var nomeMedicamento = medicamentoUiState.nomeMedicamento
 
@@ -98,10 +100,12 @@ fun EditarMedicamento(navController: NavController) {
             style = MaterialTheme.typography.displaySmall
         )
         Text(
-            text = utilizadorUIStateFlow.nomeUtilizador,
+            text = nomeUtilizador,
             fontWeight = FontWeight.Normal,
             style = MaterialTheme.typography.displaySmall
         )
+
+        Log.d(tag, "NOME $nomeUtilizador")
 
         Spacer(modifier = Modifier.padding(5.dp))
 
@@ -187,9 +191,9 @@ fun EditarMedicamento(navController: NavController) {
                 )
             },
             uiState = medicamentoUiState,
-            viewModel = medicamentoViewModel
 
-        )
+
+            )
 
 
         Spacer(modifier = Modifier.padding(4.dp))

@@ -12,6 +12,13 @@ import com.followme.data.entidades.SinaisVitais
 import com.followme.data.entidades.Utilizador
 import kotlinx.coroutines.flow.Flow
 
+/*
+Data Access Objects.
+Funcões para acesso à base de dados
+Inclui operações elementares e Queries específicas
+ */
+
+
 @Dao
 interface AppDao {
 
@@ -34,10 +41,10 @@ interface AppDao {
     fun getAllConsultas(): Flow<List<Consulta>>
 
     @Query("SELECT * from Consulta WHERE idUtilizador = :id")
-    fun getAllConsultasUser(id: Int): Flow<List<Consulta?>>
+    fun getAllConsultasUser(id: Int): Flow<List<Consulta>>
 
     // Medicamento
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(item: Medicamento)
 
     @Update
@@ -60,7 +67,7 @@ interface AppDao {
 
 
     //Sinais Vitais
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(item: SinaisVitais)
 
     @Update
@@ -78,7 +85,7 @@ interface AppDao {
 
 
     //Utilizador
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(item: Utilizador)
 
     @Update
@@ -92,7 +99,7 @@ interface AppDao {
     fun getUtilizador(id: Int): Flow<Utilizador?>
 
     @Query("SELECT * from Utilizador ORDER BY idUtilizador ASC")
-    fun getAllUtilizadores(): Flow<List<Utilizador?>>
+    fun getAllUtilizadores(): Flow<List<Utilizador>>
 
 
 

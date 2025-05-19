@@ -6,13 +6,20 @@ import com.followme.data.entidades.SinaisVitais
 import com.followme.data.entidades.Utilizador
 import kotlinx.coroutines.flow.Flow
 
-class OfflineRepository(private val appDao: AppDao) : AppRepository {
-    override fun getAllConsultasStream(): Flow<List<Consulta>> = appDao.getAllConsultas()
+/*
+Funções para operações com a base de dados de forma assíncrona
 
-    override fun getAllConsultasUser(id: Int): Flow<List<Consulta?>> =
+ */
+
+
+
+class OfflineRepository(private val appDao: AppDao) : AppRepository {
+    override fun getAllConsultas(): Flow<List<Consulta>> = appDao.getAllConsultas()
+
+    override fun getAllConsultasUser(id: Int): Flow<List<Consulta>> =
         appDao.getAllConsultasUser(id)
 
-    override fun getConsultaStream(id: Int): Flow<Consulta?> = appDao.getConsulta(id)
+    override fun getConsulta(id: Int): Flow<Consulta?> = appDao.getConsulta(id)
 
     override suspend fun insertConsulta(consulta: Consulta) = appDao.insert(consulta)
 
@@ -20,10 +27,10 @@ class OfflineRepository(private val appDao: AppDao) : AppRepository {
 
     override suspend fun updateConsulta(consulta: Consulta) = appDao.update(consulta)
 
-    override fun getAllMedicamentosStream(): Flow<List<Medicamento>> =
+    override fun getAllMedicamentos(): Flow<List<Medicamento>> =
         appDao.getAllMedicamentos()
 
-    override fun getMedicamentoStream(id: Int): Flow<Medicamento?> = appDao.getMedicamento(id)
+    override fun getMedicamento(id: Int): Flow<Medicamento?> = appDao.getMedicamento(id)
 
 
     override fun getAllMedicamentosUser(id: Int): Flow<List<Medicamento?>> =
@@ -38,10 +45,10 @@ class OfflineRepository(private val appDao: AppDao) : AppRepository {
     override suspend fun updateMedicamento(medicamento: Medicamento) =
         appDao.update(medicamento)
 
-    override fun getAllSinaisVitaisStream(): Flow<List<SinaisVitais>> =
+    override fun getAllSinaisVitais(): Flow<List<SinaisVitais>> =
         appDao.getSinaisVitais()
 
-    override fun getSinaisVitaisStream(id: Int): Flow<SinaisVitais?> = appDao.getSinalVital(id)
+    override fun getSinaisVitais(id: Int): Flow<SinaisVitais?> = appDao.getSinalVital(id)
 
     override suspend fun insertSinaisVitais(sinaisVitais: SinaisVitais) =
         appDao.insert(sinaisVitais)
@@ -52,10 +59,10 @@ class OfflineRepository(private val appDao: AppDao) : AppRepository {
     override suspend fun updateSinaisVitais(sinaisVitais: SinaisVitais) =
         appDao.update(sinaisVitais)
 
-    override fun getAllUtilizadoresStream(): Flow<List<Utilizador?>> =
+    override fun getAllUtilizadoresStream(): Flow<List<Utilizador>> =
         appDao.getAllUtilizadores()
 
-    override fun getUtilizadorStream(id: Int): Flow<Utilizador?> = appDao.getUtilizador(id)
+    override fun getUtilizador(id: Int): Flow<Utilizador?> = appDao.getUtilizador(id)
 
     override suspend fun insertUtilizador(utilizador: Utilizador) = appDao.insert(utilizador)
 

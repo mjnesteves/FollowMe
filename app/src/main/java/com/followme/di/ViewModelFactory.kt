@@ -15,15 +15,20 @@ import com.followme.ui.screens.utilizadores.utilizador.UtilizadorViewModel
 import com.followme.ui.screens.utilizadores.UtilizadoresViewModel
 import com.followme.ui.screens.home.HomeViewModel
 
+/*
+ViewModel Factory
+ */
+
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
+
 
         initializer {
             val application = inventoryApplication()
             val repository = application.container.repositorio
             val savedStateHandle = createSavedStateHandle()
-            HomeViewModel(savedStateHandle, repository)
+            HomeViewModel(repository, savedStateHandle)
         }
 
         initializer {
@@ -78,7 +83,7 @@ object AppViewModelProvider {
 
 /**
  * Extension function to queries for [Application] object and returns an instance of
- * [InventoryApplication].
+ * [AppInstanceLaucher].
  */
-fun CreationExtras.inventoryApplication(): InventoryApplication =
-    (this[AndroidViewModelFactory.APPLICATION_KEY] as InventoryApplication)
+fun CreationExtras.inventoryApplication(): AppInstanceLaucher =
+    (this[AndroidViewModelFactory.APPLICATION_KEY] as AppInstanceLaucher)

@@ -38,7 +38,7 @@ fun Info(navController: NavController) {
 
     val homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 
-    val utilizadorUIStateFlow by homeViewModel.utilizadorUIStateFlow.collectAsState()
+    val utilizadorUIStateFlow by homeViewModel.utilizadorUIState.collectAsState()
 
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()

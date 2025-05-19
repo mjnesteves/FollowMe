@@ -35,12 +35,11 @@ import com.followme.ui.screens.autenticacao.componentes.Linha_Divisora
 import com.followme.ui.screens.autenticacao.componentes.Login_criarConta_hiperligacao
 
 import com.followme.ui.screens.autenticacao.componentes.TextoCentradoBold
-//import com.followme.data.criarconta.CriarContaUIEvent
+
 
 
 @Composable
 fun CriarConta(navController: NavController, criarContaViewModel: CriarContaViewModel = viewModel()){
-
 
     Box(
         modifier = Modifier
@@ -53,15 +52,11 @@ fun CriarConta(navController: NavController, criarContaViewModel: CriarContaView
             .fillMaxSize()
             .background(Color.White)
             .padding(28.dp)
-
-
     ){
         Column (modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-        )
-
-        {
+        ) {
             Spacer(modifier = Modifier.height(40.dp))
 
             Image(
@@ -73,17 +68,14 @@ fun CriarConta(navController: NavController, criarContaViewModel: CriarContaView
 
             )
 
-
             TextoCentradoBold(value = stringResource(id = R.string.criar_conta))
-
             Spacer(modifier = Modifier.height(5.dp))
-
             IntroduzirTextoNormal(
                 labelValue= stringResource(id=R.string.nome),
                 painterResource = painterResource(id=R.drawable.perfil),
                 textValue = criarContaViewModel.criarContaUIState.value.nome,
                 onTextSelected = {
-                    criarContaViewModel.onEvent(CriarContaViewModel.CriarContaUIEvent.NomeChanged(it))
+                    criarContaViewModel.onEvent(CriarContaViewModel.CriarContaUIEvent.NomeMudou(it))
                 },
 
                 errorStatus = criarContaViewModel.criarContaUIState.value.erroNome
@@ -95,7 +87,7 @@ fun CriarConta(navController: NavController, criarContaViewModel: CriarContaView
                 textValue = criarContaViewModel.criarContaUIState.value.apelido,
                 onTextSelected = {
                     criarContaViewModel.onEvent(
-                        CriarContaViewModel.CriarContaUIEvent.ApelidoChanged(
+                        CriarContaViewModel.CriarContaUIEvent.ApelidoMudou(
                             it
                         )
                     )
@@ -108,7 +100,7 @@ fun CriarConta(navController: NavController, criarContaViewModel: CriarContaView
                 textValue = criarContaViewModel.criarContaUIState.value.email,
                 onTextSelected = {
                     criarContaViewModel.onEvent(
-                        CriarContaViewModel.CriarContaUIEvent.EmailChanged(
+                        CriarContaViewModel.CriarContaUIEvent.EmailMudou(
                             it
                         )
                     )
@@ -119,10 +111,10 @@ fun CriarConta(navController: NavController, criarContaViewModel: CriarContaView
             IntroduzirPassoword(
                 labelValue= stringResource(id=R.string.password),
                 fieldValue = criarContaViewModel.criarContaUIState.value.password,
-                painterResource= painterResource(id= R.drawable.password),
+                icon = painterResource(id = R.drawable.password),
                 onTextSelected = {
                     criarContaViewModel.onEvent(
-                        CriarContaViewModel.CriarContaUIEvent.PasswordChanged(
+                        CriarContaViewModel.CriarContaUIEvent.PasswordMudou(
                             it
                         )
                     )
@@ -140,24 +132,19 @@ fun CriarConta(navController: NavController, criarContaViewModel: CriarContaView
                         )
                     )
 
-            }
-            )
-
+                })
             Spacer(modifier = Modifier.height(10.dp))
-
             BotaoLogin(
                 value = stringResource(id = R.string.registo),
                 onButtonClicked = {
                     criarContaViewModel.onEvent(CriarContaViewModel.CriarContaUIEvent.RegisterButtonClicked)
                     navController.navigate("Login")
                 },
-                isEnabled = criarContaViewModel.allValidationsPassed.value
+                isEnabled = criarContaViewModel.validacoes.value
             )
 
             Spacer(modifier = Modifier.height(20.dp))
-
             Linha_Divisora()
-
             Login_criarConta_hiperligacao(
                 login = {navController.navigate("Login")},
                 criarConta = {navController.navigate("CriarConta")},
@@ -166,11 +153,9 @@ fun CriarConta(navController: NavController, criarContaViewModel: CriarContaView
 
         }
     }
-
     if(criarContaViewModel.signUpInProgress.value){
         CircularProgressIndicator()
     }
-
         //Botão de retroceder carregado
         BackHandler {
             navController.popBackStack()

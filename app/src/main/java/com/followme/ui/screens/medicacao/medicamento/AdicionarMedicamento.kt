@@ -67,7 +67,7 @@ fun AdicionarMedicamento(navController: NavController) {
 
 
     val homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
-    val utilizadorUIStateFlow by homeViewModel.utilizadorUIStateFlow.collectAsState()
+    val utilizadorUIStateFlow by homeViewModel.utilizadorUIState.collectAsState()
 
 
     var nomeMedicamento by rememberSaveable { mutableStateOf("") }
@@ -192,7 +192,7 @@ fun AdicionarMedicamento(navController: NavController) {
                 )
             },
             uiState = medicamentoUiState,
-            viewModel = medicamentoViewModel
+
 
         )
 
@@ -267,8 +267,8 @@ fun AdicionarMedicamento(navController: NavController) {
                         )
                         coroutineScope.launch {
                             medicamentoViewModel.insertMedicamento()
-                            navController.navigate("Medicacao?idUtilizador=${medicamentoUiState.idUtilizador}")
                         }
+                        navController.navigate("Medicacao?idUtilizador=${medicamentoUiState.idUtilizador}")
 
                     }
 

@@ -1,6 +1,9 @@
-package com.followme.data;
+package com.followme.di
 
 import android.content.Context
+import com.followme.data.AppDatabase
+import com.followme.data.AppRepository
+import com.followme.data.OfflineRepository
 
 
 /**
@@ -11,11 +14,11 @@ interface AppContainer {
 }
 
 /**
- * [AppContainer] implementation that provides instance of [OfflineItemsRepository]
+ * AppContainer implementation that provides instance of OfflineItemsRepository
  */
 class AppDataContainer(private val context: Context) : AppContainer {
     /**
-     * Implementation for [ItemsRepository]
+     * Implementation for ItemsRepository
      */
     override val repositorio: AppRepository by lazy {
         OfflineRepository(AppDatabase.getDatabase(context).dataBaseDao())

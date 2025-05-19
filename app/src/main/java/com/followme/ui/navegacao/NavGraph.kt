@@ -40,7 +40,7 @@ fun NavGraphBuilder.navigationGraph(navController: NavController) {
         arguments = listOf(
             navArgument("idUtilizador") {
                 type = NavType.IntType
-                defaultValue = -1 // This makes it "optional"
+                defaultValue = -1
             }
         )
     ) {
@@ -74,7 +74,7 @@ fun NavGraphBuilder.navigationGraph(navController: NavController) {
         arguments = listOf(
             navArgument("idUtilizador") {
                 type = NavType.IntType
-                defaultValue = -1 // This makes it "optional"
+                defaultValue = -1
             }
         )
     ) {
@@ -88,7 +88,7 @@ fun NavGraphBuilder.navigationGraph(navController: NavController) {
         arguments = listOf(
             navArgument("idUtilizador") {
                 type = NavType.IntType
-                defaultValue = -1 // This makes it "optional"
+                defaultValue = -1
             }
         )
     ) {
@@ -102,7 +102,7 @@ fun NavGraphBuilder.navigationGraph(navController: NavController) {
         arguments = listOf(
             navArgument("idUtilizador") {
                 type = NavType.IntType
-                defaultValue = -1 // This makes it "optional"
+                defaultValue = -1
             }
         )
     ) {
@@ -116,7 +116,7 @@ fun NavGraphBuilder.navigationGraph(navController: NavController) {
         arguments = listOf(
             navArgument("idUtilizador") {
                 type = NavType.IntType
-                defaultValue = -1 // This makes it "optional"
+                defaultValue = -1
             }
         )
     ) {
@@ -125,8 +125,12 @@ fun NavGraphBuilder.navigationGraph(navController: NavController) {
 
 
     composable(
-        "EditarConsulta?idConsulta={idConsulta}",
+        "EditarConsulta/{idUtilizador}?idConsulta={idConsulta}",
         arguments = listOf(
+            navArgument("idUtilizador") {
+                type = NavType.IntType
+                defaultValue = -1
+            },
             navArgument("idConsulta") {
                 type = NavType.IntType
                 defaultValue = -1
@@ -137,8 +141,12 @@ fun NavGraphBuilder.navigationGraph(navController: NavController) {
     }
 
     composable(
-        "EditarMedicamento?idMedicamento={idMedicamento}",
+        "EditarMedicamento/{idUtilizador}?idMedicamento={idMedicamento}",
         arguments = listOf(
+            navArgument("idUtilizador") {
+                type = NavType.IntType
+                defaultValue = -1
+            },
             navArgument("idMedicamento") {
                 type = NavType.IntType
                 defaultValue = -1
@@ -161,7 +169,7 @@ fun NavGraphBuilder.navigationGraph(navController: NavController) {
         arguments = listOf(
             navArgument("idUtilizador") {
                 type = NavType.IntType
-                defaultValue = -1 // This makes it "optional"
+                defaultValue = -1
             }
         )
     ) {
