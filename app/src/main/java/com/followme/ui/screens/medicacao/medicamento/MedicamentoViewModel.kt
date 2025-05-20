@@ -67,13 +67,13 @@ class MedicamentoViewModel(
 
     sealed class MedicamentoUIEvent {
 
-        data class IdMedicamentoChanged(val idMedicamento: Int) : MedicamentoUIEvent()
-        data class UtilizadorChanged(val idUtilizador: Int) : MedicamentoUIEvent()
-        data class NomeMedicamentoChanged(val nomeMedicamento: String) : MedicamentoUIEvent()
-        data class QuantidadeChanged(val quantidade: String) : MedicamentoUIEvent()
-        data class FrequenciaChanged(val frequencia: String) : MedicamentoUIEvent()
-        data class DataFimChanged(val dataFim: String) : MedicamentoUIEvent()
-        data class QuandoTomaChanged(val quandoToma: String) : MedicamentoUIEvent()
+        data class IdMedicamentoMudou(val idMedicamento: Int) : MedicamentoUIEvent()
+        data class UtilizadorMudou(val idUtilizador: Int) : MedicamentoUIEvent()
+        data class NomeMedicamentoMudou(val nomeMedicamento: String) : MedicamentoUIEvent()
+        data class QuantidadeMudou(val quantidade: String) : MedicamentoUIEvent()
+        data class FrequenciaMudou(val frequencia: String) : MedicamentoUIEvent()
+        data class DataFimMoudou(val dataFim: String) : MedicamentoUIEvent()
+        data class QuandoTomaMudou(val quandoToma: String) : MedicamentoUIEvent()
 
     }
 
@@ -82,27 +82,27 @@ class MedicamentoViewModel(
 
         when (event) {
 
-            is MedicamentoUIEvent.IdMedicamentoChanged -> {
+            is MedicamentoUIEvent.IdMedicamentoMudou -> {
                 medicamentoUIState.value = medicamentoUIState.value.copy(
                     idMedicamento = event.idMedicamento
                 )
             }
 
-            is MedicamentoUIEvent.UtilizadorChanged -> {
+            is MedicamentoUIEvent.UtilizadorMudou -> {
                 medicamentoUIState.value = medicamentoUIState.value.copy(
                     idUtilizador = event.idUtilizador
                 )
                 printState()
             }
 
-            is MedicamentoUIEvent.NomeMedicamentoChanged -> {
+            is MedicamentoUIEvent.NomeMedicamentoMudou -> {
                 medicamentoUIState.value = medicamentoUIState.value.copy(
                     nomeMedicamento = event.nomeMedicamento
                 )
                 printState()
             }
 
-            is MedicamentoUIEvent.QuantidadeChanged -> {
+            is MedicamentoUIEvent.QuantidadeMudou -> {
                 val parsed = event.quantidade.toIntOrNull() ?: 0
                 medicamentoUIState.value = medicamentoUIState.value.copy(
                     quantidade = parsed
@@ -110,21 +110,21 @@ class MedicamentoViewModel(
                 printState()
             }
 
-            is MedicamentoUIEvent.FrequenciaChanged -> {
+            is MedicamentoUIEvent.FrequenciaMudou -> {
                 medicamentoUIState.value = medicamentoUIState.value.copy(
                     frequencia = event.frequencia
                 )
                 printState()
             }
 
-            is MedicamentoUIEvent.DataFimChanged -> {
+            is MedicamentoUIEvent.DataFimMoudou -> {
                 medicamentoUIState.value = medicamentoUIState.value.copy(
                     dataFim = event.dataFim
                 )
                 printState()
             }
 
-            is MedicamentoUIEvent.QuandoTomaChanged -> {
+            is MedicamentoUIEvent.QuandoTomaMudou -> {
                 medicamentoUIState.value = medicamentoUIState.value.copy(
                     quandoToma = event.quandoToma
                 )

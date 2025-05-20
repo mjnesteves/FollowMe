@@ -3,10 +3,11 @@ package com.followme.ui.screens.autenticacao.login
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.followme.data.AppRepository
 import com.followme.ui.screens.autenticacao.validar.Validar
 import com.google.firebase.auth.FirebaseAuth
 
-class LoginViewModel:ViewModel() {
+class LoginViewModel(repositorio: AppRepository) : ViewModel() {
 
     // Classe que contém a informação do estado do objeto
 
@@ -15,8 +16,6 @@ class LoginViewModel:ViewModel() {
         var password: String = "",
         var erroEmail: Boolean = false,
         var erroPassword: Boolean = false
-
-
     )
 
 
@@ -34,7 +33,7 @@ class LoginViewModel:ViewModel() {
     // Variável que guarda o objeto no estado atual
     var loginUIState = mutableStateOf(LoginUIState())
 
-    // Variável que guarda o estado das validações dos valores introduzidos
+    // Variável do tipo boolean que guarda o estado das validações dos valores introduzidos
     var validacoes = mutableStateOf(false)
 
     // Variável utilizada com o CircularProgress Indicator, sinaliza quando o login está em progresso
@@ -71,18 +70,19 @@ class LoginViewModel:ViewModel() {
 
             }
         }
-        // Executa a função declarada abaixo
+        // Executa a função declarada abaixo (Validar Regras)
         validarUIDataRegras()
         printEstado()
     }
 
-
+    //Imprime no log
     private fun printEstado() {
         Log.d(tag, loginUIState.value.toString())
     }
 
     // Valida as regras definidas no ficheiro ValidarDados
     private fun validarUIDataRegras(){
+
 
         val resValidaEmail = Validar.validaEmail(
             email = loginUIState.value.email
@@ -92,13 +92,22 @@ class LoginViewModel:ViewModel() {
             password = loginUIState.value.password
         )
 
-
+        //Se o email e password forem validados, a variavel validacoes, é true
         validacoes.value = resValidaEmail.status && resValidaPassword.status
 
+        //Print no log do progresso da introdução dos caracteres nos campos (onEvent)
         Log.d(tag, "Validar_Regras")
         Log.d(tag, "email=$resValidaEmail")
         Log.d(tag, "password=$resValidaPassword")
+        Log.d(tag, "erroEmail=${loginUIState.value.erroEmail}")
+        Log.d(tag, "erroPassword=${loginUIState.value.erroPassword}")
 
+        /*
+        As variáveis erroEmail e erroPassword servem para validar se os campos email e password estão validados,
+        Se sim, a linha exterior do OutlinedTextFiled passa de vermelha para azul.
+        O modificador isError permite esta funcionalidade
+
+         */
         loginUIState.value = loginUIState.value.copy(
             erroEmail = resValidaEmail.status,
             erroPassword = resValidaPassword.status,
@@ -107,11 +116,12 @@ class LoginViewModel:ViewModel() {
 
     }
 
-
+    // Getter para obter o estado da variavel loginError -> Modificada no addOnFailureListener
     fun getLoginError(): Boolean {
         return loginError.value
     }
 
+    // Getter para obter o estado da variavel loginError -> Modificada no addOnCompleteListener
     fun getLoginStatus(): Boolean {
         return loginStatus.value
     }
@@ -126,9 +136,16 @@ class LoginViewModel:ViewModel() {
         val email = loginUIState.value.email
         val password = loginUIState.value.password
 
+        //Autenticacao Firebase
         FirebaseAuth
+
+            //Obter a instância iniciada no arranque da aplicação --> Ver ficheiro AppInstanceLauncher
             .getInstance()
+
+            // Fazer o login no Firebase
             .signInWithEmailAndPassword(email, password)
+
+            //Listener para autenticação bem sucedida
             .addOnCompleteListener{
 
                 Log.d(tag, "A tentar fazer Login ...")
@@ -141,6 +158,8 @@ class LoginViewModel:ViewModel() {
                 }
 
             }
+
+            //Listener para autenticação com falhas
             .addOnFailureListener{
                 Log.d(tag, "Login sem sucesso")
                 Log.d(tag, "Erro = {${it.localizedMessage}")

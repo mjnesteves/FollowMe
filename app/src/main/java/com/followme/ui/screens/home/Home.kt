@@ -91,7 +91,8 @@ fun Home(navController: NavController) {
         drawerGesturesEnabled = scaffoldState.drawerState.isOpen,
         drawerContent = {
             NavigationDrawerHeader(homeViewModel.getDisplayName())
-            NavigationDrawerBody(navigationDrawerItems = homeViewModel.navigationItemsList,
+            NavigationDrawerBody(
+                navigationDrawerItems = homeViewModel.navigationItemsList,
                 onNavigationItemClicked = {
                     navController.navigate(it.navigateTo)
                 })
@@ -113,16 +114,12 @@ fun Home(navController: NavController) {
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
 
-
         ) {
             Text(
                 text = utilizadorUIStateFlow.nomeUtilizador,
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.displaySmall
             )
-
-
-
 
 
             Spacer(modifier = Modifier.height(70.dp))

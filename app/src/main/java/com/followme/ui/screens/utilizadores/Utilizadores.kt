@@ -70,7 +70,6 @@ import com.followme.ui.screens.home.HomeViewModel
 @Composable
 fun Utilizadores(
     navController: NavController
-
 ) {
 
     val utilizadoresViewModel: UtilizadoresViewModel =

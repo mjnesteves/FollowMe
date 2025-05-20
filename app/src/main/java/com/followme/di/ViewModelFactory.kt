@@ -6,6 +6,8 @@ import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.followme.ui.screens.autenticacao.criarconta.CriarContaViewModel
+import com.followme.ui.screens.autenticacao.login.LoginViewModel
 
 import com.followme.ui.screens.historico_medico.HistoricoMedicoViewModel
 import com.followme.ui.screens.historico_medico.consulta.ConsultaViewModel
@@ -23,7 +25,16 @@ ViewModel Factory
 object AppViewModelProvider {
     val Factory = viewModelFactory {
 
+        initializer {
+            CriarContaViewModel(inventoryApplication().container.repositorio)
+        }
 
+        initializer {
+            LoginViewModel(inventoryApplication().container.repositorio)
+        }
+
+
+        // Inicia os ViewModels
         initializer {
             val application = inventoryApplication()
             val repository = application.container.repositorio

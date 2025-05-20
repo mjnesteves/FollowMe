@@ -122,7 +122,7 @@ fun AdicionarMedicamento(navController: NavController) {
             onValueChange = {
                 nomeMedicamento = it
                 medicamentoViewModel.onEvent(
-                    MedicamentoViewModel.MedicamentoUIEvent.NomeMedicamentoChanged(
+                    MedicamentoViewModel.MedicamentoUIEvent.NomeMedicamentoMudou(
                         it
                     )
                 )
@@ -156,7 +156,7 @@ fun AdicionarMedicamento(navController: NavController) {
                     onValueChange = {
                         quantidade = it
                         medicamentoViewModel.onEvent(
-                            MedicamentoViewModel.MedicamentoUIEvent.QuantidadeChanged(it)
+                            MedicamentoViewModel.MedicamentoUIEvent.QuantidadeMudou(it)
                         )
                     },
 
@@ -169,7 +169,7 @@ fun AdicionarMedicamento(navController: NavController) {
                 frequencia = { frequencia = it },
                 updateViewModel = {
                     medicamentoViewModel.onEvent(
-                        MedicamentoViewModel.MedicamentoUIEvent.FrequenciaChanged(
+                        MedicamentoViewModel.MedicamentoUIEvent.FrequenciaMudou(
                             it
                         )
                     )
@@ -186,7 +186,7 @@ fun AdicionarMedicamento(navController: NavController) {
             data = { dataFim = it },
             updateViewModel = {
                 medicamentoViewModel.onEvent(
-                    MedicamentoViewModel.MedicamentoUIEvent.DataFimChanged(
+                    MedicamentoViewModel.MedicamentoUIEvent.DataFimMoudou(
                         it
                     )
                 )
@@ -203,7 +203,7 @@ fun AdicionarMedicamento(navController: NavController) {
             quando = { quandoToma = it },
             updateViewModel = {
                 medicamentoViewModel.onEvent(
-                    MedicamentoViewModel.MedicamentoUIEvent.QuandoTomaChanged(
+                    MedicamentoViewModel.MedicamentoUIEvent.QuandoTomaMudou(
                         it
                     )
                 )

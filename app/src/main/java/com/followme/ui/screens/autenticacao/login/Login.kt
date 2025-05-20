@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.followme.R
+import com.followme.di.AppViewModelProvider
 
 import com.followme.ui.screens.autenticacao.componentes.Alerta_Erro_Login
 
@@ -46,7 +47,10 @@ import kotlinx.coroutines.launch
 
 @Composable
 
-fun Login(navController: NavController, loginViewModel: LoginViewModel = viewModel()) {
+fun Login(
+    navController: NavController
+) {
+    val loginViewModel: LoginViewModel = viewModel(factory = AppViewModelProvider.Factory)
 
     // Variável que indica que o login está em progresso.
     // Quando o valor é verdadeiro, mostra o círculo, simular processamento
@@ -90,7 +94,6 @@ fun Login(navController: NavController, loginViewModel: LoginViewModel = viewMod
                     labelValue = stringResource(id = R.string.email),
                     textValue = loginViewModel.loginUIState.value.email,
                     painterResource(id = R.drawable.email),
-
                     onTextSelected = {
                         loginViewModel.onEvent(LoginViewModel.LoginUIEvent.EmailMudou(it))
                     },
@@ -105,6 +108,7 @@ fun Login(navController: NavController, loginViewModel: LoginViewModel = viewMod
                         loginViewModel.onEvent(LoginViewModel.LoginUIEvent.PasswordMudou(it))
                     },
                     errorStatus = loginViewModel.loginUIState.value.erroPassword
+
                 )
 
                 Spacer(modifier = Modifier.height(40.dp))

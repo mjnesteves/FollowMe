@@ -143,7 +143,7 @@ class HomeViewModel(
                 Log.d(tag, "Logout com sucesso!")
                 //onEvent(HomeUIEvent.DisplayNameChanged(""))
             } else {
-                Log.d(tag, "Logout sem sucesso!. Verifique o que aconteceu!")
+                Log.d(tag, "!!! Logout sem sucesso!!!. Verifique o que aconteceu!")
             }
         }
 

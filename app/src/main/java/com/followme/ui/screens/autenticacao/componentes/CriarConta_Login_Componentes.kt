@@ -99,7 +99,7 @@ fun IntroduzirTextoNormal(
         modifier = Modifier.fillMaxWidth(),
         label = { Text(labelValue) },
         keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Email
+            keyboardType = KeyboardType.Text
         ),
         singleLine = true,
         maxLines = 1,
@@ -166,7 +166,7 @@ fun IntroduzirPassoword(
         modifier = Modifier.fillMaxWidth(),
         label = { Text(text = labelValue) },
 
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         singleLine = true,
         keyboardActions = KeyboardActions {
             localFocusManager.clearFocus()

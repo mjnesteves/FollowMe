@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.followme.R
+import com.followme.di.AppViewModelProvider
 import com.followme.ui.screens.autenticacao.componentes.BotaoLogin
 
 import com.followme.ui.screens.autenticacao.componentes.CheckBoxTermosCondicoes
@@ -39,7 +40,11 @@ import com.followme.ui.screens.autenticacao.componentes.TextoCentradoBold
 
 
 @Composable
-fun CriarConta(navController: NavController, criarContaViewModel: CriarContaViewModel = viewModel()){
+fun CriarConta(
+    navController: NavController
+) {
+
+    val criarContaViewModel: CriarContaViewModel = viewModel(factory = AppViewModelProvider.Factory)
 
     Box(
         modifier = Modifier
@@ -99,11 +104,7 @@ fun CriarConta(navController: NavController, criarContaViewModel: CriarContaView
                 painterResource = painterResource(id= R.drawable.email),
                 textValue = criarContaViewModel.criarContaUIState.value.email,
                 onTextSelected = {
-                    criarContaViewModel.onEvent(
-                        CriarContaViewModel.CriarContaUIEvent.EmailMudou(
-                            it
-                        )
-                    )
+                    criarContaViewModel.onEvent(CriarContaViewModel.CriarContaUIEvent.EmailMudou(it))
                 },
                 errorStatus = criarContaViewModel.criarContaUIState.value.erroEmail
             )

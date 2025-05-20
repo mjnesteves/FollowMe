@@ -4,11 +4,12 @@ package com.followme.ui.screens.autenticacao.criarconta
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.followme.data.AppRepository
 import com.followme.ui.screens.autenticacao.validar.Validar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.userProfileChangeRequest
 
-class CriarContaViewModel: ViewModel(){
+class CriarContaViewModel(repositorio: AppRepository) : ViewModel() {
 
     // Classe que contém a informação do estado do objeto
     data class CriarContaUIState(

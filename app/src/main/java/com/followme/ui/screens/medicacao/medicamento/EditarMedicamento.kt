@@ -121,7 +121,7 @@ fun EditarMedicamento(navController: NavController) {
             onValueChange = {
                 nomeMedicamento = it
                 medicamentoViewModel.onEvent(
-                    MedicamentoViewModel.MedicamentoUIEvent.NomeMedicamentoChanged(
+                    MedicamentoViewModel.MedicamentoUIEvent.NomeMedicamentoMudou(
                         it
                     )
                 )
@@ -147,16 +147,28 @@ fun EditarMedicamento(navController: NavController) {
                 TextField(
                     modifier = Modifier
                         .width(128.dp),
-                    value = medicamentoUiState.quantidade.toString(),
+
+
+                    /* modificador value:
+                    O campo quantidade é do tipo inteiro, logo é útil converter para String para representação.
+                    -No ViewModel, o valor é convertido para inteiro antes de ser armazenado no objeto UIState. -- Ver função onEvent QuantidadeMudou
+                    -Quando a variável não tem valor, ou seja, é null, existe um crash. É expectável. Para contornar esta situação, aquando a conversão no ViewModel esta é colocada
+                    automáticamente a zero. Assim, é feita a conversão para String vazia (diferente de null) e é mostrado o placeholder.
+
+                     */
+
+                    value =
+                        if (medicamentoUiState.quantidade == 0) ""
+                        else medicamentoUiState.quantidade.toString(),
                     onValueChange = {
                         quantidade = it
                         medicamentoViewModel.onEvent(
-                            MedicamentoViewModel.MedicamentoUIEvent.QuantidadeChanged(
+                            MedicamentoViewModel.MedicamentoUIEvent.QuantidadeMudou(
                                 it
                             )
                         )
                     },
-                    //placeholder = { Text(text = "ex: 1") },
+                    placeholder = { Text(text = "ex: 1") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     singleLine = true,
                     maxLines = 1,
@@ -166,7 +178,7 @@ fun EditarMedicamento(navController: NavController) {
                 frequencia = { frequencia = it },
                 updateViewModel = {
                     medicamentoViewModel.onEvent(
-                        MedicamentoViewModel.MedicamentoUIEvent.FrequenciaChanged(
+                        MedicamentoViewModel.MedicamentoUIEvent.FrequenciaMudou(
                             it
                         )
                     )
@@ -185,7 +197,7 @@ fun EditarMedicamento(navController: NavController) {
             data = { dataFim = it },
             updateViewModel = {
                 medicamentoViewModel.onEvent(
-                    MedicamentoViewModel.MedicamentoUIEvent.DataFimChanged(
+                    MedicamentoViewModel.MedicamentoUIEvent.DataFimMoudou(
                         it
                     )
                 )
@@ -202,7 +214,7 @@ fun EditarMedicamento(navController: NavController) {
             quando = { quandoToma = it },
             updateViewModel = {
                 medicamentoViewModel.onEvent(
-                    MedicamentoViewModel.MedicamentoUIEvent.QuandoTomaChanged(
+                    MedicamentoViewModel.MedicamentoUIEvent.QuandoTomaMudou(
                         it
                     )
                 )
@@ -339,7 +351,7 @@ fun MenuFrequenciasEditar(
                 value = selectedOptionText,
                 onValueChange = {
                     medicamentoViewModel.onEvent(
-                        MedicamentoViewModel.MedicamentoUIEvent.FrequenciaChanged(
+                        MedicamentoViewModel.MedicamentoUIEvent.FrequenciaMudou(
                             it
                         )
                     )
@@ -399,7 +411,7 @@ fun MenuTempoDiaEditar(
                 value = selectedOptionText,
                 onValueChange = {
                     medicamentoViewModel.onEvent(
-                        MedicamentoViewModel.MedicamentoUIEvent.QuandoTomaChanged(
+                        MedicamentoViewModel.MedicamentoUIEvent.QuandoTomaMudou(
                             it
                         )
                     )

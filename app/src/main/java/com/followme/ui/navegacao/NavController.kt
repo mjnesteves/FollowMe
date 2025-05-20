@@ -13,7 +13,7 @@ fun Navegacao(){
     val navController = rememberNavController()
 
     //NavHost
-    NavHost(navController = navController, startDestination = "Utilizadores") {
+    NavHost(navController = navController, startDestination = "CriarConta") {
         navigationGraph(navController=navController)
     }
 
