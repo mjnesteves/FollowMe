@@ -64,18 +64,13 @@ fun AdicionarConsulta(navController: NavController) {
     val utilizadorUIStateFlow by homeViewModel.utilizadorUIState.collectAsState()
 
 
-
     var hospital by rememberSaveable { mutableStateOf(Hospital.HospitalAmatoLusitano.name) }
-
     var especialidade by rememberSaveable { mutableStateOf(Especialidade.Anestesiologia.name) }
-
     var horaConsulta by rememberSaveable { mutableStateOf("") }
-
     var dataConsulta by rememberSaveable { mutableStateOf("") }
 
     val coroutineScope = rememberCoroutineScope()
-
-    var showDialog by remember { mutableStateOf(false) }
+    var mostrarInfo by remember { mutableStateOf(false) }
 
 
     Column(
@@ -92,18 +87,13 @@ fun AdicionarConsulta(navController: NavController) {
             text = stringResource(id = R.string.adicionarConsulta),
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.displaySmall
-
         )
 
         Text(
             text = utilizadorUIStateFlow.nomeUtilizador,
             fontWeight = FontWeight.Normal,
             style = MaterialTheme.typography.displaySmall
-
         )
-
-
-
 
         Spacer(modifier = Modifier.padding(8.dp))
 
@@ -115,14 +105,10 @@ fun AdicionarConsulta(navController: NavController) {
                         it
                     )
                 )
-
             },
         )
 
-
-
         Spacer(modifier = Modifier.padding(8.dp))
-
 
         MenuEspecialidadeAdicionar(
             especialidade = { especialidade = it },
@@ -132,18 +118,14 @@ fun AdicionarConsulta(navController: NavController) {
                         it
                     )
                 )
-
-
             },
         )
-
 
         Spacer(modifier = Modifier.padding(8.dp))
 
         Row(
             horizontalArrangement = spacedBy(16.dp)
         ) {
-
             Column(
                 modifier = Modifier
                     .weight(0.45f)
@@ -159,14 +141,12 @@ fun AdicionarConsulta(navController: NavController) {
                         )
                     },
                     uiState = consultaUiState,
-                    viewModel = consultaViewModel
                 )
             }
             Column(
                 modifier = Modifier
                     .weight(0.60f)
             ) {
-
                 Data(
                     contexto = stringResource(id = R.string.dataConsulta),
                     data = { dataConsulta = it },
@@ -178,14 +158,11 @@ fun AdicionarConsulta(navController: NavController) {
                         )
                     },
                     uiState = consultaUiState,
-                    viewModel = consultaViewModel
                 )
             }
         }
 
-
         Spacer(modifier = Modifier.padding(60.dp))
-
 
         Row(
             modifier = Modifier
@@ -200,48 +177,40 @@ fun AdicionarConsulta(navController: NavController) {
                 onClick = {
                     navController.navigate("HistoricoMedico?idUtilizador=${consultaUiState.idUtilizador}")
                 }
-
-
             ) {
                 Text(
                     text = stringResource(id = R.string.cancelar),
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
-
             spacedBy(50.dp)
 
             Button(
                 modifier = Modifier
-                    //.fillMaxWidth()
                     .height(56.dp)
                     .width(150.dp),
                 onClick = {
-
-
                     Log.d(
                         tag,
-                        " onValidate , $especialidade, $hospital, $horaConsulta, $dataConsulta"
+                        "Consulta:, $especialidade, $hospital, $horaConsulta, $dataConsulta"
                     )
 
-                    val result = (validarConsulta(
+                    val validarDados = (validarConsulta(
                         especialidade = especialidade,
                         hospital = hospital,
                         horaConsulta = horaConsulta,
                         dataConsulta = dataConsulta
                     ))
 
-                    if (!result) {
-                        showDialog = true
+                    if (!validarDados) {
+                        mostrarInfo = true
                     } else {
-                        Log.d(tag, " onValidate $especialidade, $hospital, $dataConsulta")
+                        Log.d(tag, "Validar Dados: $especialidade, $hospital, $dataConsulta")
                         coroutineScope.launch {
-                            consultaViewModel.insertConsulta()
-                            navController.navigate("HistoricoMedico?idUtilizador=${consultaUiState.idUtilizador}")
+                            consultaViewModel.inserirConsulta()
                         }
-
+                        navController.navigate("HistoricoMedico?idUtilizador=${consultaUiState.idUtilizador}")
                     }
-
                 },
                 shape = MaterialTheme.shapes.extraLarge
             ) {
@@ -250,13 +219,12 @@ fun AdicionarConsulta(navController: NavController) {
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
-
         }
-        if (showDialog) {
+        if (mostrarInfo) {
             AlertDialog(
-                onDismissRequest = { showDialog = false },
+                onDismissRequest = { mostrarInfo = false },
                 confirmButton = {
-                    TextButton(onClick = { showDialog = false }) {
+                    TextButton(onClick = { mostrarInfo = false }) {
                         Text("OK")
                     }
                 },
@@ -265,7 +233,6 @@ fun AdicionarConsulta(navController: NavController) {
             )
         }
     }
-
     BackHandler {
         navController.navigate("HistoricoMedico?idUtilizador=${consultaUiState.idUtilizador}")
     }

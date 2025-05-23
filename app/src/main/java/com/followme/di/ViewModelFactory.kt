@@ -25,6 +25,8 @@ ViewModel Factory
 object AppViewModelProvider {
     val Factory = viewModelFactory {
 
+        // Inicia os ViewModels
+
         initializer {
             CriarContaViewModel(inventoryApplication().container.repositorio)
         }
@@ -34,7 +36,6 @@ object AppViewModelProvider {
         }
 
 
-        // Inicia os ViewModels
         initializer {
             val application = inventoryApplication()
             val repository = application.container.repositorio

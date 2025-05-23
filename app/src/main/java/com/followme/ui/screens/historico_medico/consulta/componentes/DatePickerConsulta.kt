@@ -61,8 +61,17 @@ fun Data(
                 val newDate = Calendar.getInstance()
                 newDate.set(year, month, dayOfMonth)
                 selectedDate = " ${month.toMonthName()} $dayOfMonth, $year"
-                //selectedDate = "$dayOfMonth - $month.t - $year"
-                //data(newDate.timeInMillis)
+
+                /*
+                Formatação opcional da data
+
+                    selectedDate = "$dayOfMonth - $month.t - $year"
+
+                Formatação da data no formato convencional - > Long
+
+                    data(newDate.timeInMillis)
+
+                 */
                 data(selectedDate)
                 updateViewModel(selectedDate)
             },

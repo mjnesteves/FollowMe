@@ -36,7 +36,6 @@ fun Data(
     data: (String) -> Unit,
     updateViewModel: (String) -> Unit,
     uiState: ConsultaViewModel.ConsultaUIState,
-    viewModel: ConsultaViewModel
 ) {
     Text(
 
@@ -47,7 +46,7 @@ fun Data(
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed: Boolean by interactionSource.collectIsPressedAsState()
 
-    val currentDate = Date().toFormattedStringDate()
+    //val currentDate = Date().toFormattedStringDate()
     var selectedDate by rememberSaveable { mutableStateOf("") }
 
     val context = LocalContext.current
@@ -91,7 +90,6 @@ fun Data(
         },
         interactionSource = interactionSource
     )
-
     if (isPressed) {
         datePickerDialog.show()
     }
@@ -106,11 +104,6 @@ fun Date.toFormattedStringDate(): String {
     return simpleDateFormat.format(this)
 }
 
-fun Date.toFormattedStringHour(): String {
-    val simpleHour = SimpleDateFormat("HH:mm", Locale.getDefault())
-    return simpleHour.format(this)
-}
-
 
 @SuppressLint("DefaultLocale")
 @Composable
@@ -119,7 +112,6 @@ fun Hora(
     hora: (String) -> Unit,
     updateViewModel: (String) -> Unit,
     uiState: ConsultaViewModel.ConsultaUIState,
-    viewModel: ConsultaViewModel
 ) {
     Text(
         text = contexto,
@@ -129,7 +121,7 @@ fun Hora(
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed: Boolean by interactionSource.collectIsPressedAsState()
 
-    val currentHour = Date().toFormattedStringHour()
+    //val currentHour = Date().toFormattedStringHour()
     var selectedHour by rememberSaveable { mutableStateOf("") }
 
     val context = LocalContext.current

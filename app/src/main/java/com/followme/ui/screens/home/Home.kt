@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -68,7 +69,7 @@ fun Home(navController: NavController) {
     val homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 
     val utilizadorUIStateFlow by homeViewModel.utilizadorUIState.collectAsState()
-
+    val nomeUtilizador = utilizadorUIStateFlow.nomeUtilizador
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
     var confirmarLogout by remember { mutableStateOf(false) }
@@ -94,7 +95,7 @@ fun Home(navController: NavController) {
             NavigationDrawerBody(
                 navigationDrawerItems = homeViewModel.navigationItemsList,
                 onNavigationItemClicked = {
-                    navController.navigate(it.navigateTo)
+                    navController.navigate(it.navegar)
                 })
         },
 
@@ -115,14 +116,24 @@ fun Home(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
 
         ) {
+            Spacer(modifier = Modifier.height(10.dp))
             Text(
-                text = utilizadorUIStateFlow.nomeUtilizador,
+                text = "Perfil de $nomeUtilizador",
                 fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.displaySmall
+                style = MaterialTheme.typography.titleLarge
             )
 
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                text = stringResource(R.string.home),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleLarge,
 
-            Spacer(modifier = Modifier.height(70.dp))
+                )
+
+            Spacer(modifier = Modifier.height(40.dp))
 
             BotaoAplicacoes(
                 value = stringResource(id = R.string.HistoricoMedico),
@@ -178,17 +189,11 @@ fun Home(navController: NavController) {
                 text = { Text("Deseja Terminar Sessão?") }
             )
         }
-
-
-
     }
-
 
     BackHandler {
         navController.popBackStack()
     }
-
-
 }
 
 

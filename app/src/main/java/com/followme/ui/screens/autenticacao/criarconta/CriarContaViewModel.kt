@@ -212,17 +212,12 @@ class CriarContaViewModel(repositorio: AppRepository) : ViewModel() {
                         criarContaUIState.value.nome,
                         criarContaUIState.value.apelido
                     )
-
                 }
-
             }
             .addOnFailureListener {
                 Log.d(tag, "Registo sem sucesso...")
                 Log.d(tag, "Erro = ${it.localizedMessage}")
             }
-
-
-
     }
 
     // Atualiza o displayName do utilizador na plataforma

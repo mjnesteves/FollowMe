@@ -1,6 +1,5 @@
 package com.followme.ui.screens.medicacao
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
@@ -9,7 +8,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -100,8 +101,7 @@ fun Medicacao(
             NavigationDrawerBody(
                 navigationDrawerItems = homeViewModel.navigationItemsList,
                 onNavigationItemClicked = {
-                    Log.d("ComingHere", "inside_NavigationItemClicked")
-                    Log.d("ComingHere", "${it.navigateTo} ${it.title}")
+                    navController.navigate(it.navegar)
                 })
         },
 
@@ -125,7 +125,6 @@ fun Medicacao(
 
             ) {
 
-
             MedicacaoBody(
                 medicamentoViewModel = medicamentoViewModel,
                 navController = navController,
@@ -134,8 +133,6 @@ fun Medicacao(
                 contentPadding = innerPadding,
                 nomeUtilizador = nomeUtilizador
             )
-
-
         }
 
         if (confirmarLogout) {
@@ -165,7 +162,6 @@ fun Medicacao(
         }
     }
 
-
     BackHandler {
         navController.popBackStack()
     }
@@ -190,10 +186,11 @@ private fun MedicacaoBody(
         ) {
         if (itemList.isEmpty()) {
 
+            Spacer(modifier = Modifier.height(10.dp))
             Text(
-                text = nomeUtilizador,
+                text = "Perfil de $nomeUtilizador",
                 fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.displaySmall
+                style = MaterialTheme.typography.titleLarge
             )
 
             Text(
@@ -214,11 +211,11 @@ private fun MedicacaoBody(
 
                 )
         } else {
-
+            Spacer(modifier = Modifier.height(10.dp))
             Text(
-                text = nomeUtilizador,
+                text = "Perfil de $nomeUtilizador",
                 fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.displaySmall
+                style = MaterialTheme.typography.titleLarge
             )
 
             Text(
@@ -227,7 +224,7 @@ private fun MedicacaoBody(
                     .padding(20.dp),
                 text = stringResource(R.string.Medicacao),
                 textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.displaySmall
 
                 )
             InventoryList(
@@ -272,8 +269,6 @@ private fun InventoryList(
                 )
             }
         }
-
-
     }
 }
 
@@ -287,13 +282,11 @@ private fun InventoryItem(
 ) {
     var expanded by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
-    var showConfirmDelete by remember { mutableStateOf(false) }
+    var mostrarInfo by remember { mutableStateOf(false) }
 
     OutlinedCard(
         modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 15.dp),
-
-
         ) {
         Row(
             modifier = Modifier
@@ -305,21 +298,10 @@ private fun InventoryItem(
                     )
                 )
         ) {
-
-
             Column(
                 modifier = Modifier
                     .weight(0.7F)
                     .padding(top = 20.dp, start = 20.dp, end = 5.dp, bottom = 10.dp)
-                /*
-                .border(
-                    width = 1.dp,
-                    color = Color.Black,
-                    shape = RectangleShape
-                )
-                */
-
-
             ) {
 
                 Text(
@@ -336,14 +318,6 @@ private fun InventoryItem(
             Column(
                 modifier = Modifier
                     .padding(top = 20.dp, start = 5.dp, end = 5.dp, bottom = 5.dp)
-                /*
-                .border(
-                    width = 1.dp,
-                    color = Color.Black,
-                    shape = RectangleShape
-                )
-
-                 */
             ) {
                 IconButton(
                     onClick = {
@@ -353,28 +327,19 @@ private fun InventoryItem(
                     Icon(
                         imageVector = Filled.Edit,
                         contentDescription = "",
-
                         )
                 }
             }
             Column(
                 modifier = Modifier
                     .padding(top = 20.dp, start = 5.dp, end = 5.dp, bottom = 5.dp)
-                /*
-            .border(
-                width = 1.dp,
-                color = Color.Black,
-                shape = RectangleShape
-            )
-
-                 */
             ) {
-                if (showConfirmDelete) {
+                if (mostrarInfo) {
                     AlertDialog(
-                        onDismissRequest = { showConfirmDelete = false },
+                        onDismissRequest = { mostrarInfo = false },
                         confirmButton = {
                             TextButton(onClick = {
-                                showConfirmDelete = false
+                                mostrarInfo = false
                                 coroutineScope.launch {
                                     medicamentoViewModel.apagarMedicamento(item)
                                 }
@@ -384,7 +349,7 @@ private fun InventoryItem(
                             }
                         },
                         dismissButton = {
-                            TextButton(onClick = { showConfirmDelete = false }) {
+                            TextButton(onClick = { mostrarInfo = false }) {
                                 Text("Cancelar")
                             }
                         },
@@ -395,7 +360,7 @@ private fun InventoryItem(
 
                 IconButton(
                     onClick = {
-                        showConfirmDelete = true
+                        mostrarInfo = true
                     }
                 ) {
                     Icon(imageVector = Filled.Delete, contentDescription = "")
@@ -405,13 +370,6 @@ private fun InventoryItem(
             Column(
                 modifier = Modifier
                     .padding(top = 20.dp, start = 5.dp, end = 20.dp, bottom = 5.dp)
-                /*
-                .border(
-                    width = 1.dp,
-                    color = Color.Black,
-                    shape = RectangleShape
-                )
-                 */
             ) {
                 IconButton(
                     onClick =
@@ -426,25 +384,14 @@ private fun InventoryItem(
                         }
                     )
                 }
-
             }
-
         }
         Row(
 
         ) {
             Column(
                 modifier = Modifier
-
                     .padding(top = 0.dp, start = 20.dp, end = 20.dp, bottom = 20.dp)
-                /*
-                .border(
-                    width = 1.dp,
-                    color = Color.Black,
-                    shape = RectangleShape
-                )
-
-                 */
             ) {
                 if (expanded) {
                     Text(
@@ -461,7 +408,6 @@ private fun InventoryItem(
                         text = "Quando Acaba - " + item.dataFim,
                         style = MaterialTheme.typography.titleSmall
                     )
-
                 }
             }
         }

@@ -72,7 +72,6 @@ fun AppToolbar(
             .clip(RoundedCornerShape(20.dp)),
 
         backgroundColor = Primary,
-
         title = {
             Text(
                 text = userName,
@@ -94,7 +93,6 @@ fun AppToolbar(
                     tint = Color.Black
                 )
             }
-
         },
         actions = {
             IconButton(onClick = {
@@ -137,7 +135,6 @@ fun CenteredBottomAppBar(navegar: () -> Unit) {
         ) {
             CenteredNavigationFab(navegar)
         }
-
     }
 }
 
@@ -193,15 +190,9 @@ fun BotaoAplicacoes(
                 color = Color.Black,
                 fontWeight = FontWeight.Bold
             )
-
         }
-
     }
 }
-
-
-
-
 
 
 @Composable
@@ -224,7 +215,6 @@ fun NavigationDrawerHeader(value: String?) {
         NavigationDrawerText(
             title = value?: stringResource(R.string.navigation_header), 28.sp , AccentColor
         )
-
     }
 }
 
@@ -241,7 +231,6 @@ fun NavigationDrawerBody(
         items(navigationDrawerItems) {
             NavigationItemRow(item = it,onNavigationItemClicked)
         }
-
     }
 }
 
@@ -261,13 +250,12 @@ fun NavigationItemRow(
 
         Icon(
             imageVector = item.icon,
-            contentDescription = item.description,
+            contentDescription = item.descricao,
         )
 
         Spacer(modifier = Modifier.width(18.dp))
 
-        NavigationDrawerText(title = item.title, 18.sp, Primary)
-
+        NavigationDrawerText(title = item.titulo, 18.sp, Primary)
 
     }
 }

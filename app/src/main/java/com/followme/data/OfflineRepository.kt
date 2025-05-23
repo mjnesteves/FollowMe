@@ -11,8 +11,6 @@ Funções para operações com a base de dados de forma assíncrona
 
  */
 
-
-
 class OfflineRepository(private val appDao: AppDao) : AppRepository {
     override fun getAllConsultas(): Flow<List<Consulta>> = appDao.getAllConsultas()
 

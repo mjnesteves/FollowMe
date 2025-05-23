@@ -110,12 +110,9 @@ fun IntroduzirTextoNormal(
         leadingIcon = {
             Icon(painter = painterResource, contentDescription = "")
         },
-
         isError = !errorStatus
 
-
     )
-
 }
 
 
@@ -142,10 +139,7 @@ fun IntroduzirTextoEmail(
             Icon(painter = painterResource, contentDescription = "")
         },
         isError = !errorStatus
-
-
     )
-
 }
 
 @Composable
@@ -196,8 +190,6 @@ fun IntroduzirPassoword(
             IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {
                 Icon(painter = iconImage, contentDescription = description)
             }
-
-
         },
         visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
         isError = !errorStatus
@@ -303,7 +295,6 @@ fun Login_criarConta_hiperligacao(
             .fillMaxWidth(),
         textAlign = TextAlign.Center
     )
-
 }
 
 
@@ -369,9 +360,7 @@ fun BotaoLogin(
                 color = Color.White,
                 fontWeight = FontWeight.Bold
             )
-
         }
-
     }
 }
 

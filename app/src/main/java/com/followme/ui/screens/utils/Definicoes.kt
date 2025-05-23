@@ -64,7 +64,7 @@ fun Definicoes(navController: NavController) {
             NavigationDrawerBody(
                 navigationDrawerItems = homeViewModel.navigationItemsList,
                 onNavigationItemClicked = {
-                    navController.navigate(it.navigateTo)
+                    navController.navigate(it.navegar)
                 })
         },
 
@@ -84,7 +84,6 @@ fun Definicoes(navController: NavController) {
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
 
-
             ) {
 
             Spacer(modifier = Modifier.height(250.dp))
@@ -99,8 +98,6 @@ fun Definicoes(navController: NavController) {
             Spacer(modifier = Modifier.height(50.dp))
         }
     }
-
-
     BackHandler {
         navController.navigate("Utilizadores")
     }

@@ -71,7 +71,6 @@ fun EditarConsulta(
     var dataConsulta = consultaUiState.dataConsulta
 
     val coroutineScope = rememberCoroutineScope()
-
     var showDialog by remember { mutableStateOf(false) }
 
 
@@ -109,13 +108,10 @@ fun EditarConsulta(
                         it
                     )
                 )
-
-
             },
             consultaViewModel = consultaViewModel,
             consultaUiState = consultaUiState
         )
-
 
         Spacer(modifier = Modifier.padding(8.dp))
 
@@ -154,8 +150,6 @@ fun EditarConsulta(
                         )
                     },
                     uiState = consultaUiState,
-                    viewModel = consultaViewModel
-
                 )
             }
             Column(
@@ -174,7 +168,6 @@ fun EditarConsulta(
                         )
                     },
                     uiState = consultaUiState,
-                    viewModel = consultaViewModel
                 )
             }
         }
@@ -196,8 +189,6 @@ fun EditarConsulta(
                 onClick = {
                     navController.navigate("HistoricoMedico?idUtilizador=${consultaUiState.idUtilizador}")
                 }
-
-
             ) {
                 Text(
                     text = stringResource(id = R.string.cancelar),
@@ -214,6 +205,13 @@ fun EditarConsulta(
                     .width(150.dp),
                 onClick = {
 
+                    /*
+                    Função para validar os dados introduzidos
+                    Ao clicar no botão,
+                    Se o resultado da validação for false, executa o bloco if, ou seja, mostra um alerDialog a informar o utilizador que os dados introduzidos são inválidos
+                    Se o resultado da validação for true, atualiza a consulta na BD
+                     */
+
 
                     val result = (validarConsulta(
                         especialidade = especialidade,
@@ -225,12 +223,11 @@ fun EditarConsulta(
                     if (!result) {
                         showDialog = true
                     } else {
-                        Log.d(tag, " onValidate $especialidade, $hospital, $dataConsulta")
+                        Log.d(tag, "Consulta: $especialidade, $hospital, $dataConsulta")
                         coroutineScope.launch {
-                            consultaViewModel.updateConsulta()
-                            navController.navigate("HistoricoMedico?idUtilizador=${consultaUiState.idUtilizador}")
+                            consultaViewModel.atualizarConsulta()
                         }
-
+                        navController.navigate("HistoricoMedico?idUtilizador=${consultaUiState.idUtilizador}")
                     }
 
                 },
@@ -241,7 +238,6 @@ fun EditarConsulta(
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
-
         }
         if (showDialog) {
             AlertDialog(
@@ -281,7 +277,6 @@ fun MenuEspecialidadeEditar(
     consultaViewModel: ConsultaViewModel
 
 ) {
-
 
     Column(
         verticalArrangement = spacedBy(8.dp)

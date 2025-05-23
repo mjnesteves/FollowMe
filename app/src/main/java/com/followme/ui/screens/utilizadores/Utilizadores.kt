@@ -65,6 +65,7 @@ import kotlinx.coroutines.launch
 import com.followme.di.AppViewModelProvider
 import com.followme.data.entidades.Utilizador
 import com.followme.ui.screens.home.HomeViewModel
+import com.followme.ui.screens.utilizadores.utilizador.UtilizadorViewModel
 
 
 @Composable
@@ -75,12 +76,13 @@ fun Utilizadores(
     val utilizadoresViewModel: UtilizadoresViewModel =
         viewModel(factory = AppViewModelProvider.Factory)
 
-    val homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    val utilizadorViewModel: UtilizadorViewModel =
+        viewModel(factory = AppViewModelProvider.Factory)
 
+    val homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val utilizadoresUiState by utilizadoresViewModel.utilizadoresUiState.collectAsState()
 
     val scaffoldState = rememberScaffoldState()
-
     val coroutineScope = rememberCoroutineScope()
 
     var confirmarLogout by remember { mutableStateOf(false) }
@@ -109,7 +111,7 @@ fun Utilizadores(
             NavigationDrawerBody(
                 navigationDrawerItems = homeViewModel.navigationItemsList,
                 onNavigationItemClicked = {
-                    navController.navigate(it.navigateTo)
+                    navController.navigate(it.navegar)
                 })
         },
 
@@ -130,10 +132,9 @@ fun Utilizadores(
             ) {
 
             UserListBody(
-                utilizadoresViewModel = utilizadoresViewModel,
+                utilizadorViewModel = utilizadorViewModel,
                 navController = navController,
                 itemList = utilizadoresUiState.usersList,
-                //onItemValueChange = viewModel::updateUiState,
                 contentPadding = innerPadding,
             )
 
@@ -166,17 +167,14 @@ fun Utilizadores(
         }
     }
 
-
     BackHandler {
         navController.popBackStack()
     }
-
-
 }
 
 @Composable
 private fun UserListBody(
-    utilizadoresViewModel: UtilizadoresViewModel,
+    utilizadorViewModel: UtilizadorViewModel,
     navController: NavController,
     itemList: List<Utilizador?>,
     contentPadding: PaddingValues,
@@ -222,13 +220,10 @@ private fun UserListBody(
                 )
 
             UserList(
-                utilizadoresViewModel = utilizadoresViewModel,
+                utilizadorViewModel = utilizadorViewModel,
                 itemList = itemList,
-                //onItemClick = {}, //onItemClick(it.id) },
                 contentPadding = contentPadding,
                 navController = navController
-
-
             )
         }
     }
@@ -237,7 +232,7 @@ private fun UserListBody(
 
 @Composable
 private fun UserList(
-    utilizadoresViewModel: UtilizadoresViewModel,
+    utilizadorViewModel: UtilizadorViewModel,
     navController: NavController,
     itemList: List<Utilizador?>,
     contentPadding: PaddingValues,
@@ -253,7 +248,7 @@ private fun UserList(
         items(items = itemList, key = { it?.idUtilizador ?: 0 }) { item ->
             if (item != null) {
                 Utilizador(
-                    utilizadoresViewModel = utilizadoresViewModel,
+                    utilizadorViewModel = utilizadorViewModel,
                     navController = navController,
                     item = item,
                     modifier = Modifier
@@ -262,15 +257,13 @@ private fun UserList(
                 )
             }
         }
-
-
     }
 }
 
 
 @Composable
 private fun Utilizador(
-    utilizadoresViewModel: UtilizadoresViewModel,
+    utilizadorViewModel: UtilizadorViewModel,
     navController: NavController,
     item: Utilizador,
     modifier: Modifier = Modifier,
@@ -279,6 +272,9 @@ private fun Utilizador(
 
     val coroutineScope = rememberCoroutineScope()
     val nomeUtilizador = item.nomeUtilizador
+    var mostrarInfo by remember { mutableStateOf(false) }
+
+
     val annotatedString = buildAnnotatedString {
         withLink(
             link = LinkAnnotation
@@ -293,7 +289,6 @@ private fun Utilizador(
         }
     }
 
-
     OutlinedCard(
         modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 15.dp),
@@ -302,25 +297,12 @@ private fun Utilizador(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-
         ) {
-
             Column(
                 modifier = Modifier
                     .weight(0.8F)
                     .padding(start = 10.dp)
                     .align(Alignment.CenterVertically)
-
-                /*
-            .border(
-                width = 1.dp,
-                color = Color.Black,
-                shape = RectangleShape
-            )
-
-
-             */
-
             ) {
 
                 Text(
@@ -329,24 +311,11 @@ private fun Utilizador(
                         .fillMaxWidth(),
                     style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center
-
                 )
-
-
             }
-
             Column(
                 modifier = Modifier
                     .padding(top = 10.dp, start = 5.dp, end = 1.dp, bottom = 10.dp)
-                /*
-            .border(
-                width = 1.dp,
-                color = Color.Black,
-                shape = RectangleShape
-            )
-
-             */
-
             ) {
                 IconButton(
                     onClick = {
@@ -356,48 +325,47 @@ private fun Utilizador(
                     Icon(
                         imageVector = Filled.Edit,
                         contentDescription = "",
-
                         )
                 }
             }
             Column(
                 modifier = Modifier
                     .padding(top = 10.dp, start = 1.dp, end = 10.dp, bottom = 10.dp)
-                /*
-        .border(
-            width = 1.dp,
-            color = Color.Black,
-            shape = RectangleShape
-        )
-
- */
-
 
             ) {
+                if (mostrarInfo) {
+                    AlertDialog(
+                        onDismissRequest = { mostrarInfo = false },
+                        confirmButton = {
+                            TextButton(onClick = {
+                                mostrarInfo = false
+                                coroutineScope.launch {
+                                    utilizadorViewModel.apagarUtilizador(item)
+                                }
 
-                IconButton(
-                    onClick = {
-                        coroutineScope.launch {
-                            utilizadoresViewModel.apagarUtilizador(item)
-                        }
-                    }
-
-                ) {
-
-                    Icon(
-                        imageVector = Filled.Delete,
-                        contentDescription = "",
+                            }) {
+                                Text("Confirmar")
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = { mostrarInfo = false }) {
+                                Text("Cancelar")
+                            }
+                        },
+                        title = { Text("Apagar Utilizador?") },
+                        text = { Text("Apagar o utilizador ${item.idUtilizador}?") }
                     )
                 }
+                IconButton(
+                    onClick = {
+                        mostrarInfo = true
+                    }
+                ) {
+                    Icon(imageVector = Filled.Delete, contentDescription = "")
+                }
             }
-
-
         }
-
-
     }
-
-
 }
 
 

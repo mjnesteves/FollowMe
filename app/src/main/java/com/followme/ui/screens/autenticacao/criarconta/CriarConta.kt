@@ -132,7 +132,6 @@ fun CriarConta(
                             it
                         )
                     )
-
                 })
             Spacer(modifier = Modifier.height(10.dp))
             BotaoLogin(
@@ -150,8 +149,6 @@ fun CriarConta(
                 login = {navController.navigate("Login")},
                 criarConta = {navController.navigate("CriarConta")},
                 tryingToLogin = true)
-
-
         }
     }
     if(criarContaViewModel.signUpInProgress.value){

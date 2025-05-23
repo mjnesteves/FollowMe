@@ -20,12 +20,22 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 class HomeViewModel(
-    private val appRepository: AppRepository,
+    appRepository: AppRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    // Variável passada através do NavController que identifica o idUtilizador,
     private val idUtilizador = savedStateHandle.get<Int>("idUtilizador")
+
+    /*
+    Variável que vai verificar se o parâmetro passado é do tipo Inteiro.
+    É necessário para quando a QUERY executada abaixo não devolver resultados (null -> crash)
+    */
     private val result: Int = idUtilizador ?: 0
+
+    /*
+       Consulta à BD para obter o utilizador passado através de parâmetro
+    */
 
     val utilizadorUIState: StateFlow<UtilizadorUIState> =
         appRepository.getUtilizador(result).map { utilizador ->
@@ -37,6 +47,11 @@ class HomeViewModel(
                 initialValue = UtilizadorUIState()
             )
 
+    /*
+  Função para fazer a conversão do objeto consulta para UIState.
+  É utilizado na função apagarConsulta, mais abaixo
+  */
+
     private fun Utilizador.toUIState(): UtilizadorUIState {
         return UtilizadorUIState(
             idUtilizador = this.idUtilizador,
@@ -44,36 +59,49 @@ class HomeViewModel(
         )
     }
 
+    // Variável que armazena o estado do objeto Consulta
     private val homeUIState = mutableStateOf(HomeUIState())
 
+    // Variável utilizada para identificar a classe do objeto a ser impresso no log
     private val tag = HomeViewModel::class.simpleName
 
-
+    /*
+     objeto a ser armazenado com o displayName do utilizador
+     */
     data class HomeUIState(
         var displayName: String = "",
         )
 
 
+    // Classe que contém a declaração dos métodos de modificação das variáveis
     sealed class HomeUIEvent {
         data class DisplayNameChanged(val displayName: String) : HomeUIEvent()
     }
 
 
-
+    // Funcções modificadoras das variáveis
     private fun  onEvent(event: HomeUIEvent){
+
+        //Quando o evento acontecer,
+
         when(event){
+
+            // Alteração do displayName
+
             is HomeUIEvent.DisplayNameChanged -> {
                 homeUIState.value = homeUIState.value.copy(
                     displayName = event.displayName
                 )
             }
-
         }
-
     }
 
-
+    /*
+    Função que obtém os dados do utilizador através de consulta à API do Firebase
+    Utilizada na função getDisplayName
+    */
     private fun getUserData() {
+
         val firebaseAuth = FirebaseAuth.getInstance()
         firebaseAuth.currentUser?.also {
             it.displayName?.also { displayName ->
@@ -81,9 +109,9 @@ class HomeViewModel(
 
             }
         }
-
     }
 
+    // Obter o displayName
 
     fun getDisplayName(): String {
         getUserData()
@@ -96,59 +124,56 @@ class HomeViewModel(
                 homeUIState.value.displayName
             }
         }
-
-
     }
 
 
+    // Função para terminar sessão no Firebse
+
+    fun terminarSessao() {
+        val firebaseAuth = FirebaseAuth.getInstance()
+
+        firebaseAuth.signOut()
+
+        val authStateListener = FirebaseAuth.AuthStateListener {
+            if (it.currentUser == null) {
+                Log.d(tag, "Logout com sucesso!")
+            } else {
+                Log.d(tag, "!!! Logout sem sucesso!!!. Verifique o que aconteceu!")
+            }
+        }
+        firebaseAuth.addAuthStateListener(authStateListener)
+    }
+
+
+    //---------------- Navigation Drawer -----------------
+
     data class NavigationItem(
-        val title: String,
-        val description: String,
-        val navigateTo: String,
+        val titulo: String,
+        val descricao: String,
+        val navegar: String,
         val icon: ImageVector
     )
 
 
     val navigationItemsList = listOf(
         NavigationItem(
-            title = "Perfis",
+            titulo = "Perfis",
             icon = Icons.Filled.AccountCircle,
-            description = "Utilizadores",
-            navigateTo = "Utilizadores"
+            descricao = "Utilizadores",
+            navegar = "Utilizadores"
         ),
         NavigationItem(
-            title = "Definições",
+            titulo = "Definições",
             icon = Icons.Default.Settings,
-            description = "Definições",
-            navigateTo = "Definicoes"
+            descricao = "Definições",
+            navegar = "Definicoes"
         ),
 
         NavigationItem(
-            title = "Informações",
+            titulo = "Informações",
             icon = Icons.Default.Info,
-            description = "Informação da Aplicação",
-            navigateTo = "Info"
+            descricao = "Informação da Aplicação",
+            navegar = "Info"
         ),
-
-
-        )
-
-
-    fun terminarSessao() {
-        val firebaseAuth = FirebaseAuth.getInstance()
-        firebaseAuth.signOut()
-
-        val authStateListener = FirebaseAuth.AuthStateListener {
-            if (it.currentUser == null) {
-                Log.d(tag, "Logout com sucesso!")
-                //onEvent(HomeUIEvent.DisplayNameChanged(""))
-            } else {
-                Log.d(tag, "!!! Logout sem sucesso!!!. Verifique o que aconteceu!")
-            }
-        }
-
-        firebaseAuth.addAuthStateListener(authStateListener)
-    }
-
-
+    )
 }

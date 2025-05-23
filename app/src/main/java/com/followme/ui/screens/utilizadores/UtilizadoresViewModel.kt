@@ -25,11 +25,6 @@ class UtilizadoresViewModel(private val appRepository: AppRepository) : ViewMode
         private const val TIMEOUT_MILLIS = 5_000L
     }
 
-    suspend fun apagarUtilizador(item: Utilizador) {
-        appRepository.deleteUtilizador(item)
-    }
-
-
 }
 
 data class UtilizadoresUiState(val usersList: List<Utilizador?> = listOf())

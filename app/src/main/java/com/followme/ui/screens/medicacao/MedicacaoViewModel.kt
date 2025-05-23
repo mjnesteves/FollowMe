@@ -22,9 +22,19 @@ class MedicacaoViewModel(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    // Variável passada através de parâmetro, através do NavController, para identificar o utilizador para o qual, vai ser exibido o histórico de medicamentos
     private val idUtilizador = savedStateHandle.get<Int>("idUtilizador")
+
+    /*
+    Variável que vai verificar se o parâmetro passado é do tipo Inteiro.
+    É necessário para quando a QUERY executada abaixo não devolver resultados (null -> crash)
+    */
     private val result: Int = idUtilizador ?: 0
 
+
+    /*
+Consulta à BD para obter todos os medicamentos do utilizador fornecido
+ */
     val medicacaoUiState: StateFlow<MedicacaoUiState> =
         appRepository.getAllMedicamentosUser(result).map { MedicacaoUiState(it) }
             .stateIn(
@@ -37,16 +47,8 @@ class MedicacaoViewModel(
         private const val TIMEOUT_MILLIS = 5_000L
     }
 
-    val tag = MedicamentoViewModel::class.simpleName
-
-    suspend fun apagarMedicamento(item: Medicamento) {
-
-        Log.d(tag, "APAGAR MEDICAMENTO {${item.idMedicamento}")
-
-        appRepository.deleteMedicamento(item)
-    }
-
-
 }
 
+
+// Objeto que vai guardar a lista de todos os medicamentos relacionadas com o utilizador
 data class MedicacaoUiState(val medicamentoList: List<Medicamento?> = listOf())

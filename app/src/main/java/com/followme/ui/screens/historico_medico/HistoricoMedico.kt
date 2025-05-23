@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -61,11 +63,7 @@ import com.followme.data.entidades.Consulta
 import kotlinx.coroutines.launch
 import com.followme.di.AppViewModelProvider
 import com.followme.ui.screens.historico_medico.consulta.ConsultaViewModel
-import com.followme.ui.screens.historico_medico.consulta.validar.validarConsulta
 import com.followme.ui.screens.home.HomeViewModel
-import com.followme.ui.screens.home.HomeViewModel.*
-import com.followme.ui.screens.home.HomeViewModel.NavigationItem
-import kotlinx.coroutines.CoroutineScope
 
 
 @Composable
@@ -108,9 +106,9 @@ fun HistoricoMedico(
             NavigationDrawerBody(
                 navigationDrawerItems = homeViewModel.navigationItemsList,
                 onNavigationItemClicked = {
-                    navController.navigate(it.navigateTo)
+                    navController.navigate(it.navegar)
                     Log.d("ComingHere", "inside_NavigationItemClicked")
-                    Log.d("ComingHere", "${it.navigateTo} ${it.title}")
+                    Log.d("ComingHere", "${it.navegar} ${it.titulo}")
                 })
         },
 
@@ -126,10 +124,7 @@ fun HistoricoMedico(
                     navController.navigate("AdicionarConsulta?idUtilizador=${utilizadorUIStateFlow.idUtilizador}")
                 })
         }
-
-
     ) { innerPadding ->
-
 
         Column(
             modifier = Modifier
@@ -139,7 +134,6 @@ fun HistoricoMedico(
 
             ) {
 
-
             HistoricoMedicoBody(
                 navController = navController,
                 consultaViewModel = consultaViewModel,
@@ -147,8 +141,6 @@ fun HistoricoMedico(
                 contentPadding = innerPadding,
                 nomeUtilizador = nomeUtilizador,
             )
-
-
         }
         if (confirmarLogout) {
             AlertDialog(
@@ -177,8 +169,6 @@ fun HistoricoMedico(
         }
     }
 
-
-
     BackHandler {
         navController.popBackStack()
     }
@@ -201,13 +191,12 @@ private fun HistoricoMedicoBody(
 
         ) {
         if (itemList.isEmpty()) {
-
+            Spacer(modifier = Modifier.height(10.dp))
             Text(
-                text = nomeUtilizador,
+                text = "Perfil de $nomeUtilizador",
                 fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.displaySmall
+                style = MaterialTheme.typography.titleLarge
             )
-
 
             Text(
                 modifier = Modifier
@@ -216,7 +205,6 @@ private fun HistoricoMedicoBody(
                 text = stringResource(R.string.HistoricoMedico),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleLarge,
-
                 )
             Text(
                 modifier = Modifier
@@ -225,14 +213,13 @@ private fun HistoricoMedicoBody(
                 text = stringResource(R.string.no_item_description),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleLarge,
-
                 )
         } else {
-
+            Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = nomeUtilizador,
                 fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.displaySmall
+                style = MaterialTheme.typography.titleLarge,
             )
 
             Text(
@@ -242,7 +229,6 @@ private fun HistoricoMedicoBody(
                 text = stringResource(R.string.HistoricoMedico),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleLarge,
-
                 )
 
             InventoryList(
@@ -250,7 +236,6 @@ private fun HistoricoMedicoBody(
                 itemList = itemList,
                 contentPadding = contentPadding,
                 navController = navController,
-
                 )
         }
     }
@@ -280,12 +265,9 @@ private fun InventoryList(
                     item = item,
                     modifier = Modifier
                         .padding(dimensionResource(id = R.dimen.padding_small)),
-
                 )
             }
         }
-
-
     }
 }
 
@@ -315,24 +297,13 @@ private fun InventoryItem(
                     )
                 )
         ) {
-
-
             Column(
                 modifier = Modifier
                     .weight(0.7F)
                     .padding(top = 20.dp, start = 20.dp, end = 5.dp, bottom = 10.dp)
                     .align(Alignment.CenterVertically)
-                /*
-                .border(
-                    width = 1.dp,
-                    color = Color.Black,
-                    shape = RectangleShape
-                )
-                */
-
 
             ) {
-
                 Text(
                     text = "Consulta " + item.idConsulta,
                     style = MaterialTheme.typography.titleMedium,
@@ -341,20 +312,10 @@ private fun InventoryItem(
                     text = item.especialidade,
                     style = MaterialTheme.typography.titleMedium,
                 )
-
             }
-
             Column(
                 modifier = Modifier
                     .padding(top = 20.dp, start = 5.dp, end = 5.dp, bottom = 5.dp)
-                /*
-                .border(
-                    width = 1.dp,
-                    color = Color.Black,
-                    shape = RectangleShape
-                )
-
-                 */
             ) {
                 IconButton(
                     onClick = {
@@ -364,23 +325,13 @@ private fun InventoryItem(
                     Icon(
                         imageVector = Filled.Edit,
                         contentDescription = "",
-
                         )
                 }
             }
             Column(
                 modifier = Modifier
                     .padding(top = 20.dp, start = 5.dp, end = 5.dp, bottom = 5.dp)
-                /*
-            .border(
-                width = 1.dp,
-                color = Color.Black,
-                shape = RectangleShape
-            )
-
-                 */
             ) {
-
                 if (showConfirmDelete) {
                     AlertDialog(
                         onDismissRequest = { showConfirmDelete = false },
@@ -403,7 +354,6 @@ private fun InventoryItem(
                         text = { Text("Apagar a consulta ${item.idConsulta}?") }
                     )
                 }
-
                 IconButton(
                     onClick = {
                         showConfirmDelete = true
@@ -412,17 +362,9 @@ private fun InventoryItem(
                     Icon(imageVector = Filled.Delete, contentDescription = "")
                 }
             }
-
             Column(
                 modifier = Modifier
                     .padding(top = 20.dp, start = 5.dp, end = 20.dp, bottom = 5.dp)
-                /*
-                .border(
-                    width = 1.dp,
-                    color = Color.Black,
-                    shape = RectangleShape
-                )
-                 */
             ) {
                 IconButton(
                     onClick =
@@ -437,25 +379,13 @@ private fun InventoryItem(
                         }
                     )
                 }
-
             }
-
         }
         Row(
-
         ) {
             Column(
                 modifier = Modifier
-
                     .padding(top = 0.dp, start = 20.dp, end = 20.dp, bottom = 20.dp)
-                /*
-                .border(
-                    width = 1.dp,
-                    color = Color.Black,
-                    shape = RectangleShape
-                )
-
-                 */
             ) {
                 if (expanded) {
                     Text(
@@ -472,7 +402,6 @@ private fun InventoryItem(
                         text = "Hospital - " + item.hospital,
                         style = MaterialTheme.typography.titleSmall
                     )
-
                 }
             }
         }

@@ -69,8 +69,9 @@ fun SinaisVitais(navController: NavController) {
             NavigationDrawerBody(
                 navigationDrawerItems = homeViewModel.navigationItemsList,
                 onNavigationItemClicked = {
+                    navController.navigate(it.navegar)
                     Log.d("ComingHere", "inside_NavigationItemClicked")
-                    Log.d("ComingHere", "${it.navigateTo} ${it.title}")
+                    Log.d("ComingHere", "${it.navegar} ${it.titulo}")
                 })
         },
 

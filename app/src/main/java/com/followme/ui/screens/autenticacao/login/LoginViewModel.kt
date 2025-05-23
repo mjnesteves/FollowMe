@@ -156,7 +156,6 @@ class LoginViewModel(repositorio: AppRepository) : ViewModel() {
                     loginInProgress.value = false
                     loginStatus.value = true
                 }
-
             }
 
             //Listener para autenticação com falhas

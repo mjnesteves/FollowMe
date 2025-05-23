@@ -113,8 +113,6 @@ fun Login(
 
                 Spacer(modifier = Modifier.height(40.dp))
 
-                //Hiperligacao_Sublinhado(value = stringResource(id = R.string.recuperar_password))
-
                 BotaoLogin(
                     value = stringResource(id = R.string.login),
                     onButtonClicked = {
@@ -129,14 +127,8 @@ fun Login(
                     criarConta = { navController.navigate("CriarConta") },
                     tryingToLogin = false
                 )
-
-
             }
         }
-
-
-
-
 
         if (loginEmProgresso) {
             CircularProgressIndicator()
@@ -144,13 +136,13 @@ fun Login(
 
         // Se acontecer um erro no processo de Login ( email ou passoword errados ), o sistema mostra um Alert Dialog e impede o Login
 
-
         if (loginViewModel.getLoginError()) {
+
             Alerta_Erro_Login()
+
         } else if (loginViewModel.getLoginStatus()) {
 
             // Se o login for bem sucedido, o navegador passa para a página de Perfis de Utilizadores
-
             navController.navigate("Utilizadores")
         }
 

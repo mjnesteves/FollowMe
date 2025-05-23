@@ -15,13 +15,25 @@ class MedicamentoViewModel(
     private val appRepository: AppRepository
 ) : ViewModel() {
 
-
+    // Variável passada através do NavController que identifica o idUtilizador,
     private val idUtilizador = savedStateHandle.get<Int>("idUtilizador")
+
+    // Variável passada através do NavController que identifica o Medicamento,
     private val idMedicamento = savedStateHandle.get<Int>("idMedicamento")
 
+    // Variável que armazena o estado do objeto Medicamento
     private val medicamentoUIState = MutableStateFlow(MedicamentoUIState())
+
+    // Variável que armazena o estado do objeto Medicamento. Permite que seja recolhido através do metodo collectAsState no ecrã de Adicionar/Editar Medicamento
     val medicamentoUIStateFlow: StateFlow<MedicamentoUIState> = medicamentoUIState
 
+    // Variável utilizada para identificar a classe do objeto a ser impresso no log
+    private val tag = MedicamentoViewModel::class.simpleName
+
+    /*
+    Quando se edita um medicamento, o bloco if faz a consulta à BD para obter o respetivo medicamento, com o parâmetro idMedicamento, utilizando o dao definido.
+    Quando se adiciona um medicamento, o bloco else define o idUtilizador no objeto medicamento para posterior adição à BD.
+ */
 
     init {
         if (idMedicamento != null && idMedicamento != -1) {
@@ -41,6 +53,10 @@ class MedicamentoViewModel(
         }
     }
 
+    /*
+    Função para fazer a conversão do objeto medicamento para UIState.
+    É utilizado na função apagarMedicamento, mais abaixo
+    */
 
     private fun Medicamento.toMedicamentoUIState(): MedicamentoUIState = MedicamentoUIState(
         idMedicamento = idMedicamento,
@@ -53,7 +69,9 @@ class MedicamentoViewModel(
     )
 
 
-    private val tag = MedicamentoViewModel::class.simpleName
+    /*
+  Define o objeto do tipo UIState
+   */
 
     data class MedicamentoUIState(
         val idMedicamento: Int = 0,
@@ -65,8 +83,9 @@ class MedicamentoViewModel(
         val quandoToma: String = ""
     )
 
-    sealed class MedicamentoUIEvent {
 
+    // Classe que contém a declaração dos métodos de modificação das variáveis
+    sealed class MedicamentoUIEvent {
         data class IdMedicamentoMudou(val idMedicamento: Int) : MedicamentoUIEvent()
         data class UtilizadorMudou(val idUtilizador: Int) : MedicamentoUIEvent()
         data class NomeMedicamentoMudou(val nomeMedicamento: String) : MedicamentoUIEvent()
@@ -78,16 +97,20 @@ class MedicamentoViewModel(
     }
 
 
+    // Funcções modificadoras das variáveis
     fun onEvent(event: MedicamentoUIEvent) {
 
+        //Quando o evento acontecer,
         when (event) {
 
+            // Alteração do idMedicamento
             is MedicamentoUIEvent.IdMedicamentoMudou -> {
                 medicamentoUIState.value = medicamentoUIState.value.copy(
                     idMedicamento = event.idMedicamento
                 )
             }
 
+            //Alteração do idUtilizador
             is MedicamentoUIEvent.UtilizadorMudou -> {
                 medicamentoUIState.value = medicamentoUIState.value.copy(
                     idUtilizador = event.idUtilizador
@@ -95,6 +118,7 @@ class MedicamentoViewModel(
                 printState()
             }
 
+            //Alteração do nome do medicamento
             is MedicamentoUIEvent.NomeMedicamentoMudou -> {
                 medicamentoUIState.value = medicamentoUIState.value.copy(
                     nomeMedicamento = event.nomeMedicamento
@@ -102,6 +126,7 @@ class MedicamentoViewModel(
                 printState()
             }
 
+            //Alteração da quantidade do medicamento
             is MedicamentoUIEvent.QuantidadeMudou -> {
                 val parsed = event.quantidade.toIntOrNull() ?: 0
                 medicamentoUIState.value = medicamentoUIState.value.copy(
@@ -110,6 +135,7 @@ class MedicamentoViewModel(
                 printState()
             }
 
+            //Alteração da frequencia do medicamento
             is MedicamentoUIEvent.FrequenciaMudou -> {
                 medicamentoUIState.value = medicamentoUIState.value.copy(
                     frequencia = event.frequencia
@@ -117,6 +143,7 @@ class MedicamentoViewModel(
                 printState()
             }
 
+            //Alteração da data do medicamento
             is MedicamentoUIEvent.DataFimMoudou -> {
                 medicamentoUIState.value = medicamentoUIState.value.copy(
                     dataFim = event.dataFim
@@ -124,6 +151,7 @@ class MedicamentoViewModel(
                 printState()
             }
 
+            //Alteração do campo que define quando é a toma do medicamento
             is MedicamentoUIEvent.QuandoTomaMudou -> {
                 medicamentoUIState.value = medicamentoUIState.value.copy(
                     quandoToma = event.quandoToma
@@ -135,12 +163,16 @@ class MedicamentoViewModel(
         }
     }
 
-
+    // Imprime no log os valores do objeto medicamento para controlo
     private fun printState() {
-        Log.d(tag, "PRINT STATE")
-        Log.d(tag, medicamentoUIState.value.toString())
+        Log.d(tag, "Estado do  medicamento ${medicamentoUIState.value}")
     }
 
+
+    /*
+ Função para fazer a conversão do objeto quando se encontra em UIState para o objeto Medicamento.
+ É utilizado nas funções inserirMedicamento e atualizarMedicamento mais abaixo
+ */
 
     private fun MedicamentoUIState.toMedicamento(): Medicamento = Medicamento(
         idMedicamento = idMedicamento,
@@ -152,15 +184,17 @@ class MedicamentoViewModel(
         quandoToma = quandoToma
     )
 
-
-    suspend fun insertMedicamento() {
+    // Inserir uma novo medicamento na BD
+    suspend fun inserirtMedicamento() {
         appRepository.insertMedicamento(medicamentoUIState.value.toMedicamento())
     }
 
-    suspend fun updateMedicamento() {
+    // Atualizar o medicamento na BD
+    suspend fun atualizarMedicamento() {
         appRepository.updateMedicamento(medicamentoUIState.value.toMedicamento())
     }
 
+    // Apagar medicamento
     suspend fun apagarMedicamento(item: Medicamento) {
         medicamentoUIState.value = item.toMedicamentoUIState()
         appRepository.deleteMedicamento(item)

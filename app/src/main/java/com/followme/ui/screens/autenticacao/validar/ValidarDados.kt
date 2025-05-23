@@ -33,7 +33,6 @@ object Validar {
             statusValue
         )
     }
-
 }
 
 data class ResultadoValidar(

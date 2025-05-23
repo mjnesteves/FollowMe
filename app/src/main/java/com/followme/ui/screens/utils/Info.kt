@@ -37,9 +37,6 @@ import kotlinx.coroutines.launch
 fun Info(navController: NavController) {
 
     val homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
-
-    val utilizadorUIStateFlow by homeViewModel.utilizadorUIState.collectAsState()
-
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -68,7 +65,7 @@ fun Info(navController: NavController) {
             NavigationDrawerBody(
                 navigationDrawerItems = homeViewModel.navigationItemsList,
                 onNavigationItemClicked = {
-                    navController.navigate(it.navigateTo)
+                    navController.navigate(it.navegar)
                 })
         },
 
@@ -88,9 +85,7 @@ fun Info(navController: NavController) {
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
 
-
             ) {
-
             Spacer(modifier = Modifier.height(100.dp))
 
             Text(
@@ -98,17 +93,13 @@ fun Info(navController: NavController) {
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center
-
             )
 
             Spacer(modifier = Modifier.height(50.dp))
         }
     }
 
-
     BackHandler {
         navController.popBackStack()
     }
-
-
 }

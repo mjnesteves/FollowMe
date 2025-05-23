@@ -36,7 +36,6 @@ import kotlinx.coroutines.launch
 fun EditarUtilizador(navController: NavController) {
 
     val utilizadorViewModel: UtilizadorViewModel = viewModel(factory = AppViewModelProvider.Factory)
-
     val utilizadorUiState by utilizadorViewModel.utilizadorUIStateFlow.collectAsState()
 
     var nomeUtilizador by rememberSaveable { mutableStateOf("") }
@@ -66,7 +65,6 @@ fun EditarUtilizador(navController: NavController) {
             style = MaterialTheme.typography.bodyLarge
         )
 
-
         TextField(
             modifier = Modifier.fillMaxWidth(),
             value = utilizadorUiState.nomeUtilizador,
@@ -93,7 +91,6 @@ fun EditarUtilizador(navController: NavController) {
             horizontalArrangement = spacedBy(16.dp)
 
         ) {
-
             Button(
                 modifier = Modifier
 
@@ -102,8 +99,6 @@ fun EditarUtilizador(navController: NavController) {
                 onClick = {
                     navController.navigate("Utilizadores")
                 }
-
-
             ) {
                 Text(
                     text = stringResource(id = R.string.cancelar),
@@ -115,16 +110,13 @@ fun EditarUtilizador(navController: NavController) {
 
             Button(
                 modifier = Modifier
-                    //.fillMaxWidth()
                     .height(56.dp)
                     .width(150.dp),
                 onClick = {
-
                     coroutineScope.launch {
-                        utilizadorViewModel.updateUtilizador()
-                        navController.popBackStack()
+                        utilizadorViewModel.atualizarUtilizador()
                     }
-
+                    navController.popBackStack()
                 },
                 shape = MaterialTheme.shapes.extraLarge
             ) {
@@ -134,8 +126,5 @@ fun EditarUtilizador(navController: NavController) {
                 )
             }
         }
-
-
     }
-
 }

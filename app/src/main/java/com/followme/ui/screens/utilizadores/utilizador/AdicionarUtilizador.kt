@@ -40,14 +40,12 @@ import kotlinx.coroutines.launch
 fun AdicionarUtilizador(navController: NavController) {
 
     val utilizadorViewModel: UtilizadorViewModel = viewModel(factory = AppViewModelProvider.Factory)
-
     val utilizadorUiState by utilizadorViewModel.utilizadorUIStateFlow.collectAsState()
 
     var nomeUtilizador by rememberSaveable { mutableStateOf("") }
 
     val coroutineScope = rememberCoroutineScope()
-
-    var showDialog by remember { mutableStateOf(false) }
+    var mostrarInfo by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -71,7 +69,6 @@ fun AdicionarUtilizador(navController: NavController) {
             text = stringResource(id = R.string.nomeUtilizador),
             style = MaterialTheme.typography.bodyLarge
         )
-
 
         TextField(
             modifier = Modifier.fillMaxWidth(),
@@ -120,28 +117,21 @@ fun AdicionarUtilizador(navController: NavController) {
 
             Button(
                 modifier = Modifier
-                    //.fillMaxWidth()
                     .height(56.dp)
                     .width(150.dp),
                 onClick = {
 
                     coroutineScope.launch {
-
                         val validaUtilizador = validarNomeUtilizador(
                             nomeUtilizador
                         )
-
                         if (!validaUtilizador) {
-                            showDialog = true
+                            mostrarInfo = true
                         } else {
-                            utilizadorViewModel.insertUtilizador()
-                            navController.popBackStack()
+                            utilizadorViewModel.inserirtUtilizador()
                         }
+                        navController.popBackStack()
                     }
-
-
-
-
                 },
                 shape = MaterialTheme.shapes.extraLarge
             ) {
@@ -151,14 +141,12 @@ fun AdicionarUtilizador(navController: NavController) {
                 )
             }
         }
-
-
     }
-    if (showDialog) {
+    if (mostrarInfo) {
         AlertDialog(
-            onDismissRequest = { showDialog = false },
+            onDismissRequest = { mostrarInfo = false },
             confirmButton = {
-                TextButton(onClick = { showDialog = false }) {
+                TextButton(onClick = { mostrarInfo = false }) {
                     Text("OK")
                 }
             },

@@ -69,19 +69,13 @@ fun AdicionarMedicamento(navController: NavController) {
     val homeViewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val utilizadorUIStateFlow by homeViewModel.utilizadorUIState.collectAsState()
 
-
     var nomeMedicamento by rememberSaveable { mutableStateOf("") }
-
     var quantidade by rememberSaveable { mutableStateOf("") }
-
     var frequencia by rememberSaveable { mutableStateOf(Frequencia.Diario.name) }
-
     var dataFim by rememberSaveable { mutableStateOf("") }
-
     var quandoToma by rememberSaveable { mutableStateOf(TempoDia.PequenoAlmoco.name) }
 
     val coroutineScope = rememberCoroutineScope()
-
     var showDialog by remember { mutableStateOf(false) }
 
 
@@ -174,12 +168,10 @@ fun AdicionarMedicamento(navController: NavController) {
                         )
                     )
                 },
-
                 )
         }
 
         Spacer(modifier = Modifier.padding(4.dp))
-
 
         Data(
             contexto = stringResource(id = R.string.data_fim),
@@ -192,10 +184,7 @@ fun AdicionarMedicamento(navController: NavController) {
                 )
             },
             uiState = medicamentoUiState,
-
-
         )
-
 
         Spacer(modifier = Modifier.padding(4.dp))
 
@@ -228,19 +217,16 @@ fun AdicionarMedicamento(navController: NavController) {
                     navController.navigate("Medicacao?idUtilizador=${medicamentoUiState.idUtilizador}")
                 }
 
-
             ) {
                 Text(
                     text = stringResource(id = R.string.cancelar),
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
-
             spacedBy(50.dp)
 
             Button(
                 modifier = Modifier
-                    //.fillMaxWidth()
                     .height(56.dp)
                     .width(150.dp),
                 onClick = {
@@ -255,7 +241,7 @@ fun AdicionarMedicamento(navController: NavController) {
 
                     Log.d(
                         tag,
-                        "VALORES{$nomeMedicamento, $quantidade, $frequencia, $dataFim, $quandoToma }"
+                        "Medicamento: {$nomeMedicamento, $quantidade, $frequencia, $dataFim, $quandoToma }"
                     )
 
                     if (!result) {
@@ -263,16 +249,13 @@ fun AdicionarMedicamento(navController: NavController) {
                     } else {
                         Log.d(
                             tag,
-                            " onValidate $nomeMedicamento, $quantidade, $frequencia, $dataFim, $quandoToma"
+                            "Medicamento $nomeMedicamento, $quantidade, $frequencia, $dataFim, $quandoToma"
                         )
                         coroutineScope.launch {
-                            medicamentoViewModel.insertMedicamento()
+                            medicamentoViewModel.inserirtMedicamento()
                         }
                         navController.navigate("Medicacao?idUtilizador=${medicamentoUiState.idUtilizador}")
-
                     }
-
-
                 },
                 shape = MaterialTheme.shapes.extraLarge
             ) {
@@ -281,7 +264,6 @@ fun AdicionarMedicamento(navController: NavController) {
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
-
         }
         if (showDialog) {
             AlertDialog(
@@ -300,8 +282,6 @@ fun AdicionarMedicamento(navController: NavController) {
     BackHandler {
         navController.navigate("Medicacao?idUtilizador=${medicamentoUiState.idUtilizador}")
     }
-
-
 }
 
 

@@ -114,7 +114,6 @@ fun EditarMedicamento(navController: NavController) {
             style = MaterialTheme.typography.bodyLarge
         )
 
-
         TextField(
             modifier = Modifier.fillMaxWidth(),
             value = medicamentoUiState.nomeMedicamento,
@@ -185,12 +184,10 @@ fun EditarMedicamento(navController: NavController) {
                 },
                 medicamentoUiState = medicamentoUiState,
                 medicamentoViewModel = medicamentoViewModel,
-
                 )
         }
 
         Spacer(modifier = Modifier.padding(4.dp))
-
 
         Data(
             contexto = stringResource(id = R.string.data_fim),
@@ -203,10 +200,7 @@ fun EditarMedicamento(navController: NavController) {
                 )
             },
             uiState = medicamentoUiState,
-
-
             )
-
 
         Spacer(modifier = Modifier.padding(4.dp))
 
@@ -218,7 +212,6 @@ fun EditarMedicamento(navController: NavController) {
                         it
                     )
                 )
-
             },
             medicamentoUiState = medicamentoUiState,
             medicamentoViewModel = medicamentoViewModel
@@ -240,8 +233,6 @@ fun EditarMedicamento(navController: NavController) {
                 onClick = {
                     navController.navigate("Medicacao?idUtilizador=${medicamentoUiState.idUtilizador}")
                 }
-
-
             ) {
                 Text(
                     text = stringResource(id = R.string.cancelar),
@@ -271,10 +262,10 @@ fun EditarMedicamento(navController: NavController) {
                     } else {
                         Log.d(
                             tag,
-                            " onValidate $nomeMedicamento, $quantidade, $frequencia, $dataFim, $quandoToma"
+                            "Medicamento $nomeMedicamento, $quantidade, $frequencia, $dataFim, $quandoToma"
                         )
                         coroutineScope.launch {
-                            medicamentoViewModel.updateMedicamento()
+                            medicamentoViewModel.atualizarMedicamento()
                             navController.navigate("Medicacao?idUtilizador=${medicamentoUiState.idUtilizador}")
                         }
 
@@ -306,8 +297,6 @@ fun EditarMedicamento(navController: NavController) {
     BackHandler {
         navController.popBackStack()
     }
-
-
 }
 
 
